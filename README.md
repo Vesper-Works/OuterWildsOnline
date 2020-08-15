@@ -1,0 +1,1 @@
+# Outer Wilds Mod Template

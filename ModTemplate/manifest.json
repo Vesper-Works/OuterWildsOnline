@@ -1,0 +1,9 @@
+{
+  "filename": "ModTemplate.dll",
+  "author": "Raicuparta",
+  "name": "Mod Template",
+  "uniqueName": "Raicuparta.ModTemplate",
+  "description": "Template for new mods. Use this as a base for making your own mod.",
+  "version": "0.1.0",
+  "owmlVersion": "0.7.3"
+}
