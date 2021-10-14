@@ -39,8 +39,8 @@ Use this project as a base for new Outer Wilds mods.
 
 ## How to use this template
 
-1. [Fork this repository](https://github.com/Raicuparta/ow-mod-template/fork);
-2. Clone your fork to your machine;
+1. [Generate your repository from this template](https://github.com/Raicuparta/ow-mod-template/generate);
+2. Clone your new repository to your machine;
 3. Edit `ModTemplate/ModTemplate.csproj.user` (see [Editing ModTemplate.csproj.user](#editing-modtemplatecsprojuser) for more info);
 4. Edit `ModTemplate/manifest.json` (see [Editing manifest.json](#editing-manifestjson) for more info);
 5. Open `ModTemplate.sln` in Visual Studio (double clicking the `.sln` file should do the trick);
