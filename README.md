@@ -15,7 +15,6 @@ Use this project as a base for new Outer Wilds mods.
   - [author](#author)
   - [name](#name)
   - [uniqueName](#uniquename)
-  - [description](#description)
   - [version](#version)
   - [owmlVersion](#owmlversion)
 - [Updating OWML](#updating-owml)
