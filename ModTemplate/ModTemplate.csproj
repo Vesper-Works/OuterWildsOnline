@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ModTemplate</RootNamespace>
     <AssemblyName>ModTemplate</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,73 +31,50 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony, Version=1.2.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lib.Harmony.1.2.0.1\lib\net35\0Harmony.dll</HintPath>
-    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-UnityScript">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\Assembly-UnityScript.dll</HintPath>
-    </Reference>
-    <Reference Include="ConsoleUtilsImport">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\ConsoleUtilsImport.dll</HintPath>
-    </Reference>
-    <Reference Include="DataPlatformImport">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\DataPlatformImport.dll</HintPath>
-    </Reference>
-    <Reference Include="GamepadImport">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\GamepadImport.dll</HintPath>
-    </Reference>
     <Reference Include="Mono.Security">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\Mono.Security.dll</HintPath>
     </Reference>
     <Reference Include="NAudio-Unity, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\NAudio-Unity.dll</HintPath>
+      <HintPath>..\packages\OWML.2.0.0\lib\net40\NAudio-Unity.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Json.Net.Unity3D.9.0.1\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="OWML, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.dll</HintPath>
+    <Reference Include="OWML.Common, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2.0.0\lib\net40\OWML.Common.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.Common.dll</HintPath>
+    <Reference Include="OWML.Logging, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2.0.0\lib\net40\OWML.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.Logging, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.Logging.dll</HintPath>
+    <Reference Include="OWML.ModHelper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2.0.0\lib\net40\OWML.ModHelper.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Assets, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2.0.0\lib\net40\OWML.ModHelper.Assets.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Assets, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Assets.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Events, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2.0.0\lib\net40\OWML.ModHelper.Events.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Events, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Events.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Input, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2.0.0\lib\net40\OWML.ModHelper.Input.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Input, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Input.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Interaction, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2.0.0\lib\net40\OWML.ModHelper.Interaction.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Interaction, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Interaction.dll</HintPath>
+    <Reference Include="OWML.ModHelper.Menus, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2.0.0\lib\net40\OWML.ModHelper.Menus.dll</HintPath>
     </Reference>
-    <Reference Include="OWML.ModHelper.Menus, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OWML.0.7.3\lib\net35\OWML.ModHelper.Menus.dll</HintPath>
-    </Reference>
-    <Reference Include="Rewired_Core">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\Rewired_Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Rewired_Windows">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\Rewired_Windows.dll</HintPath>
-    </Reference>
-    <Reference Include="StorageImport">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\StorageImport.dll</HintPath>
+    <Reference Include="OWML.Utils, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OWML.2.0.0\lib\net40\OWML.Utils.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -160,12 +139,6 @@
     <Reference Include="UnityEngine.JSONSerializeModule">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.ParticlesLegacyModule">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.ParticlesLegacyModule.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.ParticleSystemModule">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
     </Reference>
@@ -193,12 +166,6 @@
     <Reference Include="UnityEngine.SpriteShapeModule">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.SpriteShapeModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.StandardEvents">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.StandardEvents.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.StyleSheetsModule">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.StyleSheetsModule.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.TerrainModule">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
     </Reference>
@@ -210,9 +177,6 @@
     </Reference>
     <Reference Include="UnityEngine.TilemapModule">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Timeline">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.UI.dll</HintPath>
@@ -253,23 +217,8 @@
     <Reference Include="UnityEngine.VRModule">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.VRModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.WebModule">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.WebModule.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.WindModule">
       <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEngine.WindModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEtx">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityEtx.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityFbxPrefab">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UnityFbxPrefab.dll</HintPath>
-    </Reference>
-    <Reference Include="UsersImport">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\UsersImport.dll</HintPath>
-    </Reference>
-    <Reference Include="XboxOneCommonImport">
-      <HintPath>$(GameDir)\OuterWilds_Data\Managed\XboxOneCommonImport.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
