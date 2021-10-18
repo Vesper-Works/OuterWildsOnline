@@ -88,7 +88,6 @@ Use any text editor for editing this file (Notepad or whatever). The file `ModTe
   "author": "AUTHOR",
   "name": "MOD_NAME",
   "uniqueName": "MOD_UNIQUE_NAME",
-  "description": "MOD_DESCRIPTION",
   "version": "0.1.0",
   "owmlVersion": "0.7.3"
 }
@@ -111,10 +110,6 @@ The human-readable name of your mod, which will show in the Mod Manager.
 #### uniqueName
 
 The unique ID of your mod. Must match `<ModUniqueName>` in `.csproj.user`. Can be anything really, as long as it isn't already taken by another mod. You can search for your `uniqueName` in the [mod database](https://raw.githubusercontent.com/Raicuparta/ow-mod-db/master/database.json) if you wanna make sure it isn't already in use.
-
-#### description
-
-Short description of what the mod does. Used in [outerwildsmods.com/mods](https://outerwildsmods.com/mods).
 
 #### version
 
@@ -142,18 +137,18 @@ Always increase your mod's version in [manifest.json](#editing-manifestjson) eve
 
 #### Pushing the code to GitHub
 
-If you forked the ow-mod-template repository as per the initial instructions, you now have your own version of this repository in your GitHub account. Push your mod's code to the `master` branch of your repository. The [manifest.json](#editing-manifestjson) file in your `master` branch will be used to retrieve information about your mod (mod name, description, etc).
+If you forked the ow-mod-template repository as per the initial instructions, you now have your own version of this repository in your GitHub account. Your GitHub username will displayed as the mod's author, and the description for the mod will be fetched from the repository description on Github.
 
 #### Creating a file for the release
 
-In the Mod Manager, find your mod, click the three dots menu button, and select "Show in explorer". You should see the directory to where your mod was built. Create a zip that includes all these files. This will be your release.
+In the Mod Manager, find your mod, click the three dots menu button, and select "Show in explorer". You should see the directory to where your mod was built. Create a **zip** that includes all these files. This will be your release. Has to be **zip** specifically.
 
 #### Uploading the release to GitHub
 
 1. Go to the releases page of your repository (GitHub should show you a link to this page on the right side of the repository's page). Press "Draft a new release".
 2. In the "Tag version" field, insert the same mod version that you included in [manifest.json](#editing-manifestjson). It's very important that the release tag version is the same as the `version` field in the `manifest.json` inside the zip, otherwise your mod will always show as outdated in the Mod Manager.
 3. Release title and description are up to you.
-4. Add your zip to the release as a binary by drag & dropping the file to the specified area (or just click "Attach binaries by etc etc" and select your file). Make sure you only upload one zip file, since anything after the first one will be ignored by the mod database / mod manager.
+4. Add your zip to the release as a binary by drag & dropping the file to the release assets area (or just click "Attach binaries by etc etc" and select your file). Make sure you only upload one zip file, since anything after the first one will be ignored by the mod database / mod manager.
 5. Press "Publish release".
 
 #### Adding your mod to the database
