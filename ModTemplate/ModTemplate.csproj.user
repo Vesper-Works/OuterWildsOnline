@@ -2,8 +2,8 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
-    <GameDir>C:\Program Files\Epic Games\OuterWilds</GameDir>
-    <OwmlDir>C:\Users\rai\Repos\owml\src\OWML.Launcher\bin\Release\owml</OwmlDir>
+    <GameDir>D:/Steam/steamapps/common/Outer Wilds</GameDir>
+    <OwmlDir>C:\Users\Vesper\AppData\Roaming\OuterWildsModManager\OWML</OwmlDir>
     <ModUniqueName>Raicuparta.ModTemplate</ModUniqueName>
   </PropertyGroup>
 </Project>
