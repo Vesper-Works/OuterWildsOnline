@@ -1,0 +1,194 @@
+<log-viewer-module class="module" id="log-viewer-module">
+	<style>
+		.progress-bar {
+			width: 100%;
+		}
+	</style>
+
+	<div id="lgv-tabNavigator" class="p-3 flex-grow-1">
+		<ul class="nav nav-tabs" id="tabs">
+			<li class="nav-item">
+				<a class="nav-link active" id="lgv-runtimeLog-tab" data-toggle="tab" href="#lgv-runtimeLog" role="tab" aria-controls="lgv-runtimeLog" aria-selected="true">Runtime Log</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="lgv-bootLog-tab" data-toggle="tab" href="#lgv-bootLog" role="tab" aria-controls="lgv-bootLog" aria-selected="false">Boot Log</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="lgv-logsDownload-tab" data-toggle="tab" href="#lgv-logsDownload" role="tab" aria-controls="lgv-logsDownload" aria-selected="false">Logs Download</a>
+			</li>
+		</ul>
+		<div class="tab-content" id="tabPanels">
+			<div class="tab-pane show active" id="lgv-runtimeLog" role="tabpanel" aria-labelledby="lgv-runtimeLog-tab">
+				<div>
+					<div class="d-flex flex-wrap mb-2">
+						<div class="flex-grow-1 mb-2 mr-sm-1">
+							<select id="lgv-logLinesDD" style="max-width: 165px;">
+								<option value="10">10</option>
+								<option value="30" selected>30</option>
+								<option value="50">50</option>
+								<option value="100">100</option>
+								<option value="150">150</option>
+								<option value="200">200</option>
+								<option value="250">250</option>
+								<option value="300">300</option>
+							</select>
+							<button id="lgv-loadBt" type="button" class="k-button k-primary" title="Load"><i class="fas fa-upload mr-1"></i>Load</button>
+						</div>
+						<div class="mb-2">
+							<small id="lgv-runtimeLogEntriesLb" class="text-muted"></small>
+							<button id="lgv-filterBt" type="button" class="k-button k-secondary" title="Filter" data-toggle="collapse" data-target="#lgv-collapseFilter" aria-expanded="false" aria-controls="lgv-collapseFilter" disabled><i class="fas fa-filter mr-1"></i>FIlter</button>
+							<button id="lgv-exportRuntimeLogBt" type="button" class="k-button k-primary" title="Export" disabled><i class="fas fa-file-download mr-1"></i>Export</button>
+						</div>
+					</div>
+				</div>
+				<view-stack id="lgv-runtime-viewstack">
+					<div id="lgv-runtimeLogView">
+						<div class="collapse" id="lgv-collapseFilter">
+							<div class="card card-body p-3 mb-3">
+								<span class="text-muted pb-2">Filter by:</span>
+								<div class="row no-gutters">
+									<div class="col-md-auto mr-3 mb-2 mb-md-0">
+										<label for="lgv-levelDD" class="mr-1">Level</label>
+										<select id="lgv-levelDD" class=""></select>
+									</div>
+									<div class="col-md-auto mr-3 mb-2 mb-md-0">
+										<label for="lgv-classDD" class="mr-1">Class</label>
+										<select id="lgv-classDD" class=""></select>
+									</div>
+									<div class="col-md-auto mr-3 mb-2 mb-md-0">
+										<label for="lgv-messageIn" class="mr-1">Message</label>
+										<input id="lgv-messageIn" type="text" class="k-textbox" />
+									</div>
+									<div class="col-md-auto">
+										<button id="lgv-clearFilterBt" type="button" class="k-button k-primary" title="Clear filter"><i class="fas fa-times mr-1"></i>Clear</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="lgv-runtimeLogGrid" class="console-rows"></div>
+					</div>
+					<div id="lgv-runtimeLogLoadingView" class="my-5 position-relative">
+						<div class="float-centered-loading">
+							Requesting data...
+							<div class="progress-bar"></div>
+						</div>
+					</div>
+					<div id="lgv-runtimeLogErrorView" class="my-5 text-center">
+						Unable to retrieve runtime log.
+					</div>
+					<div id="lgv-invConvPattView" class="pt-3">
+						<p>Unable to parse runtime log due to altered log structure.</p>
+						<p>This module can parse the runtime log if the default structure in the <em>config/log4j.properties</em> file is used only;
+							if you need to modify the log structure, please add a new appender to the log4j configuration instead of changing the default one.</p>
+						<p>The log4j parameter defining the log structure is:<br><strong id="lgv-convPattName"></strong></p>
+						<p class="mb-0 pb-0">The expected default value is:<br><strong id="lgv-convPattVal"></strong></p>
+					</div>
+				</view-stack>
+			</div>
+
+			<div class="tab-pane" id="lgv-bootLog" role="tabpanel" aria-labelledby="lgv-bootLog-tab">
+				<view-stack id="lgv-boot-viewstack">
+					<div id="lgv-bootLogLoadingView" class="my-5 position-relative">
+						<div class="float-centered-loading">
+							Requesting data...
+							<div class="progress-bar"></div>
+						</div>
+					</div>
+					<div id="lgv-bootLogErrorView" class="my-5 text-center">
+						Unable to retrieve boot log.
+					</div>
+					<div id="lgv-bootLogView">
+						<div class="d-flex flex-wrap">
+							<div class="flex-grow-1 mr-3">
+								<button id="lgv-exportBootLogBt" type="button" class="k-button k-primary" title="Export"><i class="fas fa-file-download mr-1"></i>Export</button>
+							</div>
+							<div>
+								<button id="lgv-switchBootLogColorBt" type="button" class="k-button k-secondary" title="Switch color"><i class="fas fa-adjust mr-1"></i>Switch color</button>
+							</div>
+						</div>
+						<hr class="flex-fix">
+						<pre id="lgv-bootLogText" class="mb-0 console"></pre>
+					</div>
+				</view-stack>
+			</div>
+
+			<div class="tab-pane" id="lgv-logsDownload" role="tabpanel" aria-labelledby="lgv-logsDownload-tab">
+				<view-stack id="lgv-download-viewstack">
+					<div id="lgv-downloadLoadingView" class="my-5 position-relative">
+						<div class="float-centered-loading">
+							Initializing...
+							<div class="progress-bar"></div>
+						</div>
+					</div>
+					<div id="lgv-downloadErrorView" class="my-5 text-center">
+						Unable to retrieve log backups data.
+					</div>
+					<div id="lgv-downloadView">
+						<div class="row">
+							<div class="col-md-4 mb-3">
+								<div class="card bg-light">
+									<div id="lgv-bootLogBackupCard" class="card-body">
+										<h5>Boot Log Backup</h5>
+										<div class="mb-3 backup-details">
+											<div class="card-text"><i class="fas fa-calendar-alt"></i> <span class="backup-date"></span></div>
+											<div class="card-text"><i class="fas fa-clock"></i> <span class="backup-time"></span></div>
+											<div class="card-text"><i class="fas fa-database"></i> <span class="backup-size"></span></div>
+											<a href="#" target="_blank" class="card-link d-block mt-2 backup-link">Download zip</a>
+										</div>
+										<button type="button" class="k-button k-primary backup-button" title="Generate"><i class="fas fa-file-archive mr-1"></i>Generate new</button>
+										<div class="mt-3 progress-bar"></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4 mb-3">
+								<div class="card bg-light">
+									<div id="lgv-runtimeLogBackupCard" class="card-body">
+										<h5>Runtime Log Backup</h5>
+										<div class="mb-3 backup-details">
+											<div class="card-text"><i class="fas fa-calendar-alt"></i> <span class="backup-date"></span></div>
+											<div class="card-text"><i class="fas fa-clock"></i> <span class="backup-time"></span></div>
+											<div class="card-text"><i class="fas fa-database"></i> <span class="backup-size"></span></div>
+											<a href="#" target="_blank" class="card-link d-block mt-2 backup-link">Download zip</a>
+										</div>
+										<button type="button" class="k-button k-primary backup-button" title="Generate"><i class="fas fa-file-archive mr-1"></i>Generate new</button>
+										<div class="mt-3 progress-bar"></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-md-4 mb-3">
+								<div class="card bg-light">
+									<div id="lgv-fullLogBackupCard" class="card-body">
+										<h5>Full Logs Backup</h5>
+										<div class="mb-3 backup-details">
+											<div class="card-text"><i class="fas fa-calendar-alt"></i> <span class="backup-date"></span></div>
+											<div class="card-text"><i class="fas fa-clock"></i> <span class="backup-time"></span></div>
+											<div class="card-text"><i class="fas fa-database"></i> <span class="backup-size"></span></div>
+											<a href="#" target="_blank" class="card-link d-block mt-2 backup-link">Download zip</a>
+										</div>
+										<button type="button" class="k-button k-primary backup-button" title="Generate"><i class="fas fa-file-archive mr-1"></i>Generate new</button>
+										<div class="mt-3 progress-bar"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<h5 class="mt-3">Backups Archive</h5>
+						<div id="lgv-downloadGrid" class="limited-height-2x"></div>
+						<div>
+							<div class="d-flex flex-wrap mt-3">
+								<div class="flex-grow-1 mb-2 mr-sm-3">
+									<a href="#" target="_blank" id="lgv-downloadBt" class="k-button k-primary" title="Download" disabled><i class="fas fa-file-download mr-1"></i>Download</a>
+									<button id="lgv-deleteBt" type="button" class="k-button k-primary" title="Delete" disabled><i class="fas fa-trash-alt mr-1"></i>Delete</button>
+								</div>
+								<div class="mb-2 d-flex align-items-center">
+									<span id="lgv-logSizeLb" class="text-muted"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</view-stack>
+			</div>
+		</div>
+	</div>
+</log-viewer-module>

@@ -1,0 +1,368 @@
+<dashboard-module class="module" id="dashboard-module">
+	<div id="dsh-tabNavigator" class="p-3">
+		<ul class="nav nav-tabs" id="tabs">
+			<li class="nav-item">
+				<a class="nav-link active" id="dsh-server-tab" data-toggle="tab" href="#dsh-server" role="tab" aria-controls="dsh-server" aria-selected="true">Global Server Status</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="dsh-queues-tab" data-toggle="tab" href="#dsh-queues" role="tab" aria-controls="dsh-queues" aria-selected="false">Message Queues Status</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="dsh-webserver-tab" data-toggle="tab" href="#dsh-webserver" role="tab" aria-controls="dsh-webserver" aria-selected="false">Web Server Status</a>
+			</li>
+			<li class="nav-item ml-auto">
+				<div class=" ml-3 mr-1 mt-1">
+					<select id="dsh-intervalDD" class="dropdown-sm dropdown-secondary">
+				        <option value="1">1 sec</option>
+				        <option value="2" selected>2 sec</option>
+						<option value="5">5 sec</option>
+						<option value="10">10 sec</option>
+						<option value="30">30 sec</option>
+				    </select>
+					<span class="mx-1">
+						<button id="dsh-pauseBt" type="button" class="btn btn-secondary btn-sm" title="Pause realtime charts update"><i class="fas fa-pause"></i></button>
+						<button id="dsh-playBt" type="button" class="btn btn-secondary btn-sm hidden" title="Reactivate realtime charts update"><i class="fas fa-play"></i></button>
+					</span>
+					<button id="dsh-resetBt" type="button" class="btn btn-secondary btn-sm" title="Reset realtime charts"><i class="fas fa-redo-alt"></i></button>
+				</div>
+			</li>
+		</ul>
+		<div class="tab-content" id="tabPanels">
+			<div class="tab-pane show active" id="dsh-server" role="tabpanel" aria-labelledby="dsh-server-tab">
+				<div class="row no-gutters">
+					<div class="col-lg-8">
+						<div class="row no-gutters">
+							<div class="col-sm-7 col-md-5 col-lg-4 col-xl-3">
+								<div class="dashboard-uptime-container dashboard-box p-3">
+									<span class="dashboard-label">Server Uptime</span>
+									<div class="d-flex justify-content-around font-weight-bold dashboard-uptime mt-3">
+										<div><div id="dsh-uptimeDays">---</div><div class="uptime-label">days</div></div>
+										<div>:<div class="uptime-label">&nbsp;</div></div>
+										<div><div id="dsh-uptimeHours">--</div><div class="uptime-label">hours</div></div>
+										<div>:<div class="uptime-label">&nbsp;</div></div>
+										<div><div id="dsh-uptimeMinutes">--</div><div class="uptime-label">minutes</div></div>
+										<div class="d-md-none">:<div class="uptime-label">&nbsp;</div></div>
+										<div class="d-md-none"><div id="dsh-uptimeSeconds">--</div><div class="uptime-label">seconds</div></div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md">
+								<div class="p-3">
+									<div class="clearfix pb-2">
+										<span class="dashboard-label">CPU Load</span>
+										<span class="dashboard-legend float-right">
+											<span id="dsh-systemLoadLegend" class="ml-2"><i id="dsh-systemLoadColor" class="fas fa-square"></i> System <span id="dsh-systemLoadLabel">--</span>%</span>
+											<span class="ml-2"><i id="dsh-processLoadColor" class="fas fa-square"></i> Process <span id="dsh-processLoadLabel">--</span>%</span>
+										</span>
+									</div>
+									<cpu-usage-chart id="dsh-cpuUsageChart"></cpu-usage-chart>
+								</div>
+							</div>
+						</div>
+						<div class="row no-gutters">
+							<div class="col-12">
+								<div class="p-3">
+									<div class="clearfix pb-2">
+										<span class="dashboard-label">Memory Usage</span>
+										<span class="dashboard-legend float-right text-right">
+											<div class="d-inline-block">
+												<span class="ml-2">Max <span id="dsh-maxMemoryLabel">-- MB</span></span>
+												<span class="ml-2">Free <span id="dsh-freeMemoryLabel">-- MB</span></span>
+											</div>
+											<div class="d-inline-block">
+												<span class="ml-2"><i id="dsh-allocMemColor" class="fas fa-square"></i> Allocated</span>
+												<span class="ml-2"><i id="dsh-usedMemColor" class="fas fa-square"></i> Used</span>
+											</div>
+										</span>
+									</div>
+									<memory-chart id="dsh-memoryChart"></memory-chart>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4 dashboard-box mb-3">
+						<div class="row no-gutters">
+							<div class="col-12 col-md-6 col-lg-12">
+								<div class="p-3">
+									<div class="pb-2">
+										<span class="dashboard-label">Threads Count (<span id="dsh-threadsCountLabel"></span>)</span>
+									</div>
+									<thread-count-chart id="dsh-threadCountChart"></thread-count-chart>
+								</div>
+							</div>
+							<div class="col-12 col-md-6 col-lg-12">
+								<div class="p-3">
+									<div class="d-flex align-items-center pb-2">
+										<span class="dashboard-label d-block flex-grow-1">Active Threads</span>
+										<button id="dsh-dumpThreadsBt" type="button" class="btn btn-secondary btn-sm" title="Generate thread dump"><i class="fas fa-eye mr-1"></i>Dump</button>
+									</div>
+									<div id="dsh-threadsGrid"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row no-gutters dashboard-box">
+					<div class="col-md-7 col-lg-8">
+						<div class="p-3">
+							<div class="clearfix pb-2">
+								<span class="dashboard-label">Network Traffic</span>
+								<span>
+									<ul id="dsh-networkPills" class="nav nav-pills d-inline-flex ml-3" role="tablist">
+										<li class="nav-item">
+											<a class="nav-link active pill-sm" id="dsh-realtimePill" data-toggle="pill" href="#dsh-realtimeChart" role="tab" aria-controls="dsh-realtimeChart" aria-selected="true">Realtime</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link pill-sm" id="dsh-24hPill" data-toggle="pill" href="#dsh-24hChart" role="tab" aria-controls="dsh-24hChart" aria-selected="true">Last 24h</a>
+										</li>
+									</ul>
+								</span>
+								<span class="dashboard-legend float-right">
+									<span class="ml-2"><i id="dsh-incomingNetColor" class="fas fa-square"></i> Incoming</span>
+									<span class="ml-2"><i id="dsh-outgoingNetColor" class="fas fa-square"></i> Outgoing</span>
+								</span>
+							</div>
+							<div class="tab-content no-borders" id="pills-tabContent">
+								<div class="tab-pane show active transparent" id="dsh-realtimeChart" role="tabpanel" aria-labelledby="dsh-realtimePill">
+									<network-realtime-chart id="dsh-networkRTChart"></network-realtime-chart>
+								</div>
+								<div class="tab-pane transparent" id="dsh-24hChart" role="tabpanel" aria-labelledby="dsh-24hPill">
+									<network-24h-chart id="dsh-network24hChart"></network-24h-chart>
+									<div class="d-flex align-items-center">
+										<span class="mr-3">Time range</span>
+										<div id="dsh-timeSlider" class="flex-grow-1">
+											<input value="-2"/>
+											<input value="0"/>
+										</div>
+									</div>
+									<div class="d-flex">
+										<span class="mr-3 invisible">Time range</span>
+										<div class="text-muted flex-grow-1">
+											<small class="float-left">-24h</small>
+											<small class="float-right">Now</small>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-5 col-lg-4">
+						<div class="p-3">
+							<div class="pb-2">
+								<span class="dashboard-label">Traffic Details</span>
+							</div>
+							<table class="table table-sm traffic-details mb-0">
+								<tbody>
+									<tr>
+										<th scope="row">
+											Sessions
+										</th>
+										<td>
+											<span id="dsh-detSessionsCurrent" class="table-item">Current: --</span>
+											<span id="dsh-detSessionsMax" class="table-item">Max: --</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											Sessions <small class="text-muted">By type</small>
+										</th>
+										<td>
+											<span id="dsh-detSessionsSocket" class="table-item">Socket: --</span>
+											<span id="dsh-detSessionsHttp" class="table-item">HTTP: --</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											Users
+										</th>
+										<td>
+											<span id="dsh-detUsersCurrent" class="table-item">Current: --</span>
+											<span id="dsh-detUsersMax" class="table-item">Max: --</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											Users <small class="text-muted">By type</small>
+										</th>
+										<td>
+											<span id="dsh-detUsersSocket" class="table-item">Socket: --</span>
+											<span id="dsh-detUsersHttp" class="table-item">HTTP: --</span>
+											<span id="dsh-detUsersNpc" class="table-item">NPC: --</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											Rooms
+										</th>
+										<td>
+											<span id="dsh-detRooms" class="table-item">--</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											Rooms <small class="text-muted">By type</small>
+										</th>
+										<td>
+											<span id="dsh-detRoomsRegular" class="table-item">Regular: --</span>
+											<span id="dsh-detRoomsGame" class="table-item">Game: --</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											Data transfer
+										</th>
+										<td>
+											<span id="dsh-detDataTransferOut" class="table-item">Out: --</span>
+											<span id="dsh-detDataTransferIn" class="table-item">In: --</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											Transfer rate
+										</th>
+										<td>
+											<span id="dsh-detTransferRateOut" class="table-item">Out: --</span>
+											<span id="dsh-detTransferRateIn" class="table-item">In: --</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											Avg. transfer rate
+										</th>
+										<td>
+											<span id="dsh-detAvgTransferRateOut" class="table-item">Out: --</span>
+											<span id="dsh-detAvgTransferRateIn" class="table-item">In: --</span>
+										</td>
+									</tr>
+									<tr>
+										<th scope="row">
+											Dropped packets
+										</th>
+										<td>
+											<span id="dsh-detDroppedTcpPacketsOut" class="table-item">Out TCP: --</span><br>
+											<span id="dsh-detDroppedUdpPacketsOut" class="table-item">Out UDP: --</span><br>
+											<span id="dsh-detDroppedPacketsIn" class="table-item">In: --</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane" id="dsh-queues" role="tabpanel" aria-labelledby="dsh-queues-tab">
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="p-3 dashboard-box">
+							<div class="clearfix pb-2">
+								<span class="dashboard-label">System Workload <i class="fas fa-question-circle text-muted help" title="Overall system load based on the queues status"></i></span>
+							</div>
+							<system-workload-chart id="dsh-systemWorkloadChart"></system-workload-chart>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="p-3">
+							<div class="clearfix pb-2">
+								<span class="dashboard-label">Outgoing Messages Queues <i class="fas fa-question-circle text-muted help" title="Size of the system's outgoing TCP and UDP messages queues<br><br>NOTE: messages sent over websocket channels are not included"></i></span>
+								<span>
+									<ul id="dsh-msgQueuePills" class="nav nav-pills d-inline-flex ml-3" role="tablist">
+										<li class="nav-item">
+											<a class="nav-link active pill-sm" id="dsh-tcpPill" data-toggle="pill" href="#dsh-tcpQueueChart" role="tab" aria-controls="dsh-tcpQueueChart" aria-selected="true">TCP</a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link pill-sm" id="dsh-udpPill" data-toggle="pill" href="#dsh-udpQueueChart" role="tab" aria-controls="dsh-udpQueueChart" aria-selected="true">UDP</a>
+										</li>
+									</ul>
+								</span>
+								<span class="dashboard-legend float-right">
+									<span id="dsh-outgoingMessagesQueueThreads" class="ml-2">Threads: --</span>
+									<span id="dsh-outgoingMessagesQueueLoad" class="ml-2">Avg. messages: --</span>
+								</span>
+							</div>
+							<div class="tab-content no-borders" id="pills-tabContent">
+								<div class="tab-pane show active transparent" id="dsh-tcpQueueChart" role="tabpanel" aria-labelledby="dsh-tcpPill">
+									<system-queue-chart id="dsh-outgoingTcpMessagesQueueChart"></system-queue-chart>
+								</div>
+								<div class="tab-pane transparent" id="dsh-udpQueueChart" role="tabpanel" aria-labelledby="dsh-udpPill">
+									<system-queue-chart id="dsh-outgoingUdpMessagesQueueChart"></system-queue-chart>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6">
+						<div class="p-3">
+							<div class="clearfix pb-2">
+								<span class="dashboard-label">System Queue <i class="fas fa-question-circle text-muted help" title="Size of the System Controller's requests queue"></i></span>
+								<span class="dashboard-legend float-right">
+									<span id="dsh-systemQueueThreads" class="ml-2">Threads: --</span>
+									<span id="dsh-systemQueueLoad" class="ml-2">Avg. messages: --</span>
+								</span>
+							</div>
+							<system-queue-chart id="dsh-systemQueueChart"></system-queue-chart>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="p-3">
+							<div class="clearfix pb-2">
+								<span class="dashboard-label">Extension Queue <i class="fas fa-question-circle text-muted help" title="Size of the Extension Controller's requests queue"></i></span>
+								<span class="dashboard-legend float-right">
+									<span id="dsh-extensionQueueThreads" class="ml-2">Threads: --</span>
+									<span id="dsh-extensionQueueLoad" class="ml-2">Avg. messages: --</span>
+								</span>
+							</div>
+							<system-queue-chart id="dsh-extensionQueueChart"></system-queue-chart>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12 text-center">
+						<strong>Queue load:</strong>
+						<div class="d-inline-block">
+							<span class="mx-1 d-inline-block"><i class="fas fa-square" style="color: #00cc00;"></i> Optimal</span>
+							<span class="mx-1 d-inline-block"><i class="fas fa-square" style="color: #ffe106;"></i> Busy</span>
+							<span class="mx-1 d-inline-block"><i class="fas fa-square" style="color: #ed1601;"></i> Overloaded</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane" id="dsh-webserver" role="tabpanel" aria-labelledby="dsh-webserver-tab">
+				<p>SmartFoxServer's internal web server is <a href="http://tomcat.apache.org/" target="_blank">Tomcat</a>. Click on the button below to access its advanced status console and application manager.</p>
+				<div class="d-flex align-items-center">
+					<a id="dsh-toWsManagerBt" class="k-button k-primary d-inline-block" href="#" target="_blank"><i class="fas fa-external-link-alt mr-1"></i> Open Tomcat Manager</a>
+					<div class="custom-control custom-checkbox d-inline ml-2">
+					  <input class="custom-control-input" type="checkbox" id="dsh-useHttpsCheck">
+					  <label class="custom-control-label" for="dsh-useHttpsCheck">Use HTTPS</label>
+					</div>
+				</div>
+				<p id="dsh-wsManagerAlert" class="mt-3 text-muted"></p>
+			</div>
+		</div>
+	</div>
+
+	<!-- Thread Dump Modal -->
+	<div class="modal" id="dsh-threadDumpModal" tabindex="-1" role="dialog" aria-labelledby="dsh-threadDumpModalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title text-primary" id="dsh-threadDumpModalTitle">Thread Dump</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="text-center">
+						<button id="dsh-copyThreadDumpBt" type="button" class="k-button k-primary"><i class="fas fa-copy mr-1"></i>Copy to clipboard</button>
+					</div>
+					<hr/>
+					<div id="dsh-threadDumpResult" class="console overflow-auto"></div>
+				</div>
+				<div class="modal-footer flex-column">
+					<button type="button" class="k-button k-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</dashboard-module>

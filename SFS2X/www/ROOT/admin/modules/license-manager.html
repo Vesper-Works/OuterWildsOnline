@@ -1,0 +1,117 @@
+<license-manager-module class="module" id="license-manager-module">
+	<div class="container-fluid pt-3">
+		<div class="row">
+			<div class="col-md-6 mb-3">
+				<div class="dark-box p-3 h-100">
+					<h6>Active License</h6>
+					<hr/>
+					<p class="mb-2">Type: <strong id="lcm-currType"></strong></p>
+					<p class="mb-2">Max CCU: <strong id="lcm-currMaxUsers"></strong></p>
+					<p class="mb-2" style="display: none;">Private IPs only: <strong id="lcm-currPrivate"></strong></p>
+					<p class="mb-2" style="display: none;">Expiration: <strong id="lcm-currExpire"></strong></p>
+					<p class="mb-2" style="display: none;">Active options: <strong id="lcm-currOptions"></strong></p>
+					<div class="text-right">
+						<button id="lcm-refreshBt" type="button" class="k-button k-primary"><i class="fas fa-redo-alt mr-1"></i>Refresh active license</button>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 mb-3">
+				<div class="dark-box p-3 h-100">
+					<h6>License Configuration</h6>
+					<hr/>
+					<div class="form-group row">
+						<div class="col-sm-4 col-md-5 col-form-label form-label-container">
+							<label for="lcm-codeIn" class="form-label">License code <i class="fas fa-question-circle text-muted help" title="The code of a license, which can be found in the License Server console; submit empty to revert the SmartFoxServer instance to Community Edition"></i></label>
+						</div>
+						<div class="inner-widget align-self-center col-sm-8 col-md-7">
+							<input type="text" id="lcm-codeIn" name="licenseCode" class="form-control k-textbox" autocomplete="off" spellcheck="false" />
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-sm-4 col-md-5 col-form-label form-label-container">
+							<label for="lcm-emailIn" class="form-label">Notification address/es <i class="fas fa-question-circle text-muted help" title="One or more comma-separated email addresses to which license-related notifications or warning messages should be delivered (an email service must be configured in the Server Configurator module); invalid addresses are removed automatically"></i></label>
+						</div>
+						<div class="inner-widget align-self-center col-sm-8 col-md-7">
+							<input type="text" id="lcm-emailIn" name="notificationAddresses" class="form-control k-textbox" autocomplete="off" spellcheck="false" />
+						</div>
+					</div>
+					<div class="form-group row">
+						<div class="col-sm-4 col-md-5 col-form-label form-label-container">
+							<label for="lcm-alertCb" class="form-label">Max CCU alert <i class="fas fa-question-circle text-muted help" title="If enabled, an alert email is sent at the provided address/es in case the number of users connected to the SmartFoxServer instance approaches the maximum CCU number set for the current license (doesn't apply to Community Edition)"></i></label>
+						</div>
+						<div class="inner-widget align-self-center col-sm-8 col-md-7">
+							<input type="checkbox" id="lcm-alertCb" name="ccuAlert" data-role="switch" />
+						</div>
+					</div>
+					<div class="form-group row mb-0">
+						<div class="col text-right">
+							<button id="lcm-submitBt" type="button" class="k-button k-primary"><i class="fas fa-check-circle mr-1"></i>Submit</button>
+							<button id="lcm-testBt" type="button" class="k-button k-primary ml-2"><i class="fas fa-plug mr-1"></i>Test license</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="mt-0 mb-3 mx-3">
+		<view-stack id="lcm-resultVS">
+			<div id="lcm-panelEmpty"></div>
+			<div id="lcm-panelSaved">
+				<div class="row">
+					<div class="col-sm-auto mb-3 mt-sm-4 ml-sm-3 text-center">
+						<i class="fas fa-thumbs-up fa-5x"></i>
+					</div>
+					<div class="col-sm">
+						<h6 class="mb-3 font-weight-bold">License details saved</h6>
+						<p>The submitted license details have been saved successfully in the SmartFoxServer configuration. Please restart the server instance for them to take effect.</p>
+						<p>You can use the <i class="fas fa-plug"></i> <em>Test license</em> button at any time to check the connection between the SmartFoxServer instance and the License Server and to validate the entered license code.</p>
+					</div>
+				</div>
+			</div>
+			<div id="lcm-panelTestKO">
+				<div class="row">
+					<div class="col-sm-auto mb-3 mt-sm-4 ml-sm-3 text-center">
+						<i class="fas fa-times-circle fa-5x text-danger"></i>
+					</div>
+					<div class="col-sm">
+						<h6 class="mb-3 font-weight-bold">Unable to contact the License Server</h6>
+						<p>The SmartFoxServer instance is unable to contact the License Server to test the entered license code.</p>
+						<p>Please check the <a href="http://docs2x.smartfoxserver.com/Overview/sfs2x-license-system#troubleshooting" target="_blank">troubleshooting section of the License Server documentation</a> for additional details and recommendations.</p>
+					</div>
+				</div>
+			</div>
+			<div id="lcm-panelTestOK-invalid">
+				<div class="row">
+					<div class="col-sm-auto mb-3 mt-sm-4 ml-sm-3 text-center">
+						<i class="fas fa-exclamation-circle fa-5x text-warning"></i>
+					</div>
+					<div class="col-sm">
+						<h6 class="mb-3 font-weight-bold">Invalid license code</h6>
+						<p>SmartFoxServer could connect to the License Server, but the license code seems to be invalid.</p>
+						<p>Please make sure the license is not disabled, then copy&amp;paste the code from the License Server web interface.</p>
+					</div>
+				</div>
+			</div>
+			<div id="lcm-panelTestOK-valid">
+				<div class="row">
+					<div class="col-sm-auto mb-3 mt-sm-4 ml-sm-3 text-center">
+						<i class="fas fa-check-circle fa-5x text-success"></i>
+					</div>
+					<div class="col-sm">
+						<h6 class="mb-3 font-weight-bold">Connection to License Server established</h6>
+						<p>SmartFoxServer could connect to the License Server successfully and the entered license code is valid.</p>
+						<h6 class="mb-3 font-weight-bold">License details</h6>
+						<div>Max concurrent users: <strong id="lcm-maxUsers"></strong></div>
+						<div>Private IP addresses only: <strong id="lcm-privateIp"></strong></div>
+						<div>Expiration date: <strong id="lcm-expire"></strong> <span id="lcm-expireAlert" class="text-danger"><i class="fas fa-exclamation-triangle"></i> Expired</span></div>
+						<div>Active options: <strong id="lcm-options"></strong></div>
+						<div id="lcm-initNote">
+							<hr>
+							<p><strong>Important:</strong> this license has already been assigned to a SmartFoxServer instance. If you are moving the license to a new server, make sure to reset the license allocation in the License Server console, or SmartFoxServer will not be able to retrieve it on startup.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</view-stack>
+	</div>
+</license-manager-module>

@@ -1,0 +1,166 @@
+<ban-manager-module class="module" id="ban-manager-module">
+	<div id="bnm-tabNavigator" class="p-3">
+		<ul class="nav nav-tabs" id="tabs">
+			<li class="nav-item">
+				<a class="nav-link active" id="bnm-usernames-tab" data-toggle="tab" href="#bnm-usernames" role="tab" aria-controls="bnm-usernames" aria-selected="true">Banned Usernames</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="bnm-ipAddresses-tab" data-toggle="tab" href="#bnm-ipAddresses" role="tab" aria-controls="bnm-ipAddresses" aria-selected="false">Banned IP Addresses</a>
+			</li>
+		</ul>
+		<div class="tab-content" id="tabPanels">
+			<div class="tab-pane show active" id="bnm-usernames" role="tabpanel" aria-labelledby="bnm-usernames-tab">
+				<div class="d-flex flex-wrap mb-2">
+					<div class="flex-grow-1 mr-3 mb-2">
+						<label for="bnm-zonesDD" class="mr-1">Zone</label>
+						<select id="bnm-zonesDD" class=""></select>
+					</div>
+					<div class="mb-2">
+						<button id="bnm-showBanModalBt" type="button" class="k-button k-primary" title="Ban a user" disabled><i class="fas fa-ban mr-1"></i>Ban a user</button>
+					</div>
+				</div>
+				<div id="bnm-namesGrid"></div>
+				<ul id="bnm-namesGridContextMenu">
+					<li id="bnm-namesGridCopyText">Copy to clipboard</li>
+				</ul>
+				<div id="bnm-namesButtons" class="d-flex flex-wrap mt-2" disabled>
+					<div class="flex-grow-1 mr-3 mt-2">
+						<button id="bnm-refreshNamesBt" type="button" class="k-button k-primary"><i class="fas fa-sync-alt mr-1"></i>Refresh</button>
+					</div>
+					<div class="">
+						<button id="bnm-removeNameBt" type="button" class="k-button k-secondary mt-2" disabled><i class="fas fa-minus-circle mr-1"></i>Remove selected</button>
+						<button id="bnm-removeAllNamesBt" type="button" class="k-button k-secondary mt-2"><i class="fas fa-times-circle mr-1"></i>Remove all</button>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane" id="bnm-ipAddresses" role="tabpanel" aria-labelledby="bnm-ipAddresses-tab">
+				<div id="bnm-ipGrid"></div>
+				<ul id="bnm-ipGridContextMenu">
+					<li id="bnm-ipGridCopyText">Copy to clipboard</li>
+				</ul>
+				<div class="d-flex flex-wrap mt-2">
+					<div class="flex-grow-1 mr-3 mt-2">
+						<button id="bnm-refreshIpBt" type="button" class="k-button k-primary"><i class="fas fa-sync-alt mr-1"></i>Refresh</button>
+					</div>
+					<div class="">
+						<button id="bnm-removeIpBt" type="button" class="k-button k-secondary mt-2" disabled><i class="fas fa-minus-circle mr-1"></i>Remove selected</button>
+						<button id="bnm-removeAllIpBt" type="button" class="k-button k-secondary mt-2" disabled><i class="fas fa-times-circle mr-1"></i>Remove all</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="bnm-banModal" tabindex="-1" role="dialog" aria-labelledby="bnm-banModalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title text-primary" id="bnm-banModalTitle">Ban user</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body in-flow-invalid-msg">
+					<fieldset id="bnm-banForm">
+						<div class="form-group">
+							<div class="col-form-label form-label-container">
+								<label for="bnm-modalZoneLb" class="form-label">Zone</label>
+							</div>
+							<div class="inner-widget">
+								<config-label id="bnm-modalZoneLb" class="config-label">---</config-label>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-form-label form-label-container">
+								<label for="bnm-modalNameIn" class="form-label">Username</label>
+							</div>
+							<div class="inner-widget">
+								<input type="text" id="bnm-modalNameIn" class="form-control k-textbox" name="username" autocomplete="off" required data-required-msg="Required" />
+								<span class="k-invalid-msg position-static" data-for="bnm-modalNameIn"></span>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-form-label form-label-container">
+								<label for="bnm-modalReasonIn" class="form-label">Reason of ban</label>
+							</div>
+							<div class="inner-widget">
+								<input type="text" id="bnm-modalReasonIn" class="form-control k-textbox" name="reason" autocomplete="off" />
+							</div>
+						</div>
+						<div class="form-row">
+							<div class="form-group col-12 col-sm-8">
+								<div class="col-form-label form-label-container">
+									<label for="bnm-modalMessageIn" class="form-label">Message to user <span class="text-muted">(if online)</span></label>
+								</div>
+								<div class="inner-widget">
+									<input type="text" id="bnm-modalMessageIn" class="form-control k-textbox" name="message" autocomplete="off" />
+								</div>
+							</div>
+							<div class="form-group col-6 col-sm-4">
+								<div class="col-form-label form-label-container">
+									<label for="bnm-modalDelayNS" class="form-label">Delay <span class="text-muted">(seconds)</span></label>
+								</div>
+								<div class="inner-widget">
+									<input id="bnm-modalDelayNS" class="form-control" name="delay" value="5"/>
+									<span class="k-invalid-msg" data-for="delay"></span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-form-label form-label-container">
+								<label class="form-label">Ban expiration</label>
+							</div>
+							<div class="form-row align-items-center mb-2">
+								<div class="col-auto">
+									<div class="custom-control custom-radio">
+										<input type="radio" name="expiration" id="bnm-expirationRB0" class="custom-control-input" checked value="after">
+										<label class="custom-control-label" for="bnm-expirationRB0">After</label>
+									</div>
+								</div>
+								<div class="col-auto">
+									<div class="d-inline mr-2">
+										<input id="bnm-modalExpHoursNS" class="form-control" name="expirationHours" value="1" style="max-width: 80px;"/>
+										hours
+									</div>
+									<div class="d-inline text-nowrap">
+										<input id="bnm-modalExpMinsNS" class="form-control" name="expirationMins" value="0" style="max-width: 80px;"/>
+										minutes
+									</div>
+								</div>
+							</div>
+							<div class="form-row align-items-center mb-2">
+								<div class="col-auto">
+									<div class="custom-control custom-radio">
+										<input type="radio" name="expiration" id="bnm-expirationRB1" class="custom-control-input" value="on">
+										<label class="custom-control-label" for="bnm-expirationRB1">On</label>
+									</div>
+								</div>
+								<div class="col-auto">
+									<input id="bnm-expirationDP"/>
+								</div>
+							</div>
+							<div class="form-row align-items-center">
+								<div class="col-auto">
+									<div class="custom-control custom-radio">
+										<input type="radio" name="expiration" id="bnm-expirationRB2" class="custom-control-input" value="never">
+										<label class="custom-control-label" for="bnm-expirationRB2">Never</label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+				<div class="modal-footer flex-column">
+					<div class="d-flex w-100">
+						<div class="flex-grow-1 text-left">
+							<button id="bnm-banBt" type="button" class="k-button k-primary"><i class="fas fa-ban mr-1"></i>Ban</button>
+						</div>
+						<div class="flex-grow-1 text-right">
+							<button type="button" class="k-button k-secondary" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</ban-manager-module>

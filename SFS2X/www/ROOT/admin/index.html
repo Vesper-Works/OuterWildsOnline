@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="manifest" href="manifest.json">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="SFS2X AdminTool">
+	<meta name="author" content="The SmartFoxServer Team">
+
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+
+	<title>SmartFoxServer 2X Administration Tool</title>
+
+	<link rel="icon" type="image/png" href="assets/images/favicon-64x64.png" sizes="64x64" />
+	<link rel="icon" type="image/png" href="assets/images/favicon-32x32.png" sizes="32x32" />
+	<link rel="icon" type="image/png" href="assets/images/favicon-16x16.png" sizes="16x16" />
+	<link rel="apple-touch-icon" type="image/png" href="assets/images/apple-touch-icon-180x180.png" sizes="180x180" />
+
+	<!-- Bootstrap (CUSTOMIZED) -->
+	<!-- https://bootstrap.build/app -->
+	<link rel="stylesheet" type="text/css" href="assets/css/custom-bootstrap.min.css" />
+
+	<!-- Kendo UI "Bootstrap v4" theme (CUSTOMIZED) -->
+    <!-- https://themebuilder.telerik.com/kendo-ui -->
+	<link rel="stylesheet" type="text/css" href="assets/css/kendo.custom-bootstrap-v4.css" />
+
+	<!-- jQuery Scrolling Tabs -->
+	<link rel="stylesheet" type="text/css" href="assets/css/jquery.scrolling-tabs.min.css" />
+
+	<!-- Font Awesome -->
+	<link rel="stylesheet" type="text/css" href="assets/css/fontawesome/css/all.min.css" />
+
+	<!-- Main styling -->
+	<link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+</head>
+
+<body>
+	<view-stack id="shell" class="hidden">
+		<div id="login-view" class="page-centered">
+			<div id="loginBox" class="col-sm-7 col-md-5 col-lg-4">
+				<div class="at-title d-flex">
+					<img src="assets/images/logo.png" class="logo"/>
+					<div>
+						<h3 class="title">SmartFox<span>Server</span></h3>
+						<div class="subtitle">remote administration</div>
+					</div>
+				</div>
+				<form id="loginForm">
+					<fieldset>
+						<div class="form-group position-relative">
+							<label for="loginHost">Host <small class="text-muted">(DNS name or IP address)</small></label>
+							<input type="text" class="form-control k-textbox" id="loginHost" name="loginHost" required data-required-msg="Required" autocorrect="off" autocapitalize="off" spellcheck="false">
+						</div>
+						<div class="form-group position-relative">
+							<label for="loginPort">Port</label>
+							<input type="number" class="form-control w-100" id="loginPort" name="loginPort" min="1" max="65535" required data-required-msg="Required">
+							<span class="k-invalid-msg" data-for="loginPort"></span>
+						</div>
+						<div class="form-group position-relative">
+							<div class="custom-control custom-checkbox">
+							  <input class="custom-control-input" type="checkbox" id="loginEncrypt">
+							  <label class="custom-control-label" for="loginEncrypt">Encrypt</label>
+							</div>
+						</div>
+						<div class="form-group position-relative">
+							<label for="loginUsername">Username</label>
+							<input type="text" class="form-control k-textbox" id="loginUsername" name="loginUsername" required data-required-msg="Required" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false">
+						</div>
+						<div class="form-group position-relative">
+							<label for="loginPassword">Password</label>
+							<input type="password" class="form-control k-textbox" id="loginPassword" name="loginPassword" required data-required-msg="Required" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false">
+						</div>
+						<div class="form-row align-items-center">
+							<div class="form-group col-auto">
+								<button id="loginButton" type="button" class="k-button k-primary"><i class="fas fa-power-off mr-1"></i>Connect</button>
+							</div>
+							<div class="form-group col-6">
+								<div class="custom-control custom-checkbox">
+							      <input class="custom-control-input" type="checkbox" id="rememberLogin">
+							      <label class="custom-control-label" for="rememberLogin">Remember me</label>
+							    </div>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+				<div id="login-error" class="alert alert-danger mt-3" role="alert" style="display: none;"></div>
+				<div class="text-center text-muted"><small class="admin-version"></small></div>
+			</div>
+		</div>
+		<div id="bookmarks-view" class="page-centered">
+			bookmarks view
+		</div>
+
+		<div id="module-view">
+			<nav class="nav-container">
+				<header>
+					<div class="at-title">
+						<h3 class="title"><img src="assets/images/logo.png" class="logo"/>SmartFox<span>Server</span></h3>
+						<div class="subtitle">remote administration <small class="admin-version"></small></div>
+						<div id="sfs-version" class="mt-2 mt-lg-0">
+							<span class="sfs-version">Server version:</span>
+							<a id="sfs-version-button">
+								<span id="sfs-version-value" class="sfs-version"></span>
+								<i id="sfs-version-alert" class="fas fa-bell fa-xs text-warning"></i>
+							</a>
+						</div>
+					</div>
+					<a href="#" class="nav-close">Close</a> <!-- visible on small screens only -->
+				</header>
+				<div class="nav-content">
+					<ul class="nav nav-main"></ul>
+					<ul class="nav nav-service">
+						<li id="restart-button" class="service-item service-restart" title="Restart server">
+							<div class="service-icon">
+								<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M255.659,70c-49.702,0.089 -94.829,19.675 -128.145,51.514l-26.786,-26.786c-11.34,-11.34 -30.728,-3.309 -30.728,12.728l0,100.544c0,9.941 8.059,18 18,18l100.544,0c16.037,0 24.068,-19.388 12.729,-30.728l-31.313,-31.313c23.148,-21.674 53.101,-33.68 84.923,-33.955c69.298,-0.598 127.712,55.483 127.113,127.082c-0.569,67.921 -55.634,124.914 -125.996,124.914c-30.845,0 -59.998,-11.009 -82.972,-31.167c-3.558,-3.121 -8.93,-2.931 -12.276,0.415l-29.747,29.746c-3.654,3.654 -3.473,9.611 0.362,13.075c32.982,29.791 76.689,47.931 124.633,47.931c102.725,0 185.999,-83.275 186,-185.999c0.001,-102.606 -83.734,-186.185 -186.341,-186.001Z" style="fill-rule:nonzero;"/></svg>
+							</div>
+							<label>Restart server</label>
+						</li>
+						<li id="halt-button" class="service-item service-halt" title="Stop server">
+							<div class="service-icon">
+								<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M312.105,256l84.15,-84.15c10.327,-10.326 10.327,-27.069 0,-37.403l-18.702,-18.702c-10.326,-10.327 -27.068,-10.327 -37.403,0l-84.15,84.15l-84.15,-84.15c-10.326,-10.327 -27.069,-10.327 -37.403,0l-18.702,18.702c-10.327,10.326 -10.327,27.068 0,37.403l84.15,84.15l-84.15,84.15c-10.327,10.326 -10.327,27.069 0,37.403l18.702,18.702c10.326,10.327 27.077,10.327 37.403,0l84.15,-84.15l84.15,84.15c10.326,10.327 27.077,10.327 37.403,0l18.702,-18.702c10.327,-10.326 10.327,-27.068 0,-37.403l-84.15,-84.15Z" style="fill-rule:nonzero;"/></svg>
+							</div>
+							<label>Stop server</label>
+						</li>
+						<li id="help-button" class="service-item" title="Open online documentation">
+							<div class="service-icon">
+								<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M441,256c0,102.195 -82.834,185 -185,185c-102.166,0 -185,-82.805 -185,-185c0,-102.136 82.834,-185 185,-185c102.166,0 185,82.864 185,185Zm-180.036,-123.831c-40.653,0 -66.581,17.126 -86.941,47.562c-2.638,3.943 -1.756,9.261 2.025,12.128l25.884,19.626c3.883,2.944 9.415,2.244 12.432,-1.583c13.326,-16.902 22.463,-26.703 42.746,-26.703c15.239,0 34.089,9.808 34.089,24.585c0,11.172 -9.222,16.909 -24.269,25.345c-17.548,9.837 -40.769,22.081 -40.769,52.71l0,2.984c0,4.943 4.008,8.951 8.952,8.951l41.774,0c4.944,0 8.952,-4.008 8.952,-8.951l0,-0.995c0,-21.232 62.054,-22.115 62.054,-79.57c0,-43.268 -44.881,-76.089 -86.929,-76.089Zm-4.964,185c-18.921,0 -34.315,15.393 -34.315,34.315c0,18.921 15.394,34.314 34.315,34.314c18.921,0 34.315,-15.393 34.315,-34.314c0,-18.922 -15.394,-34.315 -34.315,-34.315Z" style="fill-rule:nonzero;"/></svg>
+							</div>
+							<label>Online help</label>
+						</li>
+						<li id="disconnect-button" class="service-item" title="Logout">
+							<div class="service-icon">
+								<svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M444.832,269.094l-129.478,129.478c-11.561,11.561 -31.599,3.468 -31.599,-13.102l0,-73.987l-104.816,0c-10.25,0 -18.497,-8.247 -18.497,-18.497l0,-73.988c0,-10.25 8.247,-18.497 18.497,-18.497l104.816,0l0,-73.988c0,-16.493 19.961,-24.662 31.599,-13.102l129.478,129.479c7.168,7.244 7.168,18.959 0,26.204Zm-235.065,125.625l0,-30.828c0,-5.087 -4.161,-9.249 -9.248,-9.249l-64.739,0c-13.642,0 -24.663,-11.021 -24.663,-24.662l0,-147.976c0,-13.641 11.021,-24.662 24.663,-24.662l64.739,0c5.087,0 9.248,-4.162 9.248,-9.249l0,-30.828c0,-5.087 -4.161,-9.249 -9.248,-9.249l-64.739,0c-40.848,0 -73.988,33.141 -73.988,73.988l0,147.976c0,40.847 33.14,73.987 73.988,73.987l64.739,0c5.087,0 9.248,-4.162 9.248,-9.248Z" style="fill-rule:nonzero;"/></svg>
+							</div>
+							<label>Logout</label>
+						</li>
+					</ul>
+				</div>
+			</nav>
+
+			<div class="nav-overlay"></div>
+
+			<main class="module-container">
+				<header class="module-header">
+					<div id="status-bar" class="padded">
+						<div><i class="fas fa-server"></i> <span id="host-label"></span></div>
+						<div id="module-title"><i class="fas fa-wrench"></i> <span id="module-title-label"></span></div>
+					</div>
+					<a href="#" class="nav-open"> <!-- visible on small screens only -->
+						Open<span><!-- Used to create the menu icon --></span>
+					</a>
+					<div id="alert-bar" class="padded"></div>
+				</header>
+				<div class="module-loader"></div>
+			</main>
+		</div>
+	</view-stack>
+
+	<!-- ======================================================== -->
+
+	<div id="no-support" class="hidden">
+		<div class="at-title">
+			<h3 class="title">SmartFox<span>Server</span></h3>
+			<div class="subtitle">remote administration <small class="admin-version"></small></div>
+		</div>
+		<p>The browser you are using in not supported. Please try with the latest version, or use a different browser.</p>
+	</div>
+
+	<!-- ======================================================== -->
+
+	<div class="toast-container"></div>
+
+	<!-- ======================================================== -->
+
+	<div id="serverUpdateModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="serverUpdateModalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title text-primary" id="serverUpdateModalTitle">Server update</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<h3>SmartFoxServer 2X v<span id="newVersLb"></span><br>is out now</h3>
+					<p>The new version is provided as a <span id="updTypeLb"></span> available on the SmartFoxServer website<span id="reqVersLb"></span>; click the button below to go to the download page and follow the installation instructions.</p>
+					<small class="text-muted">(currently installed version is <span id="currVersLb"></span>)</small>
+				</div>
+				<div class="modal-footer flex-column">
+					<div class="d-flex w-100">
+						<div class="flex-grow-1 text-left">
+							<a id="serverUpdateModalLink" class="k-button k-primary" href="#" target="_blank"><i class="fas fa-download mr-1"></i>Download</a>
+						</div>
+						<div class="flex-grow-1 text-right">
+							<button type="button" class="k-button k-secondary" data-dismiss="modal">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- ======================================================== -->
+
+	<!-- Bootstrap JavaScript plugin -->
+	<script type="text/javascript" src="assets/js/libs/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="assets/js/libs/popper.min.js"></script>
+	<script type="text/javascript" src="assets/js/libs/bootstrap.min.js"></script>
+
+	<!-- Kendo UI combined JavaScript library -->
+	<script src="assets/js/libs/kendo.all.min.js"></script>
+
+	<!-- JavaScript Cookie library -->
+	<script type="text/javascript" src="assets/js/libs/js.cookie.min.js"></script>
+
+	<!-- jQuery Scrolling Tabs JavaScript library -->
+	<script src="assets/js/libs/jquery.scrolling-tabs.min.js"></script>
+
+	<script type="text/javascript" src="assets/js/libs/sfs2x-api-1.7.15.js"></script>
+	<script type="text/javascript" src="assets/js/core/application.bundle.js" async></script>
+
+	<script>
+		$(document).ready(function() {
+			// Validate browser
+			if (isBrowserSupported())
+				$('view-stack').removeClass('hidden');
+			else
+				$('#no-support').removeClass('hidden');
+		});
+
+		function isBrowserSupported()
+		{
+			return ('customElements' in window)
+		}
+	</script>
+</body>
+</html>

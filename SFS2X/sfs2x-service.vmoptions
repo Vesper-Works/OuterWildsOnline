@@ -1,0 +1,5 @@
+# Enter one VM parameter per line
+# To include another file, uncomment the following line and enter the file path:
+# -include-options [path to other .vmoption file]
+-classpath/p ./:lib/*:lib/apache-tomcat/bin/*:extensions/__lib__/*
+-Dfile.encoding=UTF-8

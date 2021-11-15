@@ -1,0 +1,608 @@
+// SMARTFOXSERVER 2X ADMIN TOOL'S ZONE MONITOR MODULE
+// User settings descriptor file
+// 
+// The "category" attribute indicates in which tab on the interface (if a TabNavigator is used) the parameter will be displayed. If missing a default category is used.
+
+//-------------------------------------------
+// USER MANAGEMENT
+//-------------------------------------------
+
+// USER ID
+{
+	"name":"id",
+	"label":"User ID",
+	"tooltip":"The user identification number assigned by SmartFoxServer",
+	"category":"User Management",
+	"type":"NumericStepper",
+	"value":{$BasicValue=user.id},
+	"edit":false
+},
+
+// USER NAME
+{
+	"name":"name",
+	"label":"User name",
+	"tooltip":"The user name",
+	"category":"User Management",
+	"type":"TextInput",
+	"value":"{$BasicValue=user.name}",
+	"edit":false
+},
+
+// IP ADDRESS
+{
+	"name":"ipAddress",
+	"label":"IP address",
+	"tooltip":"The client IP address (not available if the user is a Non-Player Character)",
+	"category":"User Management",
+	"type":"TextInput",
+	"value":"{$BasicValue=helper.ipAddress}",
+	"edit":false
+},
+
+// BLUEBOX TUNNELLING
+{
+	"name":"blueBox",
+	"label":"BlueBox tunnelling",
+	"tooltip":"Indicates if the client is connected through the BlueBox and, if yes, the size of its queue",
+	"category":"User Management",
+	"type":"TextInput",
+	"value":"{$BasicValue=helper.blueBox}",
+	"edit":false
+},
+
+// SESSION ID
+{
+	"name":"sessionId",
+	"label":"Session ID",
+	"tooltip":"Unique identification number of the user session",
+	"category":"User Management",
+	"type":"TextInput",
+	"value":"{$BasicValue=session.id}",
+	"edit":false
+},
+
+// SESSION HASH ID
+{
+	"name":"sessionHashId",
+	"label":"Session hash ID",
+	"tooltip":"Unique session token (not available if the user is a Non-Player Character)",
+	"category":"User Management",
+	"type":"TextInput",
+	"value":"{$BasicValue=helper.sessionHashId}",
+	"edit":false
+},
+
+// CLIENT INFO
+{
+	"name":"clientInfo",
+	"label":"Client info",
+	"tooltip":"Signature of the client, if available (for example: Flash Player, Unity Player, etc.) and if user is not a Non-Player Character",
+	"category":"User Management",
+	"type":"TextInput",
+	"value":"{$BasicValue=helper.clientInfo}",
+	"edit":false
+},
+
+// FROZEN
+{
+	"name":"sessionFrozen",
+	"label":"Is frozen",
+	"tooltip":"Client is in 'frozen' state after a sudden disconnection, if the automatic reconnection system is available",
+	"category":"User Management",
+	"type":"TextInput",
+	"value":"{$BasicValue=session.frozen}",
+	"edit":false
+},
+
+//-------------------------------------------
+// RUNTIME USER SETTINGS
+//-------------------------------------------
+
+// LOCAL USER
+{
+	"name":"local",
+	"label":"Is local",
+	"tooltip":"User is local if he/she is connected to the SmartFoxServer instance currently monitored",
+	"category":"Runtime User Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=user.local},
+	"edit":false
+},
+
+// NON-PLAYER CHARACTER
+{
+	"name":"npc",
+	"label":"Is NPC",
+	"tooltip":"User is a Non-Player Character",
+	"category":"Runtime User Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=user.npc},
+	"edit":false
+},
+
+// LOGIN TIME
+{
+	"name":"loginTime",
+	"label":"Login time",
+	"tooltip":"User login date and time",
+	"category":"Runtime User Settings",
+	"type":"TextInput",
+	"value":"{$BasicValue=helper.loginTime}",
+	"edit":false
+},
+
+// PLAYER ID
+{
+	"name":"playerId",
+	"label":"Last player ID",
+	"tooltip":"Player ID assigned to the user in the last Game Room joined",
+	"category":"Runtime User Settings",
+	"type":"TextInput",
+	"value":"{$BasicValue=user.playerId}",
+	"edit":false
+},
+
+// PLAYER IDS BY ROOM
+{
+	"name":"playerIds",
+	"label":"Player ID by Room",
+	"tooltip":"List of player IDs assigned to the user in each joined Room",
+	"category":"Runtime User Settings",
+	"type":"DataGrid",
+	"componentParams": // DEPRECATED
+	{
+		"height":100
+	},
+	"defaultListItem":
+	[
+		{
+			"name":"roomName",
+			"label":"Room name",
+			"tooltip":"The Room name",
+			"type":"TextInput",
+			"value":""
+		},
+		{
+			"name":"playerId",
+			"label":"Player ID",
+			"tooltip":"Player IDs assigned to the user",
+			"type":"TextInput",
+			"value":""
+		}
+	],
+	"listValues":{$List=playerIds, instance=helper, fields=roomName;playerId},
+	"edit":false
+},
+
+// IS SUPERUSER
+{
+	"name":"superUser",
+	"label":"Is SuperUser",
+	"tooltip":"The SuperUser flag depends on the permission profile applied to the client. Those with SuperUser permissions can kick and ban other users",
+	"category":"Runtime User Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=user.superUser},
+	"edit":false
+},
+
+// MAX USER VARIABLES ALLOWED
+{
+	"name":"maxAllowedVariables",
+	"label":"Maximum # of User Variables",
+	"tooltip":"The maximum number of User Variables that a client can have at the same time",
+	"category":"Runtime User Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=user.maxAllowedVariables},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// PRIVILEGE ID
+{
+	"name":"adminHelper.privilegeId",
+	"label":"Profile ID",
+	"tooltip":"The profile's identifier assigned to the user among the available profiles in the privilege manager (see Zone configuration)",
+	"category":"Runtime User Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=user.privilegeId},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":65535
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":65535
+	}
+},
+
+// BAD WORDS WARNINGS
+{
+	"name":"badWordsWarnings",
+	"label":"'Bad word' warnings received",
+	"tooltip":"The number of word filter warnings sent to this user (the word filter must be enabled, otherwise it will always show zero)",
+	"category":"Runtime User Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=user.badWordsWarnings},
+	"edit":false
+},
+
+// FLOOD WARNINGS
+{
+	"name":"floodWarnings",
+	"label":"'Flooding' warnings received",
+	"tooltip":"The number of flooding attempts detected from this user (the flood filter must be enabled, otherwise it will always show zero)",
+	"category":"Runtime User Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=user.floodWarnings},
+	"edit":false
+},
+
+// LAST REQUEST TIME
+{
+	"name":"lastRequestTime",
+	"label":"Elapsed time since last request",
+	"tooltip":"The time passed since the client sent the last request",
+	"category":"Runtime User Settings",
+	"type":"TextInput",
+	"value":"{$BasicValue=helper.lastRequestTime}",
+	"edit":false
+},
+
+// RECONNECTION SECONDS
+{
+	"name":"reconnectionSeconds",
+	"label":"Reconnection seconds",
+	"tooltip":"The number of seconds allowed for this user to reconnect to the server in case of abrupt disconnection",
+	"category":"Runtime User Settings",
+	"type":"TextInput",
+	"value":"{$BasicValue=user.reconnectionSeconds}",
+	"edit":false
+},
+
+//-------------------------------------------
+// USER ROOMS
+//-------------------------------------------
+
+// LAST JOINED ROOM
+{
+	"name":"lastJoinedRoom",
+	"label":"Last joined Room",
+	"tooltip":"The name of the last joined Room",
+	"category":"Rooms & Groups",
+	"type":"TextInput",
+	"value":"{$BasicValue=user.lastJoinedRoom}",
+	"edit":false
+},
+
+// JOINED ROOMS
+{
+	"name":"joinedRoom",
+	"label":"Joined Rooms",
+	"tooltip":"The list of Rooms currently joined by the user",
+	"category":"Rooms & Groups",
+	"type":"DataGrid",
+	"componentParams": // DEPRECATED
+	{
+		"height":100
+	},
+	"defaultListItem":
+	[
+		{
+			"name":"id",
+			"label":"ID",
+			"tooltip":"The Room identification number",
+			"type":"TextInput",
+			"value":""
+		},
+		{
+			"name":"name",
+			"label":"Name",
+			"tooltip":"The Room name",
+			"type":"TextInput",
+			"value":""
+		},
+		{
+			"name":"groupId",
+			"label":"Group ID",
+			"tooltip":"The Group to which the room belongs",
+			"type":"TextInput",
+			"value":""
+		},
+		{
+			"name":"game",
+			"label":"Is game",
+			"tooltip":"Room is of type 'Game'",
+			"type":"CheckBox",
+			"value":false
+		}
+	],
+	"listValues":{$List=joinedRooms, instance=user, fields=id;name;groupId;game},
+	"edit":false
+},
+
+// CREATED ROOMS
+{
+	"name":"createdRoom",
+	"label":"Created Rooms",
+	"tooltip":"The list of Rooms created by the user",
+	"category":"Rooms & Groups",
+	"componentParams": // DEPRECATED
+	{
+		"height":100
+	},
+	"type":"DataGrid",
+	"defaultListItem":
+	[
+		{
+			"name":"id",
+			"label":"ID",
+			"tooltip":"The Room identification number",
+			"type":"TextInput",
+			"value":""
+		},
+		{
+			"name":"name",
+			"label":"Name",
+			"tooltip":"The Room name",
+			"type":"TextInput",
+			"value":""
+		},
+		{
+			"name":"groupId",
+			"label":"Group ID",
+			"tooltip":"The Group to which the Room belongs",
+			"type":"TextInput",
+			"value":""
+		},
+		{
+			"name":"game",
+			"label":"Is game",
+			"tooltip":"Room is of type 'Game'",
+			"type":"CheckBox",
+			"value":false
+		}
+	],
+	"listValues":{$List=createdRooms, instance=user, fields=id;name;groupId;game},
+	"edit":false
+},
+
+// SUBSCRIBED GROUPS
+{
+	"name":"subscribedGroups",
+	"label":"Subscribed Groups",
+	"tooltip":"The list of Room Groups subscribed by the user. For each Group the client will receive updates about its Rooms",
+	"category":"Rooms & Groups",
+	"type":"DataGrid",
+	"componentParams": // DEPRECATED
+	{
+		"height":100
+	},
+	"defaultListItem":
+	[
+		{
+			"name":"groupId",
+			"label":"Group ID",
+			"tooltip":"The unique name of the Group",
+			"type":"TextInput",
+			"value":""
+		}
+	],
+	"listValues":{$List=subscribedGroups, instance=user, createField=groupId},
+	"edit":false
+},
+
+//-------------------------------------------
+// RUNTIME USER VARIABLES
+//-------------------------------------------
+
+// USER VARIABLES
+{
+	"name":"userVariables",
+	"label":"User Variables",
+	"tooltip":"List of current User Variables",
+	"category":"Runtime User Variables",
+	"type":"DataGrid",
+	"componentParams": // DEPRECATED
+	{
+		"height":200
+	},
+	"defaultListItem":
+	[
+		{
+			"name":"name",
+			"label":"Name",
+			"tooltip":"Name",
+			"type":"TextInput",
+			"value":"",
+			"validator":"notNull"
+		},
+		{
+			"name":"type",
+			"label":"Type",
+			"tooltip":"The type of the variable",
+			"type":"ComboBox",
+			"value":"STRING",
+			"componentParams": // DEPRECATED
+			{
+				"dataProvider":"BOOLEAN,INT,DOUBLE,STRING,OBJECT,ARRAY"
+			},
+			"dataProvider":"BOOLEAN,INT,DOUBLE,STRING,OBJECT,ARRAY"
+		},
+		{
+			"name":"private",
+			"label":"Private",
+			"tooltip":"Private variable updates are sent to the owner's client only",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"hidden",
+			"label":"Hidden",
+			"tooltip":"Hidden variables are not updated on the client side",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"value",
+			"label":"Value",
+			"tooltip":"Primitive value or JSON block",
+			"type":"TextInput",
+			"value":"",
+			"validator":"notNull"
+		}
+	],
+	"listValues":{$List=variables, instance=user, fields=name;type;private;hidden;value},
+	"edit":false
+},
+
+//-------------------------------------------
+// BUDDY PROPERTIES
+//-------------------------------------------
+
+// IS INITED
+{
+	"name":"buddyInited",
+	"label":"Buddy List initialized",
+	"tooltip":"The client initializes the Buddy List before doing any other operation; if it is not initialized, the user is not currently using it",
+	"category":"Buddy Properties",
+	"type":"CheckBox",
+	"value":{$BasicValue=buddyProps.inited},
+	"edit":false
+},
+
+// NICKNAME
+{
+	"name":"buddyNickName",
+	"label":"User nickname",
+	"tooltip":"An alternative (and optional) nickname to use in the Buddy List",
+	"category":"Buddy Properties",
+	"type":"TextInput",
+	"value":"{$BasicValue=buddyProps.nickName}",
+	"edit":false
+},
+
+// IS ONLINE
+{
+	"name":"buddyOnline",
+	"label":"User is online as buddy",
+	"tooltip":"The user can decide to go online or offline in the buddy system at any time during his session",
+	"category":"Buddy Properties",
+	"type":"CheckBox",
+	"value":{$BasicValue=buddyProps.online},
+	"edit":false
+},
+
+// CUSTOM STATE
+{
+	"name":"buddyState",
+	"label":"Custom state",
+	"tooltip":"A custom string showing the user state (e.g. Available, Busy, etc.)",
+	"category":"Buddy Properties",
+	"type":"TextInput",
+	"value":"{$BasicValue=buddyProps.state}",
+	"edit":false
+},
+
+// BUDDY VARIABLES
+{
+	"name":"buddyVariables",
+	"label":"User Buddy Variables",
+	"tooltip":"The list of Buddy Variables created by the user",
+	"category":"Buddy Properties",
+	"type":"DataGrid",
+	"componentParams": // DEPRECATED
+	{
+		"height":200
+	},
+	"defaultListItem":
+	[
+		{
+			"name":"name",
+			"label":"Name",
+			"tooltip":"Name",
+			"type":"TextInput",
+			"value":"",
+			"validator":"notNull"
+		},
+		{
+			"name":"type",
+			"label":"Type",
+			"tooltip":"The type of the variable",
+			"type":"ComboBox",
+			"value":"STRING",
+			"componentParams": // DEPRECATED
+			{
+				"dataProvider":"BOOLEAN,INT,DOUBLE,STRING,OBJECT,ARRAY"
+			},
+			"dataProvider":"BOOLEAN,INT,DOUBLE,STRING,OBJECT,ARRAY"
+		},
+		{
+			"name":"offline",
+			"label":"Offline",
+			"tooltip":"An offline Buddy Variable is available to other users even when the client is not logged in the system",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"value",
+			"label":"Value",
+			"tooltip":"Primitive value or JSON block",
+			"type":"TextInput",
+			"value":"",
+			"validator":"notNull"
+		}
+	],
+	"listValues":{$List=variables, instance=buddyProps, fields=name;type;offline;value},
+	"edit":false
+},
+
+// USER BUDDIES
+{
+	"name":"buddyList",
+	"label":"User buddies",
+	"tooltip":"List of the user buddies; this list is populated only if the user has requested its initialization",
+	"category":"Buddy Properties",
+	"type":"DataGrid",
+	"componentParams": // DEPRECATED
+	{
+		"height":200
+	},
+	"defaultListItem":
+	[
+		{
+			"name":"name",
+			"label":"Name",
+			"tooltip":"Name",
+			"type":"TextInput",
+			"value":"",
+			"validator":"notNull"
+		},
+		{
+			"name":"blocked",
+			"label":"Blocked",
+			"tooltip":"If the buddy is blocked the user won't receive any messages from him/her",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"temp",
+			"label":"Temp",
+			"tooltip":"A temporary buddy will be lost as soon as the user disconnects, unless he decides to add such user to his Buddy List. Check the docs for more details on this",
+			"type":"CheckBox",
+			"value":false
+		}
+	],
+	"listValues":{$List=buddyList, instance=helper, fields=name;blocked;temp},
+	"edit":false
+}

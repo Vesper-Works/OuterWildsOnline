@@ -1,0 +1,714 @@
+13 Nov 2021 | 12:00:43,243 | INFO  | main | smartfoxserver.v2.SmartFoxServer |     | Boot sequence starts...
+13 Nov 2021 | 12:00:44,904 | INFO  | main | v2.core.SFSEventManager |     | SFSEventManager initialized
+13 Nov 2021 | 12:00:44,949 | INFO  | main | vfs.impl.DefaultFileReplicator |     | Using "C:\Users\Vesper\AppData\Local\Temp\vfs_cache" as temporary files store.
+13 Nov 2021 | 12:00:45,360 | INFO  | main | smartfoxserver.v2.SmartFoxServer |     | License loaded:
+
+==========================================
+LICENSE DETAILS
+------------------------------------------
+Type            : Community Edition
+Max users       : 100
+==========================================
+
+13 Nov 2021 | 12:00:45,361 | INFO  | main | entities.managers.SFSBannedUserStorage |     | BanUserStorage initialized
+13 Nov 2021 | 12:00:45,457 | INFO  | main | entities.managers.SFSBannedUserManager |     | BanUser data loaded: 0 records.
+13 Nov 2021 | 12:00:45,470 | INFO  | main | smartfoxserver.v2.SmartFoxServer |     | Protocol Type is: BINARY
+13 Nov 2021 | 12:00:45,488 | INFO  | main | v2.config.DefaultConfigLoader |     | Loading: zones\BasicExamples.zone.xml
+13 Nov 2021 | 12:00:45,540 | INFO  | main | entities.managers.SFSZoneManager |     | 
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ >> Zone: BasicExamples 
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+13 Nov 2021 | 12:00:45,575 | INFO  | main | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ Room: The Lobby, Id: 0, Group: default, isGame: false ], type = SFSRoom
+13 Nov 2021 | 12:00:45,622 | INFO  | main | entities.managers.SFSRoomManager |     | Room created: { Zone: --=={{{ AdminZone }}}==-- }, [ Room: AdminRoom, Id: 1, Group: default, isGame: false ], type = SFSRoom
+13 Nov 2021 | 12:00:46,005 | INFO  | main | v2.core.AdminToolService |     | AdminTool Service started
+13 Nov 2021 | 12:00:46,631 | INFO  | SFSWorker:Sys:1 | smartfoxserver.v2.SmartFoxServer |     | Listening Sockets: { 0.0.0.0:9933, (Tcp) } { 127.0.0.1:9933, (Udp) } 
+13 Nov 2021 | 12:00:46,637 | INFO  | SFSWorker:Sys:1 | smartfoxserver.v2.SmartFoxServer |     |  
+ _____ _____ _____    ___ __ __ 
+|   __|   __|   __|  |_  |  |  |
+|__   |   __|__   |  |  _|-   -|
+|_____|__|  |_____|  |___|__|__|                                         
+ _____ _____ _____ ____  __ __ 
+| __  |   __|  _  |    \|  |  |
+|    -|   __|     |  |  |_   _|
+|__|__|_____|__|__|____/  |_|  
+[ 2.17.0 ] 
+
+13 Nov 2021 | 12:00:46,637 | INFO  | SFSWorker:Sys:1 | smartfoxserver.v2.SmartFoxServer |     | SmartFoxServer 2X (2.17.0) READY!
+13 Nov 2021 | 12:00:54,021 | INFO  | TomcatRunner | tomcat.bluebox.BBSessionFilter |     | BlueBox Service (4.0.2) READY.
+13 Nov 2021 | 12:01:08,736 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 1, Type: DEFAULT, Logged: No, IP: 127.0.0.1:50306 } on Server port: 9933 <---> 50306
+13 Nov 2021 | 12:01:09,049 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#0, Id: 0, Priv: 0, Sess: 127.0.0.1:50306 ) , Type: .Net
+13 Nov 2021 | 12:01:09,117 | WARN  | SFSWorker:Sys:3 | controllers.v290.SystemReqController |     | java.lang.UnsupportedClassVersionError: MainExtension has been compiled by a more recent version of the Java Runtime (class file version 60.0), this version of the Java Runtime only recognizes class file versions up to 52.0
+	java.lang.ClassLoader.defineClass1(Native Method)
+	java.lang.ClassLoader.defineClass(ClassLoader.java:756)
+	java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+	java.net.URLClassLoader.defineClass(URLClassLoader.java:468)
+	java.net.URLClassLoader.access$100(URLClassLoader.java:74)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:369)
+	java.net.URLClassLoader$1.run(URLClassLoader.java:363)
+	java.security.AccessController.doPrivileged(Native Method)
+	java.net.URLClassLoader.findClass(URLClassLoader.java:362)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:418)
+	java.lang.ClassLoader.loadClass(ClassLoader.java:351)
+	com.smartfoxserver.v2.entities.managers.SFSExtensionManager.createJavaExtension(SFSExtensionManager.java:335)
+	com.smartfoxserver.v2.entities.managers.SFSExtensionManager.createExtension(SFSExtensionManager.java:260)
+	com.smartfoxserver.v2.entities.managers.SFSRoomManager.createRoomExtension(SFSRoomManager.java:247)
+	com.smartfoxserver.v2.entities.managers.SFSRoomManager.createRoom(SFSRoomManager.java:194)
+	com.smartfoxserver.v2.entities.SFSZone.createRoom(SFSZone.java:261)
+	com.smartfoxserver.v2.api.SFSApi.createRoom(SFSApi.java:739)
+	com.smartfoxserver.v2.api.SFSApi.createRoom(SFSApi.java:713)
+	com.smartfoxserver.v2.controllers.system.CreateRoom.execute(CreateRoom.java:275)
+	com.smartfoxserver.v2.controllers.v290.SystemReqController.processRequest(SystemReqController.java:172)
+	com.smartfoxserver.v2.controllers.v290.SystemReqController.enqueueRequest(SystemReqController.java:127)
+	com.smartfoxserver.bitswarm.io.protocols.AbstractProtocolCodec.dispatchRequestToController(AbstractProtocolCodec.java:39)
+	com.smartfoxserver.v2.protocol.SFSProtocolCodec.dispatchRequest(SFSProtocolCodec.java:133)
+	com.smartfoxserver.v2.protocol.SFSProtocolCodec.onPacketRead(SFSProtocolCodec.java:90)
+	com.smartfoxserver.v2.protocol.binary.BinaryIoHandler$1.run(BinaryIoHandler.java:477)
+	java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	java.lang.Thread.run(Thread.java:748)
+
+13 Nov 2021 | 12:01:21,188 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 2, Type: DEFAULT, Logged: No, IP: 127.0.0.1:50307 } on Server port: 9933 <---> 50307
+13 Nov 2021 | 12:01:21,219 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#1, Id: 1, Priv: 0, Sess: 127.0.0.1:50307 ) , Type: .Net
+13 Nov 2021 | 12:01:21,244 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 2, Group: default, AOI: (25.0, 1.0, 25.0) ], { Zone: BasicExamples }, ( User Name: Guest#1, Id: 1, Priv: 0, Sess: 127.0.0.1:50307 ) , asSpect: false
+13 Nov 2021 | 12:01:27,741 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 3, Type: DEFAULT, Logged: No, IP: 127.0.0.1:50308 } on Server port: 9933 <---> 50308
+13 Nov 2021 | 12:01:27,768 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#2, Id: 2, Priv: 0, Sess: 127.0.0.1:50308 ) , Type: .Net
+13 Nov 2021 | 12:01:27,782 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 2, Group: default, AOI: (25.0, 1.0, 25.0) ], { Zone: BasicExamples }, ( User Name: Guest#2, Id: 2, Priv: 0, Sess: 127.0.0.1:50308 ) , asSpect: false
+13 Nov 2021 | 12:01:57,558 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 1, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:50306 }
+13 Nov 2021 | 12:01:57,559 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 3, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:50308 }
+13 Nov 2021 | 12:01:57,559 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#0, Id: 0, Priv: 0, Sess: 127.0.0.1:50306 ) , SessionLen: 48511, Type: .Net
+13 Nov 2021 | 12:01:57,560 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#2, Id: 2, Priv: 0, Sess: 127.0.0.1:50308 ) , SessionLen: 29792, Type: .Net
+13 Nov 2021 | 12:01:59,130 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 2, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:50307 }
+13 Nov 2021 | 12:01:59,131 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 2, Group: default, AOI: (25.0, 1.0, 25.0) ], Duration: 50052
+13 Nov 2021 | 12:01:59,132 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#1, Id: 1, Priv: 0, Sess: 127.0.0.1:50307 ) , SessionLen: 37913, Type: .Net
+13 Nov 2021 | 12:07:26,177 | INFO  | main | smartfoxserver.v2.SmartFoxServer |     | Boot sequence starts...
+13 Nov 2021 | 12:07:26,485 | INFO  | main | v2.core.SFSEventManager |     | SFSEventManager initialized
+13 Nov 2021 | 12:07:26,500 | INFO  | main | vfs.impl.DefaultFileReplicator |     | Using "C:\Users\Vesper\AppData\Local\Temp\vfs_cache" as temporary files store.
+13 Nov 2021 | 12:07:26,544 | INFO  | main | smartfoxserver.v2.SmartFoxServer |     | License loaded:
+
+==========================================
+LICENSE DETAILS
+------------------------------------------
+Type            : Community Edition
+Max users       : 100
+==========================================
+
+13 Nov 2021 | 12:07:26,545 | INFO  | main | entities.managers.SFSBannedUserStorage |     | BanUserStorage initialized
+13 Nov 2021 | 12:07:26,554 | INFO  | main | entities.managers.SFSBannedUserManager |     | BanUser data loaded: 0 records.
+13 Nov 2021 | 12:07:26,559 | INFO  | main | smartfoxserver.v2.SmartFoxServer |     | Protocol Type is: BINARY
+13 Nov 2021 | 12:07:26,561 | INFO  | main | v2.config.DefaultConfigLoader |     | Loading: zones\BasicExamples.zone.xml
+13 Nov 2021 | 12:07:26,578 | INFO  | main | entities.managers.SFSZoneManager |     | 
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ >> Zone: BasicExamples 
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+13 Nov 2021 | 12:07:26,600 | INFO  | main | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ Room: The Lobby, Id: 0, Group: default, isGame: false ], type = SFSRoom
+13 Nov 2021 | 12:07:26,606 | INFO  | main | entities.managers.SFSRoomManager |     | Room created: { Zone: --=={{{ AdminZone }}}==-- }, [ Room: AdminRoom, Id: 1, Group: default, isGame: false ], type = SFSRoom
+13 Nov 2021 | 12:07:26,637 | INFO  | main | v2.core.AdminToolService |     | AdminTool Service started
+13 Nov 2021 | 12:07:26,892 | INFO  | SFSWorker:Sys:1 | smartfoxserver.v2.SmartFoxServer |     | Listening Sockets: { 0.0.0.0:9933, (Tcp) } { 127.0.0.1:9933, (Udp) } 
+13 Nov 2021 | 12:07:26,893 | INFO  | SFSWorker:Sys:1 | smartfoxserver.v2.SmartFoxServer |     |  
+ _____ _____ _____    ___ __ __ 
+|   __|   __|   __|  |_  |  |  |
+|__   |   __|__   |  |  _|-   -|
+|_____|__|  |_____|  |___|__|__|                                         
+ _____ _____ _____ ____  __ __ 
+| __  |   __|  _  |    \|  |  |
+|    -|   __|     |  |  |_   _|
+|__|__|_____|__|__|____/  |_|  
+[ 2.17.0 ] 
+
+13 Nov 2021 | 12:07:26,895 | INFO  | SFSWorker:Sys:1 | smartfoxserver.v2.SmartFoxServer |     | SmartFoxServer 2X (2.17.0) READY!
+13 Nov 2021 | 12:07:28,577 | INFO  | TomcatRunner | tomcat.bluebox.BBSessionFilter |     | BlueBox Service (4.0.2) READY.
+13 Nov 2021 | 12:08:35,001 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 1, Type: DEFAULT, Logged: No, IP: 127.0.0.1:56947 } on Server port: 9933 <---> 56947
+13 Nov 2021 | 12:08:35,173 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#0, Id: 0, Priv: 0, Sess: 127.0.0.1:56947 ) , Type: .Net
+13 Nov 2021 | 12:08:35,203 | INFO  | SFSWorker:Sys:3 | Extensions |     | {OuterWildsMMO}: Yus! Loaded! 
+13 Nov 2021 | 12:08:35,204 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 2, Group: default, AOI: (25.0, 1.0, 25.0) ], type = MMORoom
+13 Nov 2021 | 12:08:35,206 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 2, Group: default, AOI: (25.0, 1.0, 25.0) ], { Zone: BasicExamples }, ( User Name: Guest#0, Id: 0, Priv: 0, Sess: 127.0.0.1:56947 ) , asSpect: false
+13 Nov 2021 | 12:09:15,248 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 1, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:56947 }
+13 Nov 2021 | 12:09:15,260 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 2, Group: default, AOI: (25.0, 1.0, 25.0) ], Duration: 40064
+13 Nov 2021 | 12:09:15,262 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#0, Id: 0, Priv: 0, Sess: 127.0.0.1:56947 ) , SessionLen: 40090, Type: .Net
+13 Nov 2021 | 12:55:27,222 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: { Zone: --=={{{ AdminZone }}}==-- }, CCU: 0/0
+13 Nov 2021 | 12:55:27,223 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: { Zone: BasicExamples }, CCU: 0/0
+13 Nov 2021 | 12:55:27,223 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: CCU: 0/0
+13 Nov 2021 | 13:55:26,900 | INFO  | pool-1-thread-4 | util.stats.CCULoggerTask |     | CCU stats: { Zone: --=={{{ AdminZone }}}==-- }, CCU: 0/0
+13 Nov 2021 | 13:55:26,901 | INFO  | pool-1-thread-4 | util.stats.CCULoggerTask |     | CCU stats: { Zone: BasicExamples }, CCU: 0/0
+13 Nov 2021 | 13:55:26,901 | INFO  | pool-1-thread-4 | util.stats.CCULoggerTask |     | CCU stats: CCU: 0/0
+13 Nov 2021 | 14:55:26,904 | INFO  | pool-1-thread-2 | util.stats.CCULoggerTask |     | CCU stats: { Zone: --=={{{ AdminZone }}}==-- }, CCU: 0/0
+13 Nov 2021 | 14:55:26,904 | INFO  | pool-1-thread-2 | util.stats.CCULoggerTask |     | CCU stats: { Zone: BasicExamples }, CCU: 0/0
+13 Nov 2021 | 14:55:26,905 | INFO  | pool-1-thread-2 | util.stats.CCULoggerTask |     | CCU stats: CCU: 0/0
+13 Nov 2021 | 15:20:32,754 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 2, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57387 } on Server port: 9933 <---> 57387
+13 Nov 2021 | 15:20:32,785 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#1, Id: 1, Priv: 0, Sess: 127.0.0.1:57387 ) , Type: .Net
+13 Nov 2021 | 15:20:32,824 | INFO  | SFSWorker:Sys:4 | Extensions |     | {OuterWildsMMO}: Yus! Loaded! 
+13 Nov 2021 | 15:20:32,825 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 3, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 15:20:32,826 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 3, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#1, Id: 1, Priv: 0, Sess: 127.0.0.1:57387 ) , asSpect: false
+13 Nov 2021 | 15:20:39,445 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 3, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57388 } on Server port: 9933 <---> 57388
+13 Nov 2021 | 15:20:39,471 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#2, Id: 2, Priv: 0, Sess: 127.0.0.1:57388 ) , Type: .Net
+13 Nov 2021 | 15:20:39,498 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 3, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#2, Id: 2, Priv: 0, Sess: 127.0.0.1:57388 ) , asSpect: false
+13 Nov 2021 | 15:22:51,500 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 2, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57387 }
+13 Nov 2021 | 15:22:51,502 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 3, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 138690
+13 Nov 2021 | 15:22:51,503 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#1, Id: 1, Priv: 0, Sess: 127.0.0.1:57387 ) , SessionLen: 138719, Type: .Net
+13 Nov 2021 | 15:22:52,097 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 3, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57388 }
+13 Nov 2021 | 15:22:52,098 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#2, Id: 2, Priv: 0, Sess: 127.0.0.1:57388 ) , SessionLen: 132627, Type: .Net
+13 Nov 2021 | 15:23:34,915 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 4, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57415 } on Server port: 9933 <---> 57415
+13 Nov 2021 | 15:23:34,946 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#3, Id: 3, Priv: 0, Sess: 127.0.0.1:57415 ) , Type: .Net
+13 Nov 2021 | 15:23:34,973 | INFO  | SFSWorker:Sys:4 | Extensions |     | {OuterWildsMMO}: Yus! Loaded! 
+13 Nov 2021 | 15:23:34,973 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 4, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 15:23:34,973 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 4, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#3, Id: 3, Priv: 0, Sess: 127.0.0.1:57415 ) , asSpect: false
+13 Nov 2021 | 15:23:49,547 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 5, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57416 } on Server port: 9933 <---> 57416
+13 Nov 2021 | 15:23:49,579 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#4, Id: 4, Priv: 0, Sess: 127.0.0.1:57416 ) , Type: .Net
+13 Nov 2021 | 15:23:49,595 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 4, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#4, Id: 4, Priv: 0, Sess: 127.0.0.1:57416 ) , asSpect: false
+13 Nov 2021 | 15:27:34,273 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 4, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57415 }
+13 Nov 2021 | 15:27:34,274 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 4, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 239304
+13 Nov 2021 | 15:27:34,274 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#3, Id: 3, Priv: 0, Sess: 127.0.0.1:57415 ) , SessionLen: 239328, Type: .Net
+13 Nov 2021 | 15:27:34,839 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 5, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57416 }
+13 Nov 2021 | 15:27:34,839 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#4, Id: 4, Priv: 0, Sess: 127.0.0.1:57416 ) , SessionLen: 225260, Type: .Net
+13 Nov 2021 | 15:28:05,293 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 6, Type: DEFAULT, Logged: No, IP: 127.0.0.1:56362 } on Server port: 9933 <---> 56362
+13 Nov 2021 | 15:28:05,324 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#5, Id: 5, Priv: 0, Sess: 127.0.0.1:56362 ) , Type: .Net
+13 Nov 2021 | 15:28:05,540 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#0, Id: 6, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,824 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#1, Id: 7, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,825 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#2, Id: 8, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,827 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#3, Id: 9, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,828 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#4, Id: 10, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,828 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#5, Id: 11, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,829 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#6, Id: 12, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,830 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#7, Id: 13, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,831 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#8, Id: 14, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,832 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#9, Id: 15, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,833 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#10, Id: 16, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,833 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#11, Id: 17, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,834 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#12, Id: 18, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,835 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#13, Id: 19, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,835 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#14, Id: 20, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,836 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#15, Id: 21, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,837 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#16, Id: 22, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,837 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#17, Id: 23, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,838 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#18, Id: 24, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,843 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#19, Id: 25, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,844 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#20, Id: 26, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,981 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#21, Id: 27, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,982 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#22, Id: 28, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,983 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#23, Id: 29, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,984 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#24, Id: 30, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,985 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#25, Id: 31, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,986 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#26, Id: 32, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,986 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#27, Id: 33, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,987 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#28, Id: 34, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,988 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#29, Id: 35, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,988 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#30, Id: 36, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,989 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#31, Id: 37, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,989 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#32, Id: 38, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,990 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#33, Id: 39, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,991 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#34, Id: 40, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,991 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#35, Id: 41, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,992 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#36, Id: 42, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,993 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#37, Id: 43, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,994 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#38, Id: 44, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,995 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#39, Id: 45, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,995 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#40, Id: 46, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:05,996 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#41, Id: 47, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:06,001 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#42, Id: 48, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:06,003 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#43, Id: 49, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:06,003 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#44, Id: 50, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:06,004 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#45, Id: 51, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:06,005 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#46, Id: 52, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:06,005 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#47, Id: 53, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:06,006 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#48, Id: 54, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:06,007 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: NPC#49, Id: 55, Priv: 0, Sess: NO_IP ) , asSpect: false
+13 Nov 2021 | 15:28:06,007 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 15:28:06,008 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#5, Id: 5, Priv: 0, Sess: 127.0.0.1:56362 ) , asSpect: false
+13 Nov 2021 | 15:28:30,259 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 57, Type: DEFAULT, Logged: No, IP: 127.0.0.1:56367 } on Server port: 9933 <---> 56367
+13 Nov 2021 | 15:28:30,290 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#56, Id: 56, Priv: 0, Sess: 127.0.0.1:56367 ) , Type: .Net
+13 Nov 2021 | 15:28:30,309 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#56, Id: 56, Priv: 0, Sess: 127.0.0.1:56367 ) , asSpect: false
+13 Nov 2021 | 15:34:07,123 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 6, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:56362 }
+13 Nov 2021 | 15:34:07,123 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#5, Id: 5, Priv: 0, Sess: 127.0.0.1:56362 ) , SessionLen: 361799, Type: .Net
+13 Nov 2021 | 15:35:17,035 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 57, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:56367 }
+13 Nov 2021 | 15:35:17,035 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#56, Id: 56, Priv: 0, Sess: 127.0.0.1:56367 ) , SessionLen: 406746, Type: .Net
+13 Nov 2021 | 15:38:14,694 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 58, Type: DEFAULT, Logged: No, IP: 127.0.0.1:54877 } on Server port: 9933 <---> 54877
+13 Nov 2021 | 15:38:14,725 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#57, Id: 57, Priv: 0, Sess: 127.0.0.1:54877 ) , Type: .Net
+13 Nov 2021 | 15:38:14,745 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#57, Id: 57, Priv: 0, Sess: 127.0.0.1:54877 ) , asSpect: false
+13 Nov 2021 | 15:38:25,102 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 59, Type: DEFAULT, Logged: No, IP: 127.0.0.1:54880 } on Server port: 9933 <---> 54880
+13 Nov 2021 | 15:38:25,138 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#58, Id: 58, Priv: 0, Sess: 127.0.0.1:54880 ) , Type: .Net
+13 Nov 2021 | 15:38:25,159 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#58, Id: 58, Priv: 0, Sess: 127.0.0.1:54880 ) , asSpect: false
+13 Nov 2021 | 15:39:02,641 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 59, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:54880 }
+13 Nov 2021 | 15:39:02,641 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#58, Id: 58, Priv: 0, Sess: 127.0.0.1:54880 ) , SessionLen: 37504, Type: .Net
+13 Nov 2021 | 15:39:03,655 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 58, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:54877 }
+13 Nov 2021 | 15:39:03,655 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#57, Id: 57, Priv: 0, Sess: 127.0.0.1:54877 ) , SessionLen: 48931, Type: .Net
+13 Nov 2021 | 15:41:03,019 | INFO  | main | smartfoxserver.v2.SmartFoxServer |     | Boot sequence starts...
+13 Nov 2021 | 15:41:03,312 | INFO  | main | v2.core.SFSEventManager |     | SFSEventManager initialized
+13 Nov 2021 | 15:41:03,328 | INFO  | main | vfs.impl.DefaultFileReplicator |     | Using "C:\Users\Vesper\AppData\Local\Temp\vfs_cache" as temporary files store.
+13 Nov 2021 | 15:41:03,372 | INFO  | main | smartfoxserver.v2.SmartFoxServer |     | License loaded:
+
+==========================================
+LICENSE DETAILS
+------------------------------------------
+Type            : Community Edition
+Max users       : 100
+==========================================
+
+13 Nov 2021 | 15:41:03,373 | INFO  | main | entities.managers.SFSBannedUserStorage |     | BanUserStorage initialized
+13 Nov 2021 | 15:41:03,382 | INFO  | main | entities.managers.SFSBannedUserManager |     | BanUser data loaded: 0 records.
+13 Nov 2021 | 15:41:03,386 | INFO  | main | smartfoxserver.v2.SmartFoxServer |     | Protocol Type is: BINARY
+13 Nov 2021 | 15:41:03,388 | INFO  | main | v2.config.DefaultConfigLoader |     | Loading: zones\BasicExamples.zone.xml
+13 Nov 2021 | 15:41:03,404 | INFO  | main | entities.managers.SFSZoneManager |     | 
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+ >> Zone: BasicExamples 
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+13 Nov 2021 | 15:41:03,427 | INFO  | main | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ Room: The Lobby, Id: 0, Group: default, isGame: false ], type = SFSRoom
+13 Nov 2021 | 15:41:03,433 | INFO  | main | entities.managers.SFSRoomManager |     | Room created: { Zone: --=={{{ AdminZone }}}==-- }, [ Room: AdminRoom, Id: 1, Group: default, isGame: false ], type = SFSRoom
+13 Nov 2021 | 15:41:03,467 | INFO  | main | v2.core.AdminToolService |     | AdminTool Service started
+13 Nov 2021 | 15:41:03,713 | INFO  | SFSWorker:Sys:1 | smartfoxserver.v2.SmartFoxServer |     | Listening Sockets: { 0.0.0.0:9933, (Tcp) } { 127.0.0.1:9933, (Udp) } 
+13 Nov 2021 | 15:41:03,715 | INFO  | SFSWorker:Sys:1 | smartfoxserver.v2.SmartFoxServer |     |  
+ _____ _____ _____    ___ __ __ 
+|   __|   __|   __|  |_  |  |  |
+|__   |   __|__   |  |  _|-   -|
+|_____|__|  |_____|  |___|__|__|                                         
+ _____ _____ _____ ____  __ __ 
+| __  |   __|  _  |    \|  |  |
+|    -|   __|     |  |  |_   _|
+|__|__|_____|__|__|____/  |_|  
+[ 2.17.0 ] 
+
+13 Nov 2021 | 15:41:03,715 | INFO  | SFSWorker:Sys:1 | smartfoxserver.v2.SmartFoxServer |     | SmartFoxServer 2X (2.17.0) READY!
+13 Nov 2021 | 15:41:05,556 | INFO  | TomcatRunner | tomcat.bluebox.BBSessionFilter |     | BlueBox Service (4.0.2) READY.
+13 Nov 2021 | 15:41:17,767 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 1, Type: DEFAULT, Logged: No, IP: 127.0.0.1:55832 } on Server port: 9933 <---> 55832
+13 Nov 2021 | 15:41:18,226 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#0, Id: 0, Priv: 0, Sess: 127.0.0.1:55832 ) , Type: .Net
+13 Nov 2021 | 15:41:18,263 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 2, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 15:41:18,265 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 2, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#0, Id: 0, Priv: 0, Sess: 127.0.0.1:55832 ) , asSpect: false
+13 Nov 2021 | 15:41:29,489 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 1, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:55832 }
+13 Nov 2021 | 15:41:29,491 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 2, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 11239
+13 Nov 2021 | 15:41:29,493 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#0, Id: 0, Priv: 0, Sess: 127.0.0.1:55832 ) , SessionLen: 11268, Type: .Net
+13 Nov 2021 | 15:48:44,492 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 2, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62627 } on Server port: 9933 <---> 62627
+13 Nov 2021 | 15:48:44,525 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#1, Id: 1, Priv: 0, Sess: 127.0.0.1:62627 ) , Type: .Net
+13 Nov 2021 | 15:48:44,548 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 3, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 15:48:44,549 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 3, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#1, Id: 1, Priv: 0, Sess: 127.0.0.1:62627 ) , asSpect: false
+13 Nov 2021 | 15:49:17,697 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 3, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62630 } on Server port: 9933 <---> 62630
+13 Nov 2021 | 15:49:35,824 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 4, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62631 } on Server port: 9933 <---> 62631
+13 Nov 2021 | 15:49:35,824 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 5, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62632 } on Server port: 9933 <---> 62632
+13 Nov 2021 | 15:49:35,824 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 6, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62633 } on Server port: 9933 <---> 62633
+13 Nov 2021 | 15:49:38,306 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#2, Id: 2, Priv: 0, Sess: 127.0.0.1:62633 ) , Type: .Net
+13 Nov 2021 | 15:49:38,321 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 3, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#2, Id: 2, Priv: 0, Sess: 127.0.0.1:62633 ) , asSpect: false
+13 Nov 2021 | 15:50:02,030 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 5, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62632 }
+13 Nov 2021 | 15:50:02,035 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 6, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:62633 }
+13 Nov 2021 | 15:50:02,035 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 4, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62631 }
+13 Nov 2021 | 15:50:02,035 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#2, Id: 2, Priv: 0, Sess: 127.0.0.1:62633 ) , SessionLen: 23729, Type: .Net
+13 Nov 2021 | 15:50:02,036 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 3, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62630 }
+13 Nov 2021 | 15:50:02,319 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 2, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:62627 }
+13 Nov 2021 | 15:50:02,320 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 3, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 77775
+13 Nov 2021 | 15:50:02,322 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#1, Id: 1, Priv: 0, Sess: 127.0.0.1:62627 ) , SessionLen: 77797, Type: .Net
+13 Nov 2021 | 15:55:03,762 | INFO  | pool-1-thread-2 | util.stats.CCULoggerTask |     | CCU stats: { Zone: --=={{{ AdminZone }}}==-- }, CCU: 0/0
+13 Nov 2021 | 15:55:03,762 | INFO  | pool-1-thread-2 | util.stats.CCULoggerTask |     | CCU stats: { Zone: BasicExamples }, CCU: 0/1
+13 Nov 2021 | 15:55:03,764 | INFO  | pool-1-thread-2 | util.stats.CCULoggerTask |     | CCU stats: CCU: 0/1
+13 Nov 2021 | 15:55:51,437 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 7, Type: DEFAULT, Logged: No, IP: 127.0.0.1:63995 } on Server port: 9933 <---> 63995
+13 Nov 2021 | 15:55:51,469 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#3, Id: 3, Priv: 0, Sess: 127.0.0.1:63995 ) , Type: .Net
+13 Nov 2021 | 15:55:51,497 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 4, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 15:55:51,497 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 4, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#3, Id: 3, Priv: 0, Sess: 127.0.0.1:63995 ) , asSpect: false
+13 Nov 2021 | 15:55:58,051 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 8, Type: DEFAULT, Logged: No, IP: 127.0.0.1:63996 } on Server port: 9933 <---> 63996
+13 Nov 2021 | 15:55:58,077 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#4, Id: 4, Priv: 0, Sess: 127.0.0.1:63996 ) , Type: .Net
+13 Nov 2021 | 15:55:58,091 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 4, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#4, Id: 4, Priv: 0, Sess: 127.0.0.1:63996 ) , asSpect: false
+13 Nov 2021 | 15:56:44,641 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 7, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:63995 }
+13 Nov 2021 | 15:56:44,642 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#3, Id: 3, Priv: 0, Sess: 127.0.0.1:63995 ) , SessionLen: 53173, Type: .Net
+13 Nov 2021 | 15:56:45,238 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 8, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:63996 }
+13 Nov 2021 | 15:56:45,238 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 4, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 53744
+13 Nov 2021 | 15:56:45,240 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#4, Id: 4, Priv: 0, Sess: 127.0.0.1:63996 ) , SessionLen: 47164, Type: .Net
+13 Nov 2021 | 15:57:48,914 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 9, Type: DEFAULT, Logged: No, IP: 127.0.0.1:64013 } on Server port: 9933 <---> 64013
+13 Nov 2021 | 15:57:48,945 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#5, Id: 5, Priv: 0, Sess: 127.0.0.1:64013 ) , Type: .Net
+13 Nov 2021 | 15:57:48,973 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 15:57:48,974 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#5, Id: 5, Priv: 0, Sess: 127.0.0.1:64013 ) , asSpect: false
+13 Nov 2021 | 15:57:53,680 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 10, Type: DEFAULT, Logged: No, IP: 127.0.0.1:64014 } on Server port: 9933 <---> 64014
+13 Nov 2021 | 15:57:53,711 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#6, Id: 6, Priv: 0, Sess: 127.0.0.1:64014 ) , Type: .Net
+13 Nov 2021 | 15:57:53,730 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#6, Id: 6, Priv: 0, Sess: 127.0.0.1:64014 ) , asSpect: false
+13 Nov 2021 | 15:58:22,972 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 10, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:64014 }
+13 Nov 2021 | 15:58:22,972 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#6, Id: 6, Priv: 0, Sess: 127.0.0.1:64014 ) , SessionLen: 29262, Type: .Net
+13 Nov 2021 | 15:58:23,711 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 9, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:64013 }
+13 Nov 2021 | 15:58:23,711 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 5, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 34741
+13 Nov 2021 | 15:58:23,713 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#5, Id: 5, Priv: 0, Sess: 127.0.0.1:64013 ) , SessionLen: 34768, Type: .Net
+13 Nov 2021 | 16:00:27,831 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 11, Type: DEFAULT, Logged: No, IP: 127.0.0.1:64030 } on Server port: 9933 <---> 64030
+13 Nov 2021 | 16:00:27,867 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#7, Id: 7, Priv: 0, Sess: 127.0.0.1:64030 ) , Type: .Net
+13 Nov 2021 | 16:00:27,894 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 6, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 16:00:27,895 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 6, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#7, Id: 7, Priv: 0, Sess: 127.0.0.1:64030 ) , asSpect: false
+13 Nov 2021 | 16:00:33,902 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 12, Type: DEFAULT, Logged: No, IP: 127.0.0.1:59747 } on Server port: 9933 <---> 59747
+13 Nov 2021 | 16:00:33,924 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#8, Id: 8, Priv: 0, Sess: 127.0.0.1:59747 ) , Type: .Net
+13 Nov 2021 | 16:00:33,943 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 6, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#8, Id: 8, Priv: 0, Sess: 127.0.0.1:59747 ) , asSpect: false
+13 Nov 2021 | 16:04:15,781 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 11, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:64030 }
+13 Nov 2021 | 16:04:15,782 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#7, Id: 7, Priv: 0, Sess: 127.0.0.1:64030 ) , SessionLen: 227915, Type: .Net
+13 Nov 2021 | 16:04:16,269 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 12, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:59747 }
+13 Nov 2021 | 16:04:16,269 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 6, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 228377
+13 Nov 2021 | 16:04:16,272 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#8, Id: 8, Priv: 0, Sess: 127.0.0.1:59747 ) , SessionLen: 222349, Type: .Net
+13 Nov 2021 | 16:04:42,146 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 13, Type: DEFAULT, Logged: No, IP: 127.0.0.1:61666 } on Server port: 9933 <---> 61666
+13 Nov 2021 | 16:04:42,176 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#9, Id: 9, Priv: 0, Sess: 127.0.0.1:61666 ) , Type: .Net
+13 Nov 2021 | 16:04:42,199 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 7, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 16:04:42,200 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 7, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#9, Id: 9, Priv: 0, Sess: 127.0.0.1:61666 ) , asSpect: false
+13 Nov 2021 | 16:04:47,268 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 14, Type: DEFAULT, Logged: No, IP: 127.0.0.1:61667 } on Server port: 9933 <---> 61667
+13 Nov 2021 | 16:04:47,298 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#10, Id: 10, Priv: 0, Sess: 127.0.0.1:61667 ) , Type: .Net
+13 Nov 2021 | 16:04:47,319 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 7, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#10, Id: 10, Priv: 0, Sess: 127.0.0.1:61667 ) , asSpect: false
+13 Nov 2021 | 16:05:35,453 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 13, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:61666 }
+13 Nov 2021 | 16:05:35,454 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#9, Id: 9, Priv: 0, Sess: 127.0.0.1:61666 ) , SessionLen: 53278, Type: .Net
+13 Nov 2021 | 16:05:36,176 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 14, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:61667 }
+13 Nov 2021 | 16:05:36,176 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 7, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 53980
+13 Nov 2021 | 16:05:36,177 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#10, Id: 10, Priv: 0, Sess: 127.0.0.1:61667 ) , SessionLen: 48879, Type: .Net
+13 Nov 2021 | 16:06:55,021 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 15, Type: DEFAULT, Logged: No, IP: 127.0.0.1:61697 } on Server port: 9933 <---> 61697
+13 Nov 2021 | 16:06:55,047 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#11, Id: 11, Priv: 0, Sess: 127.0.0.1:61697 ) , Type: .Net
+13 Nov 2021 | 16:06:55,074 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 8, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 16:06:55,075 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 8, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#11, Id: 11, Priv: 0, Sess: 127.0.0.1:61697 ) , asSpect: false
+13 Nov 2021 | 16:07:00,619 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 16, Type: DEFAULT, Logged: No, IP: 127.0.0.1:61701 } on Server port: 9933 <---> 61701
+13 Nov 2021 | 16:07:00,649 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#12, Id: 12, Priv: 0, Sess: 127.0.0.1:61701 ) , Type: .Net
+13 Nov 2021 | 16:07:00,669 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 8, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#12, Id: 12, Priv: 0, Sess: 127.0.0.1:61701 ) , asSpect: false
+13 Nov 2021 | 16:07:23,456 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 16, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:61701 }
+13 Nov 2021 | 16:07:23,456 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#12, Id: 12, Priv: 0, Sess: 127.0.0.1:61701 ) , SessionLen: 22807, Type: .Net
+13 Nov 2021 | 16:07:24,608 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 15, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:61697 }
+13 Nov 2021 | 16:07:24,608 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 8, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 29536
+13 Nov 2021 | 16:07:24,610 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#11, Id: 11, Priv: 0, Sess: 127.0.0.1:61697 ) , SessionLen: 29563, Type: .Net
+13 Nov 2021 | 16:10:07,617 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 17, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62464 } on Server port: 9933 <---> 62464
+13 Nov 2021 | 16:10:07,648 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#13, Id: 13, Priv: 0, Sess: 127.0.0.1:62464 ) , Type: .Net
+13 Nov 2021 | 16:10:07,674 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 9, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 16:10:07,675 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 9, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#13, Id: 13, Priv: 0, Sess: 127.0.0.1:62464 ) , asSpect: false
+13 Nov 2021 | 16:10:22,629 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 18, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62470 } on Server port: 9933 <---> 62470
+13 Nov 2021 | 16:10:22,659 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#14, Id: 14, Priv: 0, Sess: 127.0.0.1:62470 ) , Type: .Net
+13 Nov 2021 | 16:10:22,684 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 9, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#14, Id: 14, Priv: 0, Sess: 127.0.0.1:62470 ) , asSpect: false
+13 Nov 2021 | 16:11:05,707 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 17, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:62464 }
+13 Nov 2021 | 16:11:05,707 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#13, Id: 13, Priv: 0, Sess: 127.0.0.1:62464 ) , SessionLen: 58060, Type: .Net
+13 Nov 2021 | 16:11:06,167 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 18, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:62470 }
+13 Nov 2021 | 16:11:06,167 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 9, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 58495
+13 Nov 2021 | 16:11:06,169 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#14, Id: 14, Priv: 0, Sess: 127.0.0.1:62470 ) , SessionLen: 43509, Type: .Net
+13 Nov 2021 | 16:14:04,922 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 19, Type: DEFAULT, Logged: No, IP: 127.0.0.1:49354 } on Server port: 9933 <---> 49354
+13 Nov 2021 | 16:14:04,953 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#15, Id: 15, Priv: 0, Sess: 127.0.0.1:49354 ) , Type: .Net
+13 Nov 2021 | 16:14:04,980 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 10, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 16:14:04,981 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 10, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#15, Id: 15, Priv: 0, Sess: 127.0.0.1:49354 ) , asSpect: false
+13 Nov 2021 | 16:14:27,995 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 20, Type: DEFAULT, Logged: No, IP: 127.0.0.1:49359 } on Server port: 9933 <---> 49359
+13 Nov 2021 | 16:14:28,025 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#16, Id: 16, Priv: 0, Sess: 127.0.0.1:49359 ) , Type: .Net
+13 Nov 2021 | 16:14:28,046 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 10, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#16, Id: 16, Priv: 0, Sess: 127.0.0.1:49359 ) , asSpect: false
+13 Nov 2021 | 16:14:59,288 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 20, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:49359 }
+13 Nov 2021 | 16:14:59,288 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#16, Id: 16, Priv: 0, Sess: 127.0.0.1:49359 ) , SessionLen: 31263, Type: .Net
+13 Nov 2021 | 16:14:59,746 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 19, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:49354 }
+13 Nov 2021 | 16:14:59,747 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 10, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 54770
+13 Nov 2021 | 16:14:59,748 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#15, Id: 15, Priv: 0, Sess: 127.0.0.1:49354 ) , SessionLen: 54795, Type: .Net
+13 Nov 2021 | 16:16:32,416 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 21, Type: DEFAULT, Logged: No, IP: 127.0.0.1:65339 } on Server port: 9933 <---> 65339
+13 Nov 2021 | 16:16:32,447 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#17, Id: 17, Priv: 0, Sess: 127.0.0.1:65339 ) , Type: .Net
+13 Nov 2021 | 16:16:32,474 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 11, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 16:16:32,475 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 11, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#17, Id: 17, Priv: 0, Sess: 127.0.0.1:65339 ) , asSpect: false
+13 Nov 2021 | 16:16:48,794 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 22, Type: DEFAULT, Logged: No, IP: 127.0.0.1:49341 } on Server port: 9933 <---> 49341
+13 Nov 2021 | 16:16:48,820 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#18, Id: 18, Priv: 0, Sess: 127.0.0.1:49341 ) , Type: .Net
+13 Nov 2021 | 16:16:48,834 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 11, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#18, Id: 18, Priv: 0, Sess: 127.0.0.1:49341 ) , asSpect: false
+13 Nov 2021 | 16:18:31,351 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 21, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:65339 }
+13 Nov 2021 | 16:18:31,352 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#17, Id: 17, Priv: 0, Sess: 127.0.0.1:65339 ) , SessionLen: 118905, Type: .Net
+13 Nov 2021 | 16:18:31,824 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 22, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:49341 }
+13 Nov 2021 | 16:18:31,824 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 11, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 119352
+13 Nov 2021 | 16:18:31,825 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#18, Id: 18, Priv: 0, Sess: 127.0.0.1:49341 ) , SessionLen: 103006, Type: .Net
+13 Nov 2021 | 16:18:50,564 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 23, Type: DEFAULT, Logged: No, IP: 127.0.0.1:49368 } on Server port: 9933 <---> 49368
+13 Nov 2021 | 16:18:50,595 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#19, Id: 19, Priv: 0, Sess: 127.0.0.1:49368 ) , Type: .Net
+13 Nov 2021 | 16:18:50,617 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 12, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 16:18:50,618 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 12, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#19, Id: 19, Priv: 0, Sess: 127.0.0.1:49368 ) , asSpect: false
+13 Nov 2021 | 16:19:15,572 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 24, Type: DEFAULT, Logged: No, IP: 127.0.0.1:49500 } on Server port: 9933 <---> 49500
+13 Nov 2021 | 16:19:15,598 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#20, Id: 20, Priv: 0, Sess: 127.0.0.1:49500 ) , Type: .Net
+13 Nov 2021 | 16:19:15,618 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 12, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#20, Id: 20, Priv: 0, Sess: 127.0.0.1:49500 ) , asSpect: false
+13 Nov 2021 | 16:19:49,042 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 24, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:49500 }
+13 Nov 2021 | 16:19:49,042 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#20, Id: 20, Priv: 0, Sess: 127.0.0.1:49500 ) , SessionLen: 33445, Type: .Net
+13 Nov 2021 | 16:19:49,679 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 23, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:49368 }
+13 Nov 2021 | 16:19:49,679 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 12, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 59065
+13 Nov 2021 | 16:19:49,681 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#19, Id: 19, Priv: 0, Sess: 127.0.0.1:49368 ) , SessionLen: 59086, Type: .Net
+13 Nov 2021 | 16:22:53,752 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 25, Type: DEFAULT, Logged: No, IP: 127.0.0.1:50791 } on Server port: 9933 <---> 50791
+13 Nov 2021 | 16:22:53,788 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#21, Id: 21, Priv: 0, Sess: 127.0.0.1:50791 ) , Type: .Net
+13 Nov 2021 | 16:22:53,811 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 13, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 16:22:53,811 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 13, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#21, Id: 21, Priv: 0, Sess: 127.0.0.1:50791 ) , asSpect: false
+13 Nov 2021 | 16:23:05,874 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 26, Type: DEFAULT, Logged: No, IP: 127.0.0.1:50793 } on Server port: 9933 <---> 50793
+13 Nov 2021 | 16:23:05,900 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#22, Id: 22, Priv: 0, Sess: 127.0.0.1:50793 ) , Type: .Net
+13 Nov 2021 | 16:23:05,915 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 13, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#22, Id: 22, Priv: 0, Sess: 127.0.0.1:50793 ) , asSpect: false
+13 Nov 2021 | 16:25:32,223 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 25, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:50791 }
+13 Nov 2021 | 16:25:32,224 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#21, Id: 21, Priv: 0, Sess: 127.0.0.1:50791 ) , SessionLen: 158437, Type: .Net
+13 Nov 2021 | 16:25:34,044 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 26, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:50793 }
+13 Nov 2021 | 16:25:34,044 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 13, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 160237
+13 Nov 2021 | 16:25:34,046 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#22, Id: 22, Priv: 0, Sess: 127.0.0.1:50793 ) , SessionLen: 148146, Type: .Net
+13 Nov 2021 | 16:37:08,353 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 27, Type: DEFAULT, Logged: No, IP: 127.0.0.1:60454 } on Server port: 9933 <---> 60454
+13 Nov 2021 | 16:37:08,379 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#23, Id: 23, Priv: 0, Sess: 127.0.0.1:60454 ) , Type: .Net
+13 Nov 2021 | 16:37:08,403 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 14, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 16:37:08,404 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 14, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#23, Id: 23, Priv: 0, Sess: 127.0.0.1:60454 ) , asSpect: false
+13 Nov 2021 | 16:37:09,729 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 28, Type: DEFAULT, Logged: No, IP: 127.0.0.1:60455 } on Server port: 9933 <---> 60455
+13 Nov 2021 | 16:37:09,759 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#24, Id: 24, Priv: 0, Sess: 127.0.0.1:60455 ) , Type: .Net
+13 Nov 2021 | 16:37:09,779 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 14, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#24, Id: 24, Priv: 0, Sess: 127.0.0.1:60455 ) , asSpect: false
+13 Nov 2021 | 16:37:47,668 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 27, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:60454 }
+13 Nov 2021 | 16:37:47,668 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#23, Id: 23, Priv: 0, Sess: 127.0.0.1:60454 ) , SessionLen: 39289, Type: .Net
+13 Nov 2021 | 16:37:48,607 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 28, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:60455 }
+13 Nov 2021 | 16:37:48,607 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 14, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 40208
+13 Nov 2021 | 16:37:48,608 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#24, Id: 24, Priv: 0, Sess: 127.0.0.1:60455 ) , SessionLen: 38849, Type: .Net
+13 Nov 2021 | 16:43:25,398 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 29, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57419 } on Server port: 9933 <---> 57419
+13 Nov 2021 | 16:43:25,423 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#25, Id: 25, Priv: 0, Sess: 127.0.0.1:57419 ) , Type: .Net
+13 Nov 2021 | 16:43:25,447 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 15, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 16:43:25,448 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 15, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#25, Id: 25, Priv: 0, Sess: 127.0.0.1:57419 ) , asSpect: false
+13 Nov 2021 | 16:43:49,573 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 30, Type: DEFAULT, Logged: No, IP: 127.0.0.1:59898 } on Server port: 9933 <---> 59898
+13 Nov 2021 | 16:43:49,599 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#26, Id: 26, Priv: 0, Sess: 127.0.0.1:59898 ) , Type: .Net
+13 Nov 2021 | 16:43:49,618 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 15, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#26, Id: 26, Priv: 0, Sess: 127.0.0.1:59898 ) , asSpect: false
+13 Nov 2021 | 16:45:38,387 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 30, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:59898 }
+13 Nov 2021 | 16:45:38,387 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#26, Id: 26, Priv: 0, Sess: 127.0.0.1:59898 ) , SessionLen: 108789, Type: .Net
+13 Nov 2021 | 16:47:29,917 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 31, Type: DEFAULT, Logged: No, IP: 127.0.0.1:64242 } on Server port: 9933 <---> 64242
+13 Nov 2021 | 16:47:29,942 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#27, Id: 27, Priv: 0, Sess: 127.0.0.1:64242 ) , Type: .Net
+13 Nov 2021 | 16:47:29,957 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 15, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#27, Id: 27, Priv: 0, Sess: 127.0.0.1:64242 ) , asSpect: false
+13 Nov 2021 | 16:48:28,104 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 31, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:64242 }
+13 Nov 2021 | 16:48:28,104 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#27, Id: 27, Priv: 0, Sess: 127.0.0.1:64242 ) , SessionLen: 58162, Type: .Net
+13 Nov 2021 | 16:48:28,571 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 29, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57419 }
+13 Nov 2021 | 16:48:28,571 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 15, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 303128
+13 Nov 2021 | 16:48:28,573 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#25, Id: 25, Priv: 0, Sess: 127.0.0.1:57419 ) , SessionLen: 303150, Type: .Net
+13 Nov 2021 | 16:55:03,717 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: { Zone: --=={{{ AdminZone }}}==-- }, CCU: 0/0
+13 Nov 2021 | 16:55:03,717 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: { Zone: BasicExamples }, CCU: 0/2
+13 Nov 2021 | 16:55:03,718 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: CCU: 0/2
+13 Nov 2021 | 16:57:45,782 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 32, Type: DEFAULT, Logged: No, IP: 127.0.0.1:51169 } on Server port: 9933 <---> 51169
+13 Nov 2021 | 16:57:45,818 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#28, Id: 28, Priv: 0, Sess: 127.0.0.1:51169 ) , Type: .Net
+13 Nov 2021 | 16:57:45,840 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 16, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 16:57:45,841 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 16, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#28, Id: 28, Priv: 0, Sess: 127.0.0.1:51169 ) , asSpect: false
+13 Nov 2021 | 16:57:51,534 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 33, Type: DEFAULT, Logged: No, IP: 127.0.0.1:51170 } on Server port: 9933 <---> 51170
+13 Nov 2021 | 16:57:51,559 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#29, Id: 29, Priv: 0, Sess: 127.0.0.1:51170 ) , Type: .Net
+13 Nov 2021 | 16:57:51,574 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 16, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#29, Id: 29, Priv: 0, Sess: 127.0.0.1:51170 ) , asSpect: false
+13 Nov 2021 | 16:59:06,344 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 32, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:51169 }
+13 Nov 2021 | 16:59:06,344 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 33, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:51170 }
+13 Nov 2021 | 16:59:06,344 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#28, Id: 28, Priv: 0, Sess: 127.0.0.1:51169 ) , SessionLen: 80527, Type: .Net
+13 Nov 2021 | 16:59:06,345 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 16, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 80507
+13 Nov 2021 | 16:59:06,347 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#29, Id: 29, Priv: 0, Sess: 127.0.0.1:51170 ) , SessionLen: 74788, Type: .Net
+13 Nov 2021 | 17:01:27,911 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 34, Type: DEFAULT, Logged: No, IP: 127.0.0.1:63224 } on Server port: 9933 <---> 63224
+13 Nov 2021 | 17:01:27,936 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#30, Id: 30, Priv: 0, Sess: 127.0.0.1:63224 ) , Type: .Net
+13 Nov 2021 | 17:01:27,959 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 17, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 17:01:27,961 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 17, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#30, Id: 30, Priv: 0, Sess: 127.0.0.1:63224 ) , asSpect: false
+13 Nov 2021 | 17:01:33,865 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 35, Type: DEFAULT, Logged: No, IP: 127.0.0.1:52744 } on Server port: 9933 <---> 52744
+13 Nov 2021 | 17:01:33,890 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#31, Id: 31, Priv: 0, Sess: 127.0.0.1:52744 ) , Type: .Net
+13 Nov 2021 | 17:01:33,906 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 17, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#31, Id: 31, Priv: 0, Sess: 127.0.0.1:52744 ) , asSpect: false
+13 Nov 2021 | 17:02:38,051 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 34, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:63224 }
+13 Nov 2021 | 17:02:38,052 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#30, Id: 30, Priv: 0, Sess: 127.0.0.1:63224 ) , SessionLen: 70116, Type: .Net
+13 Nov 2021 | 17:02:38,541 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 35, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:52744 }
+13 Nov 2021 | 17:02:38,541 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 17, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 70585
+13 Nov 2021 | 17:02:38,543 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#31, Id: 31, Priv: 0, Sess: 127.0.0.1:52744 ) , SessionLen: 64653, Type: .Net
+13 Nov 2021 | 17:03:37,013 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 36, Type: DEFAULT, Logged: No, IP: 127.0.0.1:49491 } on Server port: 9933 <---> 49491
+13 Nov 2021 | 17:03:37,044 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#32, Id: 32, Priv: 0, Sess: 127.0.0.1:49491 ) , Type: .Net
+13 Nov 2021 | 17:03:37,066 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 18, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 17:03:37,067 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 18, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#32, Id: 32, Priv: 0, Sess: 127.0.0.1:49491 ) , asSpect: false
+13 Nov 2021 | 17:03:41,061 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 37, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57884 } on Server port: 9933 <---> 57884
+13 Nov 2021 | 17:03:41,086 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#33, Id: 33, Priv: 0, Sess: 127.0.0.1:57884 ) , Type: .Net
+13 Nov 2021 | 17:03:41,101 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 18, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#33, Id: 33, Priv: 0, Sess: 127.0.0.1:57884 ) , asSpect: false
+13 Nov 2021 | 17:05:04,181 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 37, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57884 }
+13 Nov 2021 | 17:05:04,181 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#33, Id: 33, Priv: 0, Sess: 127.0.0.1:57884 ) , SessionLen: 83095, Type: .Net
+13 Nov 2021 | 17:05:04,186 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 36, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:49491 }
+13 Nov 2021 | 17:05:04,186 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 18, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 87123
+13 Nov 2021 | 17:05:04,187 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#32, Id: 32, Priv: 0, Sess: 127.0.0.1:49491 ) , SessionLen: 87143, Type: .Net
+13 Nov 2021 | 17:06:40,705 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 38, Type: DEFAULT, Logged: No, IP: 127.0.0.1:65237 } on Server port: 9933 <---> 65237
+13 Nov 2021 | 17:06:40,730 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#34, Id: 34, Priv: 0, Sess: 127.0.0.1:65237 ) , Type: .Net
+13 Nov 2021 | 17:06:40,750 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 19, Group: default, AOI: (100.0, 100.0, 100.0) ], type = MMORoom
+13 Nov 2021 | 17:06:40,751 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 19, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#34, Id: 34, Priv: 0, Sess: 127.0.0.1:65237 ) , asSpect: false
+13 Nov 2021 | 17:06:54,591 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 39, Type: DEFAULT, Logged: No, IP: 127.0.0.1:65240 } on Server port: 9933 <---> 65240
+13 Nov 2021 | 17:06:54,631 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#35, Id: 35, Priv: 0, Sess: 127.0.0.1:65240 ) , Type: .Net
+13 Nov 2021 | 17:06:54,652 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 19, Group: default, AOI: (100.0, 100.0, 100.0) ], { Zone: BasicExamples }, ( User Name: Guest#35, Id: 35, Priv: 0, Sess: 127.0.0.1:65240 ) , asSpect: false
+13 Nov 2021 | 17:07:21,838 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 39, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:65240 }
+13 Nov 2021 | 17:07:21,838 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#35, Id: 35, Priv: 0, Sess: 127.0.0.1:65240 ) , SessionLen: 27207, Type: .Net
+13 Nov 2021 | 17:07:22,283 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 38, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:65237 }
+13 Nov 2021 | 17:07:22,283 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 19, Group: default, AOI: (100.0, 100.0, 100.0) ], Duration: 41538
+13 Nov 2021 | 17:07:22,285 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#34, Id: 34, Priv: 0, Sess: 127.0.0.1:65237 ) , SessionLen: 41555, Type: .Net
+13 Nov 2021 | 17:08:39,440 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 40, Type: DEFAULT, Logged: No, IP: 127.0.0.1:65267 } on Server port: 9933 <---> 65267
+13 Nov 2021 | 17:08:39,471 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#36, Id: 36, Priv: 0, Sess: 127.0.0.1:65267 ) , Type: .Net
+13 Nov 2021 | 17:08:39,493 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 20, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 17:08:39,493 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 20, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#36, Id: 36, Priv: 0, Sess: 127.0.0.1:65267 ) , asSpect: false
+13 Nov 2021 | 17:08:47,576 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 41, Type: DEFAULT, Logged: No, IP: 127.0.0.1:65268 } on Server port: 9933 <---> 65268
+13 Nov 2021 | 17:08:47,597 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#37, Id: 37, Priv: 0, Sess: 127.0.0.1:65268 ) , Type: .Net
+13 Nov 2021 | 17:08:47,613 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 20, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#37, Id: 37, Priv: 0, Sess: 127.0.0.1:65268 ) , asSpect: false
+13 Nov 2021 | 17:09:16,207 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 41, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:65268 }
+13 Nov 2021 | 17:09:16,207 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#37, Id: 37, Priv: 0, Sess: 127.0.0.1:65268 ) , SessionLen: 28610, Type: .Net
+13 Nov 2021 | 17:09:16,553 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 40, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:65267 }
+13 Nov 2021 | 17:09:16,553 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 20, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 37063
+13 Nov 2021 | 17:09:16,554 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#36, Id: 36, Priv: 0, Sess: 127.0.0.1:65267 ) , SessionLen: 37084, Type: .Net
+13 Nov 2021 | 17:15:36,466 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 42, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57136 } on Server port: 9933 <---> 57136
+13 Nov 2021 | 17:15:36,497 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#38, Id: 38, Priv: 0, Sess: 127.0.0.1:57136 ) , Type: .Net
+13 Nov 2021 | 17:15:36,526 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 21, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 17:15:36,527 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 21, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#38, Id: 38, Priv: 0, Sess: 127.0.0.1:57136 ) , asSpect: false
+13 Nov 2021 | 17:15:40,170 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 43, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57137 } on Server port: 9933 <---> 57137
+13 Nov 2021 | 17:15:40,200 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#39, Id: 39, Priv: 0, Sess: 127.0.0.1:57137 ) , Type: .Net
+13 Nov 2021 | 17:15:40,221 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 21, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#39, Id: 39, Priv: 0, Sess: 127.0.0.1:57137 ) , asSpect: false
+13 Nov 2021 | 17:16:10,761 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 43, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57137 }
+13 Nov 2021 | 17:16:10,761 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#39, Id: 39, Priv: 0, Sess: 127.0.0.1:57137 ) , SessionLen: 30561, Type: .Net
+13 Nov 2021 | 17:16:11,232 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 42, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57136 }
+13 Nov 2021 | 17:16:11,232 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 21, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 34709
+13 Nov 2021 | 17:16:11,233 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#38, Id: 38, Priv: 0, Sess: 127.0.0.1:57136 ) , SessionLen: 34736, Type: .Net
+13 Nov 2021 | 17:33:12,332 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 44, Type: DEFAULT, Logged: No, IP: 127.0.0.1:64843 } on Server port: 9933 <---> 64843
+13 Nov 2021 | 17:33:12,357 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#40, Id: 40, Priv: 0, Sess: 127.0.0.1:64843 ) , Type: .Net
+13 Nov 2021 | 17:33:12,381 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 22, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 17:33:12,382 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 22, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#40, Id: 40, Priv: 0, Sess: 127.0.0.1:64843 ) , asSpect: false
+13 Nov 2021 | 17:33:15,352 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 45, Type: DEFAULT, Logged: No, IP: 127.0.0.1:64844 } on Server port: 9933 <---> 64844
+13 Nov 2021 | 17:33:15,382 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#41, Id: 41, Priv: 0, Sess: 127.0.0.1:64844 ) , Type: .Net
+13 Nov 2021 | 17:33:15,404 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 22, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#41, Id: 41, Priv: 0, Sess: 127.0.0.1:64844 ) , asSpect: false
+13 Nov 2021 | 17:35:59,635 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 44, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:64843 }
+13 Nov 2021 | 17:35:59,635 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#40, Id: 40, Priv: 0, Sess: 127.0.0.1:64843 ) , SessionLen: 167278, Type: .Net
+13 Nov 2021 | 17:36:00,293 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 45, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:64844 }
+13 Nov 2021 | 17:36:00,293 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 22, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 167915
+13 Nov 2021 | 17:36:00,295 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#41, Id: 41, Priv: 0, Sess: 127.0.0.1:64844 ) , SessionLen: 164913, Type: .Net
+13 Nov 2021 | 17:36:27,667 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 46, Type: DEFAULT, Logged: No, IP: 127.0.0.1:58017 } on Server port: 9933 <---> 58017
+13 Nov 2021 | 17:36:27,693 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#42, Id: 42, Priv: 0, Sess: 127.0.0.1:58017 ) , Type: .Net
+13 Nov 2021 | 17:36:27,716 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 23, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 17:36:27,717 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 23, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#42, Id: 42, Priv: 0, Sess: 127.0.0.1:58017 ) , asSpect: false
+13 Nov 2021 | 17:36:30,772 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 47, Type: DEFAULT, Logged: No, IP: 127.0.0.1:58018 } on Server port: 9933 <---> 58018
+13 Nov 2021 | 17:36:30,793 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#43, Id: 43, Priv: 0, Sess: 127.0.0.1:58018 ) , Type: .Net
+13 Nov 2021 | 17:36:30,808 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 23, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#43, Id: 43, Priv: 0, Sess: 127.0.0.1:58018 ) , asSpect: false
+13 Nov 2021 | 17:37:01,852 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 47, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:58018 }
+13 Nov 2021 | 17:37:01,852 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#43, Id: 43, Priv: 0, Sess: 127.0.0.1:58018 ) , SessionLen: 31059, Type: .Net
+13 Nov 2021 | 17:37:02,221 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 46, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:58017 }
+13 Nov 2021 | 17:37:02,222 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 23, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 34509
+13 Nov 2021 | 17:37:02,223 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#42, Id: 42, Priv: 0, Sess: 127.0.0.1:58017 ) , SessionLen: 34530, Type: .Net
+13 Nov 2021 | 17:38:30,105 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 48, Type: DEFAULT, Logged: No, IP: 127.0.0.1:54211 } on Server port: 9933 <---> 54211
+13 Nov 2021 | 17:38:30,125 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#44, Id: 44, Priv: 0, Sess: 127.0.0.1:54211 ) , Type: .Net
+13 Nov 2021 | 17:38:30,148 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 24, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 17:38:30,148 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 24, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#44, Id: 44, Priv: 0, Sess: 127.0.0.1:54211 ) , asSpect: false
+13 Nov 2021 | 17:38:35,186 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 49, Type: DEFAULT, Logged: No, IP: 127.0.0.1:54212 } on Server port: 9933 <---> 54212
+13 Nov 2021 | 17:38:35,217 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#45, Id: 45, Priv: 0, Sess: 127.0.0.1:54212 ) , Type: .Net
+13 Nov 2021 | 17:38:35,241 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 24, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#45, Id: 45, Priv: 0, Sess: 127.0.0.1:54212 ) , asSpect: false
+13 Nov 2021 | 17:40:18,581 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 48, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:54211 }
+13 Nov 2021 | 17:40:18,581 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#44, Id: 44, Priv: 0, Sess: 127.0.0.1:54211 ) , SessionLen: 108456, Type: .Net
+13 Nov 2021 | 17:40:18,882 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 49, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:54212 }
+13 Nov 2021 | 17:40:18,882 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 24, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 108737
+13 Nov 2021 | 17:40:18,884 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#45, Id: 45, Priv: 0, Sess: 127.0.0.1:54212 ) , SessionLen: 103668, Type: .Net
+13 Nov 2021 | 17:40:50,403 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 50, Type: DEFAULT, Logged: No, IP: 127.0.0.1:55218 } on Server port: 9933 <---> 55218
+13 Nov 2021 | 17:40:50,433 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#46, Id: 46, Priv: 0, Sess: 127.0.0.1:55218 ) , Type: .Net
+13 Nov 2021 | 17:40:50,457 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 25, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 17:40:50,457 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 25, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#46, Id: 46, Priv: 0, Sess: 127.0.0.1:55218 ) , asSpect: false
+13 Nov 2021 | 17:40:53,809 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 51, Type: DEFAULT, Logged: No, IP: 127.0.0.1:55219 } on Server port: 9933 <---> 55219
+13 Nov 2021 | 17:40:53,839 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#47, Id: 47, Priv: 0, Sess: 127.0.0.1:55219 ) , Type: .Net
+13 Nov 2021 | 17:40:53,859 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 25, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#47, Id: 47, Priv: 0, Sess: 127.0.0.1:55219 ) , asSpect: false
+13 Nov 2021 | 17:41:33,280 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 51, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:55219 }
+13 Nov 2021 | 17:41:33,280 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#47, Id: 47, Priv: 0, Sess: 127.0.0.1:55219 ) , SessionLen: 39441, Type: .Net
+13 Nov 2021 | 17:41:33,938 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 50, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:55218 }
+13 Nov 2021 | 17:41:33,938 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 25, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 43485
+13 Nov 2021 | 17:41:33,940 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#46, Id: 46, Priv: 0, Sess: 127.0.0.1:55218 ) , SessionLen: 43506, Type: .Net
+13 Nov 2021 | 17:55:03,718 | INFO  | pool-1-thread-4 | util.stats.CCULoggerTask |     | CCU stats: { Zone: --=={{{ AdminZone }}}==-- }, CCU: 0/0
+13 Nov 2021 | 17:55:03,718 | INFO  | pool-1-thread-4 | util.stats.CCULoggerTask |     | CCU stats: { Zone: BasicExamples }, CCU: 0/2
+13 Nov 2021 | 17:55:03,719 | INFO  | pool-1-thread-4 | util.stats.CCULoggerTask |     | CCU stats: CCU: 0/2
+13 Nov 2021 | 18:55:03,717 | INFO  | pool-1-thread-2 | util.stats.CCULoggerTask |     | CCU stats: { Zone: --=={{{ AdminZone }}}==-- }, CCU: 0/0
+13 Nov 2021 | 18:55:03,717 | INFO  | pool-1-thread-2 | util.stats.CCULoggerTask |     | CCU stats: { Zone: BasicExamples }, CCU: 0/0
+13 Nov 2021 | 18:55:03,719 | INFO  | pool-1-thread-2 | util.stats.CCULoggerTask |     | CCU stats: CCU: 0/0
+13 Nov 2021 | 19:55:03,729 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: { Zone: --=={{{ AdminZone }}}==-- }, CCU: 0/0
+13 Nov 2021 | 19:55:03,729 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: { Zone: BasicExamples }, CCU: 0/0
+13 Nov 2021 | 19:55:03,730 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: CCU: 0/0
+13 Nov 2021 | 20:55:05,904 | INFO  | pool-1-thread-4 | util.stats.CCULoggerTask |     | CCU stats: { Zone: --=={{{ AdminZone }}}==-- }, CCU: 0/0
+13 Nov 2021 | 20:55:05,905 | INFO  | pool-1-thread-4 | util.stats.CCULoggerTask |     | CCU stats: { Zone: BasicExamples }, CCU: 0/0
+13 Nov 2021 | 20:55:05,906 | INFO  | pool-1-thread-4 | util.stats.CCULoggerTask |     | CCU stats: CCU: 0/0
+13 Nov 2021 | 21:06:47,184 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 52, Type: DEFAULT, Logged: No, IP: 127.0.0.1:52416 } on Server port: 9933 <---> 52416
+13 Nov 2021 | 21:06:47,213 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#48, Id: 48, Priv: 0, Sess: 127.0.0.1:52416 ) , Type: .Net
+13 Nov 2021 | 21:06:47,249 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 26, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 21:06:47,250 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 26, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#48, Id: 48, Priv: 0, Sess: 127.0.0.1:52416 ) , asSpect: false
+13 Nov 2021 | 21:06:49,156 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 53, Type: DEFAULT, Logged: No, IP: 127.0.0.1:52417 } on Server port: 9933 <---> 52417
+13 Nov 2021 | 21:06:49,187 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#49, Id: 49, Priv: 0, Sess: 127.0.0.1:52417 ) , Type: .Net
+13 Nov 2021 | 21:06:49,212 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 26, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#49, Id: 49, Priv: 0, Sess: 127.0.0.1:52417 ) , asSpect: false
+13 Nov 2021 | 21:07:22,184 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 52, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:52416 }
+13 Nov 2021 | 21:07:22,184 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#48, Id: 48, Priv: 0, Sess: 127.0.0.1:52416 ) , SessionLen: 34971, Type: .Net
+13 Nov 2021 | 21:07:23,467 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 53, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:52417 }
+13 Nov 2021 | 21:07:23,468 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 26, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 36232
+13 Nov 2021 | 21:07:23,469 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#49, Id: 49, Priv: 0, Sess: 127.0.0.1:52417 ) , SessionLen: 34282, Type: .Net
+13 Nov 2021 | 21:09:43,445 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 54, Type: DEFAULT, Logged: No, IP: 127.0.0.1:60937 } on Server port: 9933 <---> 60937
+13 Nov 2021 | 21:09:43,471 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#50, Id: 50, Priv: 0, Sess: 127.0.0.1:60937 ) , Type: .Net
+13 Nov 2021 | 21:09:43,703 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 27, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 21:09:43,704 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 27, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#50, Id: 50, Priv: 0, Sess: 127.0.0.1:60937 ) , asSpect: false
+13 Nov 2021 | 21:10:20,671 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 55, Type: DEFAULT, Logged: No, IP: 127.0.0.1:60947 } on Server port: 9933 <---> 60947
+13 Nov 2021 | 21:10:20,691 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#51, Id: 51, Priv: 0, Sess: 127.0.0.1:60947 ) , Type: .Net
+13 Nov 2021 | 21:10:20,711 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 27, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#51, Id: 51, Priv: 0, Sess: 127.0.0.1:60947 ) , asSpect: false
+13 Nov 2021 | 21:13:15,544 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 54, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:60937 }
+13 Nov 2021 | 21:13:15,545 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#50, Id: 50, Priv: 0, Sess: 127.0.0.1:60937 ) , SessionLen: 212074, Type: .Net
+13 Nov 2021 | 21:13:24,446 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 55, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:60947 }
+13 Nov 2021 | 21:13:24,446 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 27, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 220746
+13 Nov 2021 | 21:13:24,446 | INFO  | SocketReader | bitswarm.core.SocketReader |     | Socket closed: java.nio.channels.SocketChannel[closed]
+13 Nov 2021 | 21:13:24,447 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#51, Id: 51, Priv: 0, Sess: 127.0.0.1:60947 ) , SessionLen: 183756, Type: .Net
+13 Nov 2021 | 21:15:15,361 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 56, Type: DEFAULT, Logged: No, IP: 127.0.0.1:51524 } on Server port: 9933 <---> 51524
+13 Nov 2021 | 21:15:15,392 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#52, Id: 52, Priv: 0, Sess: 127.0.0.1:51524 ) , Type: .Net
+13 Nov 2021 | 21:15:15,415 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 28, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 21:15:15,416 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 28, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#52, Id: 52, Priv: 0, Sess: 127.0.0.1:51524 ) , asSpect: false
+13 Nov 2021 | 21:15:27,678 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 57, Type: DEFAULT, Logged: No, IP: 127.0.0.1:51532 } on Server port: 9933 <---> 51532
+13 Nov 2021 | 21:15:27,708 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#53, Id: 53, Priv: 0, Sess: 127.0.0.1:51532 ) , Type: .Net
+13 Nov 2021 | 21:15:27,729 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 28, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#53, Id: 53, Priv: 0, Sess: 127.0.0.1:51532 ) , asSpect: false
+13 Nov 2021 | 21:16:45,924 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 57, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:51532 }
+13 Nov 2021 | 21:16:45,924 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#53, Id: 53, Priv: 0, Sess: 127.0.0.1:51532 ) , SessionLen: 78216, Type: .Net
+13 Nov 2021 | 21:18:26,435 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 56, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:51524 }
+13 Nov 2021 | 21:18:26,435 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 28, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 191024
+13 Nov 2021 | 21:18:26,437 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#52, Id: 52, Priv: 0, Sess: 127.0.0.1:51524 ) , SessionLen: 191046, Type: .Net
+13 Nov 2021 | 21:29:15,042 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 58, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62317 } on Server port: 9933 <---> 62317
+13 Nov 2021 | 21:29:15,068 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#54, Id: 54, Priv: 0, Sess: 127.0.0.1:62317 ) , Type: .Net
+13 Nov 2021 | 21:29:15,092 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 29, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 21:29:15,093 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 29, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#54, Id: 54, Priv: 0, Sess: 127.0.0.1:62317 ) , asSpect: false
+13 Nov 2021 | 21:29:18,813 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 59, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62319 } on Server port: 9933 <---> 62319
+13 Nov 2021 | 21:29:18,844 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#55, Id: 55, Priv: 0, Sess: 127.0.0.1:62319 ) , Type: .Net
+13 Nov 2021 | 21:29:18,868 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 29, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#55, Id: 55, Priv: 0, Sess: 127.0.0.1:62319 ) , asSpect: false
+13 Nov 2021 | 21:29:29,990 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 58, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:62317 }
+13 Nov 2021 | 21:29:29,990 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#54, Id: 54, Priv: 0, Sess: 127.0.0.1:62317 ) , SessionLen: 14922, Type: .Net
+13 Nov 2021 | 21:29:37,803 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 59, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:62319 }
+13 Nov 2021 | 21:29:37,803 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 29, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 22715
+13 Nov 2021 | 21:29:37,804 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#55, Id: 55, Priv: 0, Sess: 127.0.0.1:62319 ) , SessionLen: 18960, Type: .Net
+13 Nov 2021 | 21:29:52,805 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 60, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62323 } on Server port: 9933 <---> 62323
+13 Nov 2021 | 21:29:52,836 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#56, Id: 56, Priv: 0, Sess: 127.0.0.1:62323 ) , Type: .Net
+13 Nov 2021 | 21:29:52,861 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 30, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 21:29:52,862 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 30, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#56, Id: 56, Priv: 0, Sess: 127.0.0.1:62323 ) , asSpect: false
+13 Nov 2021 | 21:29:57,171 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 61, Type: DEFAULT, Logged: No, IP: 127.0.0.1:62325 } on Server port: 9933 <---> 62325
+13 Nov 2021 | 21:29:57,196 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#57, Id: 57, Priv: 0, Sess: 127.0.0.1:62325 ) , Type: .Net
+13 Nov 2021 | 21:29:57,212 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 30, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#57, Id: 57, Priv: 0, Sess: 127.0.0.1:62325 ) , asSpect: false
+13 Nov 2021 | 21:31:07,809 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 61, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:62325 }
+13 Nov 2021 | 21:31:07,809 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#57, Id: 57, Priv: 0, Sess: 127.0.0.1:62325 ) , SessionLen: 70613, Type: .Net
+13 Nov 2021 | 21:31:14,785 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 60, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:62323 }
+13 Nov 2021 | 21:31:14,785 | INFO  | SocketReader | bitswarm.core.SocketReader |     | Socket closed: java.nio.channels.SocketChannel[closed]
+13 Nov 2021 | 21:31:14,785 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 30, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 81929
+13 Nov 2021 | 21:31:14,790 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#56, Id: 56, Priv: 0, Sess: 127.0.0.1:62323 ) , SessionLen: 81954, Type: .Net
+13 Nov 2021 | 21:32:37,866 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 62, Type: DEFAULT, Logged: No, IP: 127.0.0.1:55374 } on Server port: 9933 <---> 55374
+13 Nov 2021 | 21:32:37,892 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#58, Id: 58, Priv: 0, Sess: 127.0.0.1:55374 ) , Type: .Net
+13 Nov 2021 | 21:32:37,919 | INFO  | SFSWorker:Sys:2 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 31, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 21:32:37,919 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 31, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#58, Id: 58, Priv: 0, Sess: 127.0.0.1:55374 ) , asSpect: false
+13 Nov 2021 | 21:32:51,388 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 63, Type: DEFAULT, Logged: No, IP: 127.0.0.1:55376 } on Server port: 9933 <---> 55376
+13 Nov 2021 | 21:32:51,413 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#59, Id: 59, Priv: 0, Sess: 127.0.0.1:55376 ) , Type: .Net
+13 Nov 2021 | 21:32:51,433 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 31, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#59, Id: 59, Priv: 0, Sess: 127.0.0.1:55376 ) , asSpect: false
+13 Nov 2021 | 21:33:56,057 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 62, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:55374 }
+13 Nov 2021 | 21:33:56,057 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#58, Id: 58, Priv: 0, Sess: 127.0.0.1:55374 ) , SessionLen: 78166, Type: .Net
+13 Nov 2021 | 21:33:57,243 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 63, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:55376 }
+13 Nov 2021 | 21:33:57,243 | INFO  | SocketReader | bitswarm.core.SocketReader |     | Socket closed: java.nio.channels.SocketChannel[closed]
+13 Nov 2021 | 21:33:57,243 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 31, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 79327
+13 Nov 2021 | 21:33:57,245 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#59, Id: 59, Priv: 0, Sess: 127.0.0.1:55376 ) , SessionLen: 65832, Type: .Net
+13 Nov 2021 | 21:38:52,915 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 64, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57954 } on Server port: 9933 <---> 57954
+13 Nov 2021 | 21:38:52,946 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#60, Id: 60, Priv: 0, Sess: 127.0.0.1:57954 ) , Type: .Net
+13 Nov 2021 | 21:38:52,969 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 32, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 21:38:52,969 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 32, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#60, Id: 60, Priv: 0, Sess: 127.0.0.1:57954 ) , asSpect: false
+13 Nov 2021 | 21:39:07,603 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 65, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57964 } on Server port: 9933 <---> 57964
+13 Nov 2021 | 21:39:07,629 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#61, Id: 61, Priv: 0, Sess: 127.0.0.1:57964 ) , Type: .Net
+13 Nov 2021 | 21:39:07,645 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 32, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#61, Id: 61, Priv: 0, Sess: 127.0.0.1:57964 ) , asSpect: false
+13 Nov 2021 | 21:40:03,183 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 64, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57954 }
+13 Nov 2021 | 21:40:03,184 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#60, Id: 60, Priv: 0, Sess: 127.0.0.1:57954 ) , SessionLen: 70239, Type: .Net
+13 Nov 2021 | 21:40:04,032 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 65, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57964 }
+13 Nov 2021 | 21:40:04,032 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 32, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 71067
+13 Nov 2021 | 21:40:04,033 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#61, Id: 61, Priv: 0, Sess: 127.0.0.1:57964 ) , SessionLen: 56404, Type: .Net
+13 Nov 2021 | 21:41:15,013 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 66, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57978 } on Server port: 9933 <---> 57978
+13 Nov 2021 | 21:41:15,048 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#62, Id: 62, Priv: 0, Sess: 127.0.0.1:57978 ) , Type: .Net
+13 Nov 2021 | 21:41:15,076 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 33, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 21:41:15,077 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 33, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#62, Id: 62, Priv: 0, Sess: 127.0.0.1:57978 ) , asSpect: false
+13 Nov 2021 | 21:41:17,295 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 67, Type: DEFAULT, Logged: No, IP: 127.0.0.1:57979 } on Server port: 9933 <---> 57979
+13 Nov 2021 | 21:41:17,326 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#63, Id: 63, Priv: 0, Sess: 127.0.0.1:57979 ) , Type: .Net
+13 Nov 2021 | 21:41:17,341 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 33, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#63, Id: 63, Priv: 0, Sess: 127.0.0.1:57979 ) , asSpect: false
+13 Nov 2021 | 21:42:03,474 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 66, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57978 }
+13 Nov 2021 | 21:42:03,475 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#62, Id: 62, Priv: 0, Sess: 127.0.0.1:57978 ) , SessionLen: 48426, Type: .Net
+13 Nov 2021 | 21:42:04,259 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 67, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:57979 }
+13 Nov 2021 | 21:42:04,259 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 33, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 49186
+13 Nov 2021 | 21:42:04,260 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#63, Id: 63, Priv: 0, Sess: 127.0.0.1:57979 ) , SessionLen: 46934, Type: .Net
+13 Nov 2021 | 21:55:05,904 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: { Zone: --=={{{ AdminZone }}}==-- }, CCU: 0/0
+13 Nov 2021 | 21:55:05,904 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: { Zone: BasicExamples }, CCU: 0/2
+13 Nov 2021 | 21:55:05,904 | INFO  | pool-1-thread-1 | util.stats.CCULoggerTask |     | CCU stats: CCU: 0/2
+13 Nov 2021 | 22:17:38,593 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 68, Type: DEFAULT, Logged: No, IP: 127.0.0.1:52515 } on Server port: 9933 <---> 52515
+13 Nov 2021 | 22:17:38,629 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#64, Id: 64, Priv: 0, Sess: 127.0.0.1:52515 ) , Type: .Net
+13 Nov 2021 | 22:17:38,672 | INFO  | SFSWorker:Sys:1 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 34, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 22:17:38,673 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 34, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#64, Id: 64, Priv: 0, Sess: 127.0.0.1:52515 ) , asSpect: false
+13 Nov 2021 | 22:17:43,189 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 69, Type: DEFAULT, Logged: No, IP: 127.0.0.1:52517 } on Server port: 9933 <---> 52517
+13 Nov 2021 | 22:17:43,219 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#65, Id: 65, Priv: 0, Sess: 127.0.0.1:52517 ) , Type: .Net
+13 Nov 2021 | 22:17:43,245 | INFO  | SFSWorker:Sys:1 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 34, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#65, Id: 65, Priv: 0, Sess: 127.0.0.1:52517 ) , asSpect: false
+13 Nov 2021 | 22:18:32,792 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 68, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:52515 }
+13 Nov 2021 | 22:18:32,793 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#64, Id: 64, Priv: 0, Sess: 127.0.0.1:52515 ) , SessionLen: 54164, Type: .Net
+13 Nov 2021 | 22:18:33,673 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 69, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:52517 }
+13 Nov 2021 | 22:18:33,673 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 34, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 55006
+13 Nov 2021 | 22:18:33,674 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#65, Id: 65, Priv: 0, Sess: 127.0.0.1:52517 ) , SessionLen: 50455, Type: .Net
+13 Nov 2021 | 22:19:11,813 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 70, Type: DEFAULT, Logged: No, IP: 127.0.0.1:52527 } on Server port: 9933 <---> 52527
+13 Nov 2021 | 22:19:11,854 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#66, Id: 66, Priv: 0, Sess: 127.0.0.1:52527 ) , Type: .Net
+13 Nov 2021 | 22:19:11,879 | INFO  | SFSWorker:Sys:3 | entities.managers.SFSRoomManager |     | Room created: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 35, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], type = MMORoom
+13 Nov 2021 | 22:19:11,881 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 35, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#66, Id: 66, Priv: 0, Sess: 127.0.0.1:52527 ) , asSpect: false
+13 Nov 2021 | 22:19:13,122 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session created: { Id: 71, Type: DEFAULT, Logged: No, IP: 127.0.0.1:52528 } on Server port: 9933 <---> 52528
+13 Nov 2021 | 22:19:13,153 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User login: { Zone: BasicExamples }, ( User Name: Guest#67, Id: 67, Priv: 0, Sess: 127.0.0.1:52528 ) , Type: .Net
+13 Nov 2021 | 22:19:13,172 | INFO  | SFSWorker:Sys:3 | v2.api.SFSApi |     | Room joined: [ MMORoom: UnityMMODemo, Id: 35, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], { Zone: BasicExamples }, ( User Name: Guest#67, Id: 67, Priv: 0, Sess: 127.0.0.1:52528 ) , asSpect: false
+13 Nov 2021 | 22:20:12,234 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 70, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:52527 }
+13 Nov 2021 | 22:20:12,235 | INFO  | SFSWorker:Sys:2 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#66, Id: 66, Priv: 0, Sess: 127.0.0.1:52527 ) , SessionLen: 60381, Type: .Net
+13 Nov 2021 | 22:20:36,882 | INFO  | SocketReader | bitswarm.sessions.DefaultSessionManager |     | Session removed: { Id: 71, Type: DEFAULT, Logged: Yes, IP: 127.0.0.1:52528 }
+13 Nov 2021 | 22:20:36,882 | INFO  | SFSWorker:Sys:4 | entities.managers.SFSRoomManager |     | Room removed: { Zone: BasicExamples }, [ MMORoom: UnityMMODemo, Id: 35, Group: default, AOI: (1000000.0, 1000000.0, 1000000.0) ], Duration: 85008
+13 Nov 2021 | 22:20:36,882 | INFO  | SFSWorker:Sys:4 | v2.api.SFSApi |     | User disconnected: { Zone: BasicExamples }, ( User Name: Guest#67, Id: 67, Priv: 0, Sess: 127.0.0.1:52528 ) , SessionLen: 83729, Type: .Net

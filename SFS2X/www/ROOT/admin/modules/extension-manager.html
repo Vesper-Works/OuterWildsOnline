@@ -1,0 +1,98 @@
+<extension-manager-module class="module" id="extension-manager-module">
+	<style>
+		#exm-progressBar {
+			width: 100%;
+		}
+	</style>
+
+	<view-stack id="exm-viewstack" class="flex-grow-1">
+		<div id="exm-init" class="position-relative">
+			<div class="float-centered-loading">
+				Initializing, please wait...
+				<div id="exm-progressBar"></div>
+			</div>
+		</div>
+		<div id="exm-locked" class="position-relative">
+			<div class="float-centered-text w-75">
+				<div class="my-3">This module is currently locked as an additional security measure.<br>Please access the server and delete the <strong>/config/UploadsLock.txt</strong> file before retrying.</div>
+				<button id="exm-retryBt" type="button" class="k-button k-primary" title="Retry"><i class="fas fa-sync-alt mr-1"></i>Retry</button>
+			</div>
+		</div>
+		<div id="exm-main" class="p-3">
+			<div class="d-flex align-items-center mb-3">
+				<h6 class="my-1 flex-grow-1">Extensions</h6>
+				<div><button id="exm-refreshBt" type="button" class="btn btn-secondary btn-sm" title="Refresh"><i class="fas fa-sync-alt"></i></button></div>
+			</div>
+			<div id="exm-fileList"></div>
+		</div>
+	</view-stack>
+
+	<div class="modal" id="exm-addFolderModal" tabindex="-1" role="dialog" aria-labelledby="exm-addFolderModalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title text-primary" id="exm-addFolderModalTitle">New Folder</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body in-flow-invalid-msg">
+					<fieldset id="exm-addFolderForm" class="form-group">
+						<div class="col-form-label form-label-container">
+							<label for="exm-folderNameIn" class="form-label">Folder name</label>
+						</div>
+						<div class="inner-widget">
+							<input type="text" id="exm-folderNameIn" class="form-control k-textbox" name="name" autocomplete="off" required data-required-msg="Required" />
+							<span class="k-invalid-msg position-static" data-for="exm-folderNameIn"></span>
+						</div>
+					</fieldset>
+				</div>
+				<div class="modal-footer flex-column">
+					<div class="d-flex w-100">
+						<div class="flex-grow-1 text-left">
+							<button id="exm-addFolderBt" type="button" class="k-button k-primary"><i class="fas fa-folder-plus mr-1"></i>Add</button>
+						</div>
+						<div class="flex-grow-1 text-right">
+							<button type="button" class="k-button k-secondary" data-dismiss="modal">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="exm-uploadModal" tabindex="-1" role="dialog" aria-labelledby="exm-uploadModalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title text-primary" id="exm-uploadModalTitle">Upload Files</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body in-flow-invalid-msg">
+					<fieldset id="exm-uploadFilesForm" class="form-group">
+						<div class="col-form-label form-label-container">
+							<label for="exm-uploader" class="form-label">Files</label>
+						</div>
+						<div class="inner-widget">
+							<input type="file" id="exm-uploader" name="uploader" data-upload-msg="Select one or more files">
+							<span class="k-invalid-msg position-static" data-for="exm-uploader"></span>
+						</div>
+					</fieldset>
+				</div>
+				<div class="modal-footer flex-column">
+					<div class="d-flex w-100">
+						<div class="flex-grow-1 text-left">
+							<button id="exm-clearFilesBt" type="button" class="k-button k-secondary"><i class="fas fa-eraser mr-1"></i>Clear</button>
+						</div>
+						<div class="flex-grow-1 text-right">
+							<button type="button" class="k-button k-secondary" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</extension-manager-module>

@@ -1,0 +1,135 @@
+<console-module class="module" id="console-module">
+	<style>
+		#console-module {
+			height: 0; /* This is required to make the console fill the available vertical space and then scroll */
+			background-color: #333;
+			padding: 0 .5rem;
+		}
+
+		#cns-input-dummy {
+			position: absolute;
+			left: 0;
+			visibility: hidden;
+		}
+
+		.console-container {
+			height: 100%;
+			overflow-y: auto;
+			height: 0;
+		}
+
+		.console {
+			font-size: 100% !important;
+		}
+
+		.console-special {
+			flex: 1 1 auto;
+		    overflow-y: auto;
+		    min-height: 0px;
+
+			-moz-tab-size: 5;
+			tab-size: 5;
+		}
+
+		.text-console {
+			color: #28F32D;
+		}
+
+		.text-error {
+			color: var(--red);
+		}
+
+		.text-highlight {
+			color: var(--yellow);
+		}
+
+		.text-command {
+			color: var(--light);
+		}
+
+		.prompt {
+			border: none;
+		    box-shadow: none;
+			border-radius: 0;
+		}
+
+		.prompt:focus {
+		    outline: none;
+		}
+
+		.hint-panel {
+			min-width: 150px;
+			max-height: 290px;
+			overflow-y: auto;
+			position: absolute;
+			background-color: #292929;
+			color: #ddd;
+			border: 1px solid #222;
+		}
+
+		.hint-item {
+			padding: .2rem .5rem;
+		}
+
+		.hint-item:hover {
+			background-color: rgba(253, 125, 36, 0.25);
+			cursor: pointer;
+		}
+
+		.hint-item.selected {
+			background-color: #fd7d24;
+			color: #000;
+		}
+	</style>
+
+	<pre id="cns-console" class="mb-0 console invert console-special"></pre>
+	<div class="row no-gutters align-items-center">
+		<div id="cns-input-container-2" class="col d-flex mb-2 position-relative">
+			<div class="console invert prompt pr-0">&gt;</div>
+			<div id="cns-input-container-1" class="position-relative flex-grow-1">
+				<input id="cns-input" type="text" class="console invert prompt w-100" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></input>
+				<span id="cns-input-dummy" class="console invert prompt pr-0"></span>
+			</div>
+		</div>
+		<div class="col-12 col-md-auto text-right">
+			<hr class="d-md-none border-white mt-0 mb-2">
+			<button id="cns-clearButton" type="button" class="k-button k-primary mb-2"><i class="fas fa-chalkboard mr-1"></i>Clear</button>
+			<button id="cns-runButton" type="button" class="k-button k-primary mb-2"><i class="fas fa-scroll mr-1"></i>Run script</button>
+			<button id="cns-exportButton" type="button" class="k-button k-primary mb-2"><i class="fas fa-file-download mr-1"></i>Export</button>
+		</div>
+	</div>
+
+	<div class="modal" id="cns-uploadModal" tabindex="-1" role="dialog" aria-labelledby="cns-uploadModalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title text-primary" id="cns-uploadModalTitle">Upload Script</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body in-flow-invalid-msg">
+					<fieldset id="cns-uploadFilesForm" class="form-group">
+						<div class="col-form-label form-label-container">
+							<label for="cns-uploader" class="form-label">File</label>
+						</div>
+						<div class="inner-widget">
+							<input type="file" id="cns-uploader" name="uploader" accept=".py" data-upload-msg="Select a file">
+							<span class="k-invalid-msg position-static" data-for="cns-uploader"></span>
+						</div>
+					</fieldset>
+				</div>
+				<div class="modal-footer flex-column">
+					<div class="d-flex w-100">
+						<div class="flex-grow-1 text-left">
+							<button id="cns-uploadScriptButton" type="button" class="k-button k-primary"><i class="fas fa-upload mr-1"></i>Upload & run script</button>
+						</div>
+						<div class="flex-grow-1 text-right">
+							<button type="button" class="k-button k-secondary" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</console-module>

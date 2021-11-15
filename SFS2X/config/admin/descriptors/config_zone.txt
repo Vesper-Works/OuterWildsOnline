@@ -1,0 +1,1301 @@
+// SMARTFOXSERVER 2X ADMIN TOOL'S ZONE CONFIGURATOR MODULE
+// Zone configuration settings descriptor file
+// 
+// The "category" attribute indicates in which tab on the interface (if a TabNavigator is used) the parameter will be displayed. If missing a default category is used.
+
+//-------------------------------------------
+// GENERAL SETTINGS
+//-------------------------------------------
+
+// ZONE NAME
+{
+	"name":"name",
+	"label":"Zone name",
+	"tooltip":"The Zone name",
+	"type":"TextInput",
+	"value":"{$BasicValue=zoneSettings.name}",
+	"validator":"notNull"
+},
+
+// USE ENCRYPTION
+{
+	"name":"isEncrypted",
+	"label":"Use encryption",
+	"tooltip":"When active the server will only allow encrypted sessions to login in this Zone. Otherwise only unencrypted sessions are allowed to login.",
+	"type":"CheckBox",
+	"value":{$BasicValue=zoneSettings.isEncrypted}
+},
+
+// USE CUSTOM LOGIN
+{
+	"name":"isCustomLogin",
+	"label":"Use custom login",
+	"tooltip":"If turned on, the login logic will be handled by the developer's Zone Extension",
+	"type":"CheckBox",
+	"value":{$BasicValue=zoneSettings.isCustomLogin}
+},
+
+// USE FORCE LOGOUT
+{
+	"name":"isForceLogout",
+	"label":"Force logout",
+	"tooltip":"If turned on, the previous session with the same name (if any) will be suddenly disconnected",
+	"type":"CheckBox",
+	"value":{$BasicValue=zoneSettings.isForceLogout}
+},
+
+// TOGGLE GEOLOCATION
+{
+	"name":"geoLocationEnabled",
+	"label":"Enable geolocation",
+	"tooltip":"Toggles geolocation service, resolving the client IP address from a local database at minimal performance cost",
+	"type":"CheckBox",
+	"value":{$BasicValue=zoneSettings.geoLocationEnabled}
+},
+
+// MAX FAILED LOGIN ATTEMPTS
+{
+	"name":"maxFailedLogins",
+	"label":"Maximum # of failed logins",
+	"tooltip":"The maximum number of login attempts (in the same session) allowed by the Zone",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.maxFailedLogins},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":30
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":30
+	}
+},
+
+// MAX USERS
+{
+	"name":"maxUsers",
+	"label":"Maximum # of users",
+	"tooltip":"The maximum number of users allowed in the Zone",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.maxUsers},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":2147483647
+	}
+},
+
+// MAX ROOMS
+{
+	"name":"maxRooms",
+	"label":"Maximum # of Rooms",
+	"tooltip":"The maximum number of Rooms that can be created",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.maxRooms},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":2147483647
+	}
+},
+
+// MAX ROOMS CREATED PER USER
+{
+	"name":"maxRoomsCreatedPerUser",
+	"label":"Maximum Rooms per user",
+	"tooltip":"The maximum number of Rooms that one user can create/own (at the same time)",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.maxRoomsCreatedPerUser},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// MAX USER VARIABLES ALLOWED
+{
+	"name":"maxUserVariablesAllowed",
+	"label":"Maximum # of User Variables",
+	"tooltip":"The maximum number of User Variables that each user can set",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.maxUserVariablesAllowed},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// MAX ROOM VARIABLES ALLOWED
+{
+	"name":"maxRoomVariablesAllowed",
+	"label":"Maximum # of Room Variables",
+	"tooltip":"The maximum number of Room Variables allowed in a Room",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.maxRoomVariablesAllowed},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// MIN ROOM NAME CHARS
+{
+	"name":"minRoomNameChars",
+	"label":"Minimum length of Room names",
+	"tooltip":"The minimum number of characters for a Room name",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.minRoomNameChars},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":2147483647
+	}
+},
+
+// MAX ROOM NAME CHARS
+{
+	"name":"maxRoomNameChars",
+	"label":"Maximum length of Room names",
+	"tooltip":"The maximum number of characters for a Room name",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.maxRoomNameChars},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":2147483647
+	}
+},
+
+// APPLY WORDS FILTER TO USERNAMES
+{
+	"name":"isFilterUserNames",
+	"label":"Apply words filter to usernames",
+	"tooltip":"Words filter must be active; also, this setting is valid if 'Filter mode' is set to 'BLACKLIST' only",
+	"type":"CheckBox",
+	"value":{$BasicValue=zoneSettings.isFilterUserNames}
+},
+
+// APPLY WORDS FILTER TO ROOM NAMES
+{
+	"name":"isFilterRoomNames",
+	"label":"Apply words filter to Room names",
+	"tooltip":"Words filter must be active; also, this setting is valid if 'Filter mode' is set to 'BLACKLIST' only",
+	"type":"CheckBox",
+	"value":{$BasicValue=zoneSettings.isFilterRoomNames}
+},
+
+// APPLY WORDS FILTER TO PRIVATE MESSAGES
+{
+	"name":"isFilterPrivateMessages",
+	"label":"Apply words filter to private messages",
+	"tooltip":"Words filter must be active",
+	"type":"CheckBox",
+	"value":{$BasicValue=zoneSettings.isFilterPrivateMessages}
+},
+
+// APPLY WORDS FILTER TO BUDDY MESSAGES
+{
+	"name":"isFilterBuddyMessages",
+	"label":"Apply words filter to buddy messages",
+	"tooltip":"Words filter must be active",
+	"type":"CheckBox",
+	"value":{$BasicValue=zoneSettings.isFilterBuddyMessages}
+},
+
+// USER RECONNECTION TIME
+{
+	"name":"userReconnectionSeconds",
+	"label":"User reconnection timeframe",
+	"tooltip":"Maximum waiting-timeframe (in seconds) for transparent client reconnection",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.userReconnectionSeconds},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// OVERRIDE USER MAX IDLE TIME
+{
+	"name":"overrideMaxUserIdleTime",
+	"label":"Overridden user maximum idle time",
+	"tooltip":"Maximum idle time for a logged user (in seconds), after which the user is disconnected. This setting overrides the 'User maximum idle time' setting in the Server Configurator, allowing a per-Zone approach",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.overrideMaxUserIdleTime},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":5,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":5,
+		"max":2147483647
+	}
+},
+
+// ALLOW GUEST USERS
+{
+	"name":"allowGuestUsers",
+	"label":"Allow guest users access",
+	"tooltip":"When active any empty user names will be turned into an auto-generated guest username, otherwise the login will be refused",
+	"type":"CheckBox",
+	"value":{$BasicValue=zoneSettings.allowGuestUsers}
+},
+
+// GUEST USERNAME PREFIX
+{
+	"name":"guestUserNamePrefix",
+	"label":"Guest username prefix",
+	"tooltip":"The prefix used in auto-generated guest user names",
+	"type":"TextInput",
+	"value":"{$BasicValue=zoneSettings.guestUserNamePrefix}"
+},
+
+// PUBLIC ROOM GROUPS
+{
+	"name":"publicRoomGroups",
+	"label":"Public Room Groups",
+	"tooltip":"Comma-separated list of Group names; this setting restricts the user access to Room groups: clients will only be able to listen for events and create or join Rooms in these Groups",
+	"type":"TextInput",
+	"value":"{$BasicValue=zoneSettings.publicRoomGroups}",
+	"componentParams": // DEPRECATED
+	{
+		"restrict":"a-zA-Z0-9,_"
+	},
+	"attributes":
+	{
+		"pattern":"[a-zA-Z0-9,_]+"
+	}
+},
+
+// DEFAULT ROOM GROUPS
+{
+	"name":"defaultRoomGroups",
+	"label":"Default Room Groups",
+	"tooltip":"Comma-separated list of Group names; this setting indicates which Group/s should be registered for each client in this Zone",
+	"type":"TextInput",
+	"value":"{$BasicValue=zoneSettings.defaultRoomGroups}",
+	"componentParams": // DEPRECATED
+	{
+		"restrict":"a-zA-Z0-9,_"
+	},
+	"attributes":
+	{
+		"pattern":"[a-zA-Z0-9,_]+"
+	}
+},
+
+// ALLOW FILE UPLOADING
+{
+	"name":"allowUploads",
+	"label":"Allow file uploading",
+	"tooltip":"If enabled, files can be uploaded by clients to the server via regular HTTP post requests. Internal web server must be active and the HTTP protocol enabled (see Web server tab in Server Configurator module)",
+	"type":"CheckBox",
+	"value":{$BasicValue=zoneSettings.allowUploads}
+},
+
+// ALLOW JOIN INVITATIONS FOR BUDDIES ONLY
+{
+	"name":"allowInvitationsOnlyForBuddies",
+	"label":"Allow Join Invitations for Buddies only",
+	"tooltip":"If enabled, clients will only be able to invite Buddies via the JoinRoomInvitationRequest. If disabled they will be able to invite any online User.",
+	"type":"CheckBox",
+	"value":{$BasicValue=zoneSettings.allowInvitationsOnlyForBuddies}
+},
+
+// MAX USERS PER JOIN INVITATION
+{
+	"name":"maxUsersPerJoinInvitationRequest",
+	"label":"Max Users per Join Invitation",
+	"tooltip":"The mamximum number of Users that can be invited at once via a client-side JoinRoomInvitationRequest",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.maxUsersPerJoinInvitationRequest},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":8
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":8
+	}
+},
+
+// FINDUSER CLIENT MAX RESULTS
+{
+	"name":"maxFindUserResults",
+	"label":"Max FindUser results",
+	"tooltip":"The mamximum number of results sent to a client-side FindUser request. Recommended range = 30...60",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.maxFindUserResults},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":10000
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":10000
+	}
+},
+
+// FINDROOM CLIENT MAX RESULTS
+{
+	"name":"maxFindRoomResults",
+	"label":"Max FindRoom results",
+	"tooltip":"The mamximum number of results sent to a client-side FindRoom request. Recommended range = 30...60",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.maxFindRoomResults},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":10000
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":10000
+	}
+},
+
+//-------------------------------------------
+// ADVANCED
+//-------------------------------------------
+
+// DEFAULT PLAYER ID GENERATOR CLASS
+{
+	"name":"defaultPlayerIdGeneratorClass",
+	"label":"Player's ID generator class",
+	"tooltip":"The fully qualified name of a class that provides the PlayerId generation service",
+	"category":"Advanced",
+	"type":"TextInput",
+	"value":"{$BasicValue=zoneSettings.defaultPlayerIdGeneratorClass}",
+	"componentParams": // DEPRECATED
+	{
+		"restrict":"a-zA-Z0-9._"
+	},
+	"attributes":
+	{
+		"pattern":"[a-zA-Z0-9._]+"
+	}
+},
+
+// DISABLED SYSTEM EVENTS
+{
+	"name":"disabledSystemEvents",
+	"label":"Disabled system events",
+	"tooltip":"A list of disabled system events",
+	"category":"Advanced",
+	"type":"DualList",
+	"value":"",
+	"componentParams": // DEPRECATED
+	{
+		"selectableValues":""
+	},
+	"dataProvider":""
+},
+
+// USER COUNT CHANGE EVENT UPDATE INTERVAL
+{
+	"name":"userCountChangeUpdateInterval",
+	"label":"'userCountChange' throttler interval",
+	"tooltip":"The rate (in milliseconds) at which the 'userCountChange' event should be sent; 0 means realtime",
+	"category":"Advanced",
+	"type":"NumericStepper",
+	"value":{$BasicValue=zoneSettings.userCountChangeUpdateInterval},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+//-------------------------------------------
+// WORDS FILTER
+//-------------------------------------------
+
+// ACTIVE WORDS FILTER
+{
+	"name":"wordsFilter.isActive",
+	"label":"Activate",
+	"tooltip":"Enable/disable the words filter",
+	"category":"Words Filter",
+	"type":"CheckBox",
+	"value":{$BasicValue=wordsFilter.isActive}
+},
+
+// MAX BAD WORDS PER MESSAGE
+{
+	"name":"wordsFilter.maxBadWordsPerMessage",
+	"label":"Maximum bad words per message",
+	"tooltip":"If a single message contains a number of bad words which exceeds this value, the user will be kicked immediately, without warnings; set this value to 0 to disable immediate kicking",
+	"category":"Words Filter",
+	"type":"NumericStepper",
+	"value":{$BasicValue=wordsFilter.maxBadWordsPerMessage},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// SEND WARNINGS
+{
+	"name":"wordsFilter.useWarnings",
+	"label":"Send warnings",
+	"tooltip":"Send a warning (as a Moderator message) whenever a message contains a bad word",
+	"category":"Words Filter",
+	"type":"CheckBox",
+	"value":{$BasicValue=wordsFilter.useWarnings}
+},
+
+// WARNING BEFORE KICKS
+{
+	"name":"wordsFilter.warningsBeforeKick",
+	"label":"Warnings before kicking",
+	"tooltip":"Number of warnings after which the user sending messages containing bad words is kicked; this counter is in place even if warnings are not actually sent to the user (see 'Send warnings')",
+	"category":"Words Filter",
+	"type":"NumericStepper",
+	"value":{$BasicValue=wordsFilter.warningsBeforeKick},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// KICKS BEFORE BAN
+{
+	"name":"wordsFilter.kicksBeforeBan",
+	"label":"Kicks before banning",
+	"tooltip":"Number of times a user is kicked before he/she is banned automatically",
+	"category":"Words Filter",
+	"type":"NumericStepper",
+	"value":{$BasicValue=wordsFilter.kicksBeforeBan},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// KICKS BEFORE BAN MINUTES
+{
+	"name":"wordsFilter.kicksBeforeBanMinutes",
+	"label":"Kick before banning timeframe",
+	"tooltip":"User is banned if he/she is kicked the above number of times within the specified timeframe (expressed in minutes)",
+	"category":"Words Filter",
+	"type":"NumericStepper",
+	"value":{$BasicValue=wordsFilter.kicksBeforeBanMinutes},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// BAN DURATION
+{
+	"name":"wordsFilter.banDuration",
+	"label":"Duration of banning",
+	"tooltip":"Timeframe (expressed in minutes) during which the banned user won't be able to connect to the SmartFoxServer instance",
+	"category":"Words Filter",
+	"type":"NumericStepper",
+	"value":{$BasicValue=wordsFilter.banDuration},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":2147483647
+	}
+},
+
+// WARNING MESSAGE
+{
+	"name":"wordsFilter.warningMessage",
+	"label":"Warning message",
+	"tooltip":"The message sent to a user being warned",
+	"category":"Words Filter",
+	"type":"TextInput",
+	"value":"{$BasicValue=wordsFilter.warningMessage}"
+},
+
+// KICK MESSAGE
+{
+	"name":"wordsFilter.kickMessage",
+	"label":"Kicking message",
+	"tooltip":"The message sent to a user being kicked",
+	"category":"Words Filter",
+	"type":"TextInput",
+	"value":"{$BasicValue=wordsFilter.kickMessage}"
+},
+
+// BAN MESSAGE
+{
+	"name":"wordsFilter.banMessage",
+	"label":"Banning message",
+	"tooltip":"The message sent to a user being banned",
+	"category":"Words Filter",
+	"type":"TextInput",
+	"value":"{$BasicValue=wordsFilter.banMessage}"
+},
+
+// SECONDS BEFORE BAN OR KICK
+{
+	"name":"wordsFilter.secondsBeforeBanOrKick",
+	"label":"Time before banning or kicking",
+	"tooltip":"Number of seconds before the kick or ban actions occur after the kick/ban message has been sent",
+	"category":"Words Filter",
+	"type":"NumericStepper",
+	"value":{$BasicValue=wordsFilter.secondsBeforeBanOrKick},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// BAN MODE
+
+{
+	"name":"wordsFilter.banMode",
+	"label":"Ban mode",
+	"tooltip":"The default banning modality; can be by IP address or by username",
+	"category":"Words Filter",
+	"type":"ComboBox",
+	"value":"{$BasicValue=wordsFilter.banMode}",
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":"IP,NAME"
+	},
+	"dataProvider":"IP,NAME"
+},
+
+// WORDS FILE
+{
+	"name":"wordsFilter.wordsFile",
+	"label":"Words file",
+	"tooltip":"An external file in which each line contains a word or a valid regular expression. The 'Filter mode' setting indicates if matching words in user messages will be allowed or not; bad words are masked with the character set in the 'Hide bad words with character' parameter",
+	"category":"Words Filter",
+	"type":"TextInput",
+	"value":"{$BasicValue=wordsFilter.wordsFile}"
+},
+
+// HIDE BAD WORDS WITH CHARACTER
+{
+	"name":"wordsFilter.hideBadWordWithCharacter",
+	"label":"Hide bad words with character",
+	"tooltip":"Character to be used to mask the bad words in user messages",
+	"category":"Words Filter",
+	"type":"TextInput",
+	"value":"{$BasicValue=wordsFilter.hideBadWordWithCharacter}",
+	"componentParams": // DEPRECATED
+	{
+		"maxChars":1
+	},
+	"attributes":
+	{
+		"size":1,
+		"maxlength":1
+	}
+},
+
+// FILTER MODE
+
+{
+	"name":"wordsFilter.filterMode",
+	"label":"Filter mode",
+	"tooltip":"User messages words filtering mode: if 'WHITELIST', words matching the words file content are allowed only; if 'BLACKLIST', all words matching the words file content are considered as bad and filtered out",
+	"category":"Words Filter",
+	"type":"ComboBox",
+	"value":"{$BasicValue=wordsFilter.filterMode}",
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":"BLACKLIST,WHITELIST"
+	},
+	"dataProvider":"BLACKLIST,WHITELIST"
+},
+
+//-------------------------------------------
+// FLOOD FILTER
+//-------------------------------------------
+
+// ACTIVE FLOOD FILTER
+{
+	"name":"floodFilter.isActive",
+	"label":"Activate",
+	"tooltip":"Enable/disable the flood filter",
+	"category":"Flood Filter",
+	"type":"CheckBox",
+	"value":{$BasicValue=floodFilter.isActive}
+},
+
+// BAN DURATION
+{
+	"name":"floodFilter.banDurationMinutes",
+	"label":"Duration of banning",
+	"tooltip":"Timeframe (expressed in minutes) during which the banned user won't be able to connect to the SmartFoxServer instance",
+	"category":"Flood Filter",
+	"type":"NumericStepper",
+	"value":{$BasicValue=floodFilter.banDurationMinutes},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":2147483647
+	}
+},
+
+// MAX FLOODING ATTEMPTS
+{
+	"name":"floodFilter.maxFloodingAttempts",
+	"label":"Maximum # of flooding attempts",
+	"tooltip":"Number of times a user can try flooding the server before he/she is banned automatically; a flooding attempt is registered whenever the maximum number of messages per second for any request type is exceeded",
+	"category":"Flood Filter",
+	"type":"NumericStepper",
+	"value":{$BasicValue=floodFilter.maxFloodingAttempts},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":2147483647
+	}
+},
+
+// SECONDS BEFORE BAN
+{
+	"name":"floodFilter.secondsBeforeBan",
+	"label":"Time before banning",
+	"tooltip":"Number of seconds before the ban action occurs after the ban message has been sent",
+	"category":"Flood Filter",
+	"type":"NumericStepper",
+	"value":{$BasicValue=floodFilter.secondsBeforeBan},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// BAN MESSAGE
+{
+	"name":"floodFilter.banMessage",
+	"label":"Ban message",
+	"tooltip":"The message sent to a user being banned due to server flooding",
+	"category":"Flood Filter",
+	"type":"TextInput",
+	"value":"{$BasicValue=floodFilter.banMessage}"
+},
+
+// BAN MODE
+
+{
+	"name":"floodFilter.banMode",
+	"label":"Ban mode",
+	"tooltip":"The default banning modality; can be by IP address or by username",
+	"category":"Flood Filter",
+	"type":"ComboBox",
+	"value":"{$BasicValue=floodFilter.banMode}",
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":"IP,NAME"
+	},
+	"dataProvider":"IP,NAME"
+},
+
+// LOG FLOODING ATTEMPTS
+{
+	"name":"floodFilter.logFloodingAttempts",
+	"label":"Log flooding attempts",
+	"tooltip":"Toggle logging of the flooding attempts",
+	"category":"Flood Filter",
+	"type":"CheckBox",
+	"value":{$BasicValue=floodFilter.logFloodingAttempts}
+},
+
+// REQUEST FILTERS
+{
+	"name":"floodFilter.requestFilters",
+	"label":"Request filters",
+	"tooltip":"Filters applied to client requests to identify flooding attempts",
+	"category":"Flood Filter",
+	"type":"DataGrid",
+	"defaultListItem":
+	[
+		{
+			"name":"reqName",
+			"label":"Request name",
+			"tooltip":"Name of the request to be filtered",
+			"type":"ComboBox",
+			"value":"",
+			"componentParams": // DEPRECATED
+			{
+				"dataProvider":"{$BasicValue=floodFilter.requestsList}"
+			},
+			"dataProvider":"{$BasicValue=floodFilter.requestsList}"
+		},
+		{
+			"name":"maxRequestsPerSecond",
+			"label":"Max requests per second",
+			"tooltip":"Maximum number of requests per second after which a flooding attempt is registered",
+			"type":"NumericStepper",
+			"value":20,
+			"componentParams": // DEPRECATED
+			{
+				"minimum":1,
+				"maximum":1000
+			},
+			"attributes":
+			{
+				"min":1,
+				"max":1000
+			}
+		}
+	],
+	"listValues":{$List=requestFilters, instance=floodFilter, fields=reqName;maxRequestsPerSecond},
+	"clazz":"ZoneSettings$RequestFilterSettings"
+},
+
+//-------------------------------------------
+// EXTENSION
+//-------------------------------------------
+
+// NAME
+{
+	"name":"extension.name",
+	"label":"Name",
+	"tooltip":"The name of the Extension to be plugged at Zone level; the '__lib__' folder is also listed, in case one or more Java Extensions are deployed there for specific class-loading purposes\n\nIf a new Extension is deployed on the server while editing the Zone settings, cancel and re-edit the Zone to update this list",
+	"category":"Zone Extension",
+	"type":"ComboBox",
+	"value":"{$BasicValue=extension.name}",
+	"trigger":true,
+	"triggerData":{$List=extClasses, instance=extensionsHelper, fields=name;type;classesString},
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":"{$ListToString=extNames, instance=extensionsHelper}"
+	},
+	"dataProvider":"{$ListToString=extNames, instance=extensionsHelper}"
+},
+
+// TYPE
+{
+	"name":"extension.type",
+	"label":"Type",
+	"tooltip":"If 'JAVA' is selected, all jar files contained in the Extension's folder are processed, provided their name ends with 'Extension.jar' (for example 'MyExtension.jar'); this is required to avoid receiving useless data on the Admin Tool (like the list of classes contained in library jar files)\n\n<b>NOTE</b>: 'PYTHON' Extension type can be useful for fast testing and prototyping, but it is NOT RECOMMENDED for production environments (due to performance limitations)",
+	"category":"Zone Extension",
+	"type":"ComboBox",
+	"value":"{$BasicValue=extension.type}",
+	"trigger":true,
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":"JAVA,JAVASCRIPT,PYTHON"
+	},
+	"dataProvider":"JAVA,JAVASCRIPT,PYTHON"
+},
+
+// MAIN CLASS
+{
+	"name":"extension.file",
+	"label":"Main class",
+	"tooltip":"The fully qualified name of main Extension class; Java Extensions must extend either SFSExtension or BaseSFSExtension classes",
+	"category":"Zone Extension",
+	"type":"ComboBox",
+	"value":"{$BasicValue=extension.file}",
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":""
+	},
+	"dataProvider":""
+},
+
+// USE NAMING CONVENTION
+{
+	"name":"extension.filterClass",
+	"label":"Use naming convention",
+	"tooltip":"Filter the 'Main class' box showing the classes with names ending with the word 'Extension' only (for example 'com.example.MyJavaExtension' or 'MyPythonExtension.py')\n\n<b>NOTE</b>: this setting is used to improve the Admin Tool usage only, so it doesn't affect the server configuration in any way",
+	"category":"Zone Extension",
+	"type":"CheckBox",
+	"value":false,
+	"trigger":true,
+	"clientOnly":true
+},
+
+// PROPERTIES FILE
+{
+	"name":"extension.propertiesFile",
+	"label":"Properties file",
+	"tooltip":"The name of a properties file that will be loaded during the initialization of the Extension; by default a 'config.properties' file is loaded, if existing",
+	"category":"Zone Extension",
+	"type":"TextInput",
+	"value":"{$BasicValue=extension.propertiesFile}"
+},
+
+// RELOAD MODE
+{
+	"name":"extension.reloadMode",
+	"label":"Reload mode",
+	"tooltip":"Determine which mode will be used for Extension reloading; 'AUTO' is recommended for development/testing environments, 'MANUAL' or 'NONE' for production environments",
+	"category":"Zone Extension",
+	"type":"ComboBox",
+	"value":"{$BasicValue=extension.reloadMode}",
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":"AUTO,MANUAL,NONE"
+	},
+	"dataProvider":"AUTO,MANUAL,NONE"
+},
+
+//-------------------------------------------
+// DATABASE MANAGER
+//-------------------------------------------
+
+// ACTIVE DB MANAGER
+{
+	"name":"databaseManager.active",
+	"label":"Activate",
+	"tooltip":"Enable/disable the database manager",
+	"category":"Database Manager",
+	"type":"CheckBox",
+	"value":{$BasicValue=databaseManager.active}
+},
+
+// DRIVER NAME
+{
+	"name":"databaseManager.driverName",
+	"label":"Database driver class",
+	"tooltip":"The fully qualified name of the database driver class; the driver jar should be added to the 'extensions/__lib__/' folder",
+	"category":"Database Manager",
+	"type":"TextInput",
+	"value":"{$BasicValue=databaseManager.driverName}"
+},
+
+// CONNECTION STRING
+{
+	"name":"databaseManager.connectionString",
+	"label":"Connection string",
+	"tooltip":"A valid connection string including connection type, address, port and database name. Example using MySQL: jdbc:mysql://<ipAddress>:<port>/<databaseName>",
+	"category":"Database Manager",
+	"type":"TextInput",
+	"value":"{$BasicValue=databaseManager.connectionString}"
+},
+
+// USERNAME
+{
+	"name":"databaseManager.userName",
+	"label":"Username",
+	"tooltip":"A valid username for the database connection",
+	"category":"Database Manager",
+	"type":"TextInput",
+	"value":"{$BasicValue=databaseManager.userName}"
+},
+
+// PASSWORD
+{
+	"name":"databaseManager.password",
+	"label":"Password",
+	"tooltip":"The password corresponding to the above username for the database connection",
+	"category":"Database Manager",
+	"type":"TextInput",
+	"value":"{$BasicValue=databaseManager.password}"
+},
+
+// TEST SQL
+{
+	"name":"databaseManager.testSql",
+	"label":"Test SQL",
+	"tooltip":"A simple test SQL code to be executed in order to verify the database connection at boot-time",
+	"category":"Database Manager",
+	"type":"TextInput",
+	"value":"{$BasicValue=databaseManager.testSql}"
+},
+
+// MAX ACTIVE CONNECTIONS
+{
+	"name":"databaseManager.maxActiveConnections",
+	"label":"Maximum # of active connections",
+	"tooltip":"The maximum amount of active connections in the connection pool",
+	"category":"Database Manager",
+	"type":"NumericStepper",
+	"value":{$BasicValue=databaseManager.maxActiveConnections},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":65536
+	},
+	"attributes":
+	{
+		"minimum":1,
+		"maximum":65536
+	}
+},
+
+// MAX IDLE CONNECTIONS
+{
+	"name":"databaseManager.maxIdleConnections",
+	"label":"Maximum # of idle connections",
+	"tooltip":"The maximum amount of idle connections in the connection pool",
+	"category":"Database Manager",
+	"type":"NumericStepper",
+	"value":{$BasicValue=databaseManager.maxIdleConnections},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":65536
+	},
+	"attributes":
+	{
+		"minimum":1,
+		"maximum":65536
+	}
+},
+
+// EXHAUSTED POOL ACTION
+{
+	"name":"databaseManager.exhaustedPoolAction",
+	"label":"Exhausted pool action",
+	"tooltip":"The action to take when the connection pool is exhausted: 'FAIL' will throw and exception; 'BLOCK' will hold the current thread for some time (see 'Block time') before failing; 'GROW' will create more connections",
+	"category":"Database Manager",
+	"type":"ComboBox",
+	"value":"{$BasicValue=databaseManager.exhaustedPoolAction}",
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":"FAIL,BLOCK,GROW"
+	},
+	"dataProvider":"FAIL,BLOCK,GROW"
+},
+
+// BLOCK TIME
+{
+	"name":"databaseManager.blockTime",
+	"label":"Block time",
+	"tooltip":"The amount of milliseconds to wait for in case of BLOCK action",
+	"category":"Database Manager",
+	"type":"NumericStepper",
+	"value":{$BasicValue=databaseManager.blockTime},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":20,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"minimum":20,
+		"maximum":2147483647
+	}
+},
+
+//-------------------------------------------
+// BUDDY LIST
+//-------------------------------------------
+
+// ACTIVE BUDDY LIST
+{
+	"name":"buddyList.active",
+	"label":"Activate",
+	"tooltip":"Enable/disable the Buddy List features",
+	"category":"Buddy List",
+	"type":"CheckBox",
+	"value":{$BasicValue=buddyList.active}
+},
+
+// MAX BUDDIES PER LIST
+{
+	"name":"buddyList.maxItemsPerList",
+	"label":"Maximum # of buddies per user",
+	"tooltip":"The maximum number of buddies that a Buddy List can contain",
+	"category":"Buddy List",
+	"type":"NumericStepper",
+	"value":{$BasicValue=buddyList.maxItemsPerList},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"minimum":1,
+		"maximum":2147483647
+	}
+},
+
+// MAX BUDDY VARIABLES
+{
+	"name":"buddyList.maxBuddyVariables",
+	"label":"Maximum # of Buddy Variables",
+	"tooltip":"The maximum number of Buddy Variables that each user can set; recommended value is in the 10 to 15 range",
+	"category":"Buddy List",
+	"type":"NumericStepper",
+	"value":{$BasicValue=buddyList.maxBuddyVariables},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"minimum":0,
+		"maximum":2147483647
+	}
+},
+
+// ALLOW OFFLINE BUDDY VARIABLES
+{
+	"name":"buddyList.allowOfflineBuddyVariables",
+	"label":"Allow offline Buddy Variables",
+	"tooltip":"Offline Buddy Variables are persistent and available to buddies at any time, even when the buddies are offline",
+	"category":"Buddy List",
+	"type":"CheckBox",
+	"value":{$BasicValue=buddyList.allowOfflineBuddyVariables}
+},
+
+// OFFLINE BUDDY VARIABLES CACHE SIZE
+{
+	"name":"buddyList.offlineBuddyVariablesCacheSize",
+	"label":"Offline Buddy Variables cache size",
+	"tooltip":"The size of the cache used for Buddy Variables. Suggested range (200-2000)",
+	"category":"Buddy List",
+	"type":"NumericStepper",
+	"value":{$BasicValue=buddyList.offlineBuddyVariablesCacheSize},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"minimum":0,
+		"maximum":2147483647
+	}
+},
+
+// CUSTOM STORAGE CLASS
+{
+	"name":"buddyList.customStorageClass",
+	"label":"Custom Buddy List storage class",
+	"tooltip":"The fully qualified name of the class providing buddy storage services",
+	"category":"Buddy List",
+	"type":"TextInput",
+	"value":"{$BasicValue=buddyList.customStorageClass}",
+	"componentParams": // DEPRECATED
+	{
+		"restrict":"a-zA-Z0-9._"
+	},
+	"attributes":
+	{
+		"pattern":"[a-zA-Z0-9._]+"
+	}
+},
+
+// BUDDY STATES
+{
+	"name":"buddyList.buddyStates",
+	"label":"Custom states",
+	"tooltip":"Specify a list of custom instant messenger-like states",
+	"category":"Buddy List",
+	"type":"DataGrid",
+	"defaultListItem":
+	[
+		{
+			"name":"state",
+			"label":"State",
+			"tooltip":"Buddy state name",
+			"type":"TextInput",
+			"value":"",
+			"validator":"notNull"
+		}
+	],
+	"listValues":{$List=buddyStates, instance=buddyList, createField=state}
+},
+
+// USE TEMPORARY BUDDIES
+{
+	"name":"buddyList.useTempBuddies",
+	"label":"Allow temporary buddies",
+	"tooltip":"Allow temporary buddies to be used",
+	"category":"Buddy List",
+	"type":"CheckBox",
+	"value":{$BasicValue=buddyList.useTempBuddies}
+},
+
+// ENABLE BAD WORDS FILTER
+{
+	"name":"buddyList.badWordsFilter.isActive",
+	"label":"Enable bad words filter",
+	"tooltip":"Enable bad words filter on buddy messages",
+	"category":"Buddy List",
+	"type":"CheckBox",
+	"value":{$BasicValue=buddyListBadWordsFilter.isActive}
+},
+
+//-------------------------------------------
+// PRIVILEGE MANAGER
+//-------------------------------------------
+
+// ACTIVE PRIVILEGE MANAGER
+{
+	"name":"privilegeManager.active",
+	"label":"Activate",
+	"tooltip":"Enable/disable the Privilege Management features",
+	"category":"Privilege Manager",
+	"type":"CheckBox",
+	"value":{$BasicValue=privilegeManager.active}
+},
+
+// PROFILES
+{
+	"name":"privilegeManager.profiles",
+	"label":"Profiles",
+	"tooltip":"A list of privilege profiles. Each profile can provide a list of denied requests",
+	"category":"Privilege Manager",
+	"type":"DataGrid",
+	"defaultListItem":
+	[
+		{
+			"name":"intId",
+			"label":"ID",
+			"tooltip":"Profile's ID",
+			"type":"NumericStepper",
+			"value":-1,
+			"validator":"posNum",
+			"componentParams": // DEPRECATED
+			{
+				"minimum":-1,
+				"maximum":65535
+			},
+			"attributes":
+			{
+				"minimum":-1,
+				"maximum":65535
+			}
+		},
+		{
+			"name":"name",
+			"label":"Name",
+			"tooltip":"Profile's name",
+			"type":"TextInput",
+			"value":"",
+			"validator":"notNull"
+		},
+		{
+			"name":"deniedRequestsString",
+			"label":"Denied requests",
+			"tooltip":"A list of the requests that are denied for the current user profile",
+			"type":"DualList",
+			"value":"",
+			"componentParams": // DEPRECATED
+			{
+				"selectableValues":"{$BasicValue=zoneSettings.deniableRequests}"
+			},
+			"dataProvider":"{$BasicValue=zoneSettings.deniableRequests}"
+		},
+		{
+			"name":"permissionFlagsString",
+			"label":"Permission flags",
+			"tooltip":"Specify special permissions for the current user profile",
+			"type":"DualList",
+			"value":"",
+			"componentParams": // DEPRECATED
+			{
+				"selectableValues":"{$EnumToString=com.smartfoxserver.v2.security.SystemPermission}"
+			},
+			"dataProvider":"{$EnumToString=com.smartfoxserver.v2.security.SystemPermission}"
+		}
+	],
+	"listValues":{$List=profiles, instance=privilegeManager, fields=intId;name;deniedRequestsString;permissionFlagsString},
+	"clazz":"ZoneSettings$PermissionProfile"
+}

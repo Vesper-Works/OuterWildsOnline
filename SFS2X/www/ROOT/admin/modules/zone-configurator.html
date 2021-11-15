@@ -1,0 +1,72 @@
+<zone-configurator-module class="module" id="zone-configurator-module">
+
+	<style>
+		#znc-progressBar {
+			width: 100%;
+		}
+	</style>
+
+	<sidebar-layout id="znc-view" class="split-sm flex-grow-1 row no-gutters">
+		<div slot="side-column" id="znc-sidebarPanel" class="col-md-4 col-lg-3">
+			<div class="bg-color-highlight h-100">
+				<h6 class="pt-3 px-3">Zones &amp; Rooms</h6>
+				<div id="znc-treeView" class="px-3 zones-tree"></div>
+				<div id="znc-utilButtons" class="sticky-bottom-controls util-buttons px-3 pt-3 pb-1">
+					<div class="d-inline-block pb-2">
+						<button id="znc-addZoneButton" type="button" class="k-button k-secondary mr-2" title="Add Zone"><i class="fas fa-plus mr-1"></i>Z</button>
+						<button id="znc-addRoomButton" type="button" class="k-button k-secondary mr-2" title="Add Room" disabled><i class="fas fa-plus mr-1"></i>R</button>
+					</div>
+					<div class="d-inline-block pb-2">
+						<button id="znc-editButton" type="button" class="k-button k-secondary mr-2" title="Edit" disabled><i class="fas fa-pen"></i></button>
+						<button id="znc-removeButton" type="button" class="k-button k-secondary mr-2" title="Remove" disabled><i class="fas fa-times"></i></button>
+						<button id="znc-activateButton" type="button" class="k-button k-secondary" title="Activate" disabled><i class="fas fa-play"></i></button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div slot="main-column" id="znc-mainPanel" class="col-md-8 col-lg-9">
+			<view-stack id="znc-viewstack">
+				<div id="znc-select">
+					<div class="float-centered-text w-25">
+						<div class="my-3">Select a Zone or a Room and click the <i class="fas fa-pen"></i> <em>Edit</em> button to load its configuration settings.</div>
+						<div class="my-3">Click the <i class="fas fa-plus"></i> Z / <i class="fas fa-plus"></i> R <em>Add</em> buttons to create a new Zone or Room.</div>
+					</div>
+				</div>
+				<div id="znc-loading">
+					<div class="float-centered-loading">
+						Requesting data...
+						<div id="znc-progressBar"></div>
+					</div>
+				</div>
+				<div id="znc-main" class="px-3 pt-3">
+					<div id="znc-tabNavigator">
+						<ul class="nav nav-tabs" id="tabs" role="tablist"></ul>
+						<div class="tab-content" id="tabPanels">
+							<div class="tab-pane" id="tabpane-wordsFilter" role="tabpanel" aria-labelledby="tab-wordsFilter">
+								<!-- A form is created here automatically, containing the words filter settings -->
+								<hr/>
+								<div class="custom-tab-content">
+									<!-- Custom tab content used in Zone configuration only (when displaying Room configuration this tab pane never shows up) -->
+									<label class="config-form-separator-label mb-3 font-weight-bold">Words Files Editor</label>
+									<words-files-manager id="znc-wordsFilesManager" class="form-group row"></words-files-manager>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div id="znc-buttons" class="sticky-bottom-controls py-3 bg-color-default">
+						<button id="znc-cancelButton" type="button" class="k-button k-secondary mx-1"><i class="fas fa-sign-out-alt fa-flip-horizontal mr-1"></i>Close</button>
+						<button id="znc-reloadButton" type="button" class="k-button k-primary mx-1"><i class="fas fa-redo-alt mr-1"></i>Reload</button>
+						<button id="znc-submitButton" type="button" class="k-button k-primary mx-1"><i class="fas fa-check-circle mr-1"></i>Submit</button>
+						<div class="custom-control custom-checkbox d-inline mx-1">
+						  <input class="custom-control-input" type="checkbox" id="znc-backupCheck">
+						  <label class="custom-control-label" for="znc-backupCheck">Zone backup</label>
+						</div>
+					</div>
+				</div>
+			</view-stack>
+		</div>
+	</sidebar-layout>
+
+</zone-configurator-module>

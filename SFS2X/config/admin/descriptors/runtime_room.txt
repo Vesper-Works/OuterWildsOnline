@@ -1,0 +1,442 @@
+// SMARTFOXSERVER 2X ADMIN TOOL'S ZONE MONITOR MODULE
+// Room settings descriptor file
+// 
+// The "category" attribute indicates in which tab on the interface (if a TabNavigator is used) the parameter will be displayed. If missing a default category is used.
+
+//-------------------------------------------
+// RUNTIME ROOM SETTINGS
+//-------------------------------------------
+
+// ROOM ID
+{
+	"name":"id",
+	"label":"Room ID",
+	"tooltip":"The Room identification number",
+	"category":"Runtime Room Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=room.id},
+	"edit":false
+},
+
+// GROUP ID
+{
+	"name":"groupId",
+	"label":"Group ID",
+	"tooltip":"The Group to which the Room belongs",
+	"category":"Runtime Room Settings",
+	"type":"TextInput",
+	"value":"{$BasicValue=room.groupId}",
+	"edit":false
+},
+
+// ROOM NAME
+{
+	"name":"adminHelper.name",
+	"label":"Room name",
+	"tooltip":"The Room name",
+	"category":"Runtime Room Settings",
+	"type":"TextInput",
+	"value":"{$BasicValue=room.name}",
+	"validator":"notNull"
+},
+
+// PASSWORD (not hidden, in case the Admin needs to access the Room)
+{
+	"name":"adminHelper.password",
+	"label":"Password",
+	"tooltip":"The Room password",
+	"category":"Runtime Room Settings",
+	"type":"TextInput",
+	"value":"{$BasicValue=room.password}"
+},
+
+// ACTIVE ROOM
+{
+	"name":"active",
+	"label":"Is active",
+	"tooltip":"Rooms are active by default; turning this flag off will make the Room un-joinable",
+	"category":"Runtime Room Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=room.active}
+},
+
+// UPTIME
+{
+	"name":"uptime",
+	"label":"Uptime",
+	"tooltip":"Elapsed time since Room creation",
+	"category":"Runtime Room Settings",
+	"type":"TextInput",
+	"value":"{$BasicValue=helper.uptime}",
+	"edit":false
+},
+
+// PUBLIC ROOM
+{
+	"name":"public",
+	"label":"Is public",
+	"tooltip":"Determines if the access is public or not",
+	"category":"Runtime Room Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=room.public},
+	"edit":false
+},
+
+// CAPACITY
+{
+	"name":"capacity",
+	"label":"Maximum capacity",
+	"tooltip":"The capacity of the Room",
+	"category":"Runtime Room Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=room.capacity},
+	"edit":false
+},
+
+// MAX USERS
+{
+	"name":"adminHelper.maxUsers",
+	"label":"Maximum # of users",
+	"tooltip":"The maximum number of users/players allowed",
+	"category":"Runtime Room Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=room.maxUsers},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":1,
+		"max":2147483647
+	}
+},
+
+// MAX SPECTATORS
+{
+	"name":"adminHelper.maxSpectators",
+	"label":"Maximum # of spectators",
+	"tooltip":"The maximum number of spectators allowed",
+	"category":"Runtime Room Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=room.maxSpectators},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+// OWNER NAME
+{
+	"name":"ownerName",
+	"label":"Owner name",
+	"tooltip":"The name of the creator of this Room",
+	"category":"Runtime Room Settings",
+	"type":"TextInput",
+	"value":"{$BasicValue=helper.ownerName}",
+	"edit":false
+},
+
+// ROOM SIZE: TOTAL USERS
+{
+	"name":"totalUsers",
+	"label":"Current total # of users",
+	"tooltip":"The total amount of users (users + spectators)",
+	"category":"Runtime Room Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=roomSize.totalUsers},
+	"edit":false
+},
+
+// ROOM SIZE: USERS
+{
+	"name":"userCount",
+	"label":"Current # of users/players",
+	"tooltip":"Current number of users/players",
+	"category":"Runtime Room Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=roomSize.userCount},
+	"edit":false
+},
+
+// ROOM SIZE: SPECTATORS
+{
+	"name":"spectatorCount",
+	"label":"Current # of spectators",
+	"tooltip":"Current number of spectators",
+	"category":"Runtime Room Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=roomSize.spectatorCount},
+	"edit":false
+},
+
+// IS DYNAMIC
+{
+	"name":"dynamic",
+	"label":"Is dynamic",
+	"tooltip":"The state of the 'Dynamic' flag",
+	"category":"Runtime Room Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=room.dynamic},
+	"edit":false
+},
+
+// IS GAME
+{
+	"name":"game",
+	"label":"Is game",
+	"tooltip":"The state of the 'Game' flag",
+	"category":"Runtime Room Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=room.game},
+	"edit":false
+},
+
+// IS HIDDEN
+{
+	"name":"hidden",
+	"label":"Is hidden",
+	"tooltip":"The state of the 'Hidden' flag",
+	"category":"Runtime Room Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=room.hidden},
+	"edit":false
+},
+
+// AUTO-REMOVE MODE
+
+{
+	"name":"autoRemoveMode",
+	"label":"Auto-remove mode",
+	"tooltip":"The auto-remove mode",
+	"category":"Runtime Room Settings",
+	"type":"ComboBox",
+	"value":"{$BasicValue=room.autoRemoveMode}",
+	"componentParams": // DPRECATED
+	{
+		"dataProvider":"DEFAULT,WHEN_EMPTY,WHEN_EMPTY_AND_CREATOR_IS_GONE,NEVER_REMOVE"
+	},
+	"dataProvider":"DEFAULT,WHEN_EMPTY,WHEN_EMPTY_AND_CREATOR_IS_GONE,NEVER_REMOVE",
+	"edit":false
+},
+
+// IS WORDS FILTER ACTIVE
+{
+	"name":"useWordsFilter",
+	"label":"Is bad words filter active",
+	"tooltip":"The state of the bad words filter",
+	"category":"Runtime Room Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=helper.useWordsFilter},
+	"edit":false
+},
+
+// ALLOW JOIN INVITATIONS FOR ROOM OWNERS ONLY
+{
+	"name":"allowOwnerInvitations",
+	"label":"Restrict JoinRoom invitations to Room owner",
+	"tooltip":"If enabled, only the Room's owner will be able to invite users in the Room. If disabled any User will be able to invite more users, with the exception of spectators in a game-type Room",
+	"category":"Runtime Room Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=room.allowOwnerInvitations},
+	"edit":true
+},
+
+//-------------------------------------------
+// PERMISSIONS AND EVENTS
+//-------------------------------------------
+
+// PERMISSION AND EVENT FLAGS
+{
+	"name":"permissionflags",
+	"label":"Permission and event flags",
+	"tooltip":"List of permissions and events active in this Room",
+	"category":"Permissions & Events",
+	"type":"DualList",
+	"value":"{$BasicValue=helper.flags}",
+	"componentParams": // DEPRECATED
+	{
+		"selectableValues":"{$BasicValue=helper.availableFlags}",
+		"height":250
+	},
+	"dataProvider":"{$BasicValue=helper.availableFlags}",
+	"edit":false
+},
+
+// MAX ROOM VARIABLES ALLOWED
+{
+	"name":"maxRoomVariablesAllowed",
+	"label":"Maximum # of Room Variables",
+	"tooltip":"The maximum number of Room Variables allowed in the Room",
+	"category":"Permissions & Events",
+	"type":"NumericStepper",
+	"value":{$BasicValue=room.maxRoomVariablesAllowed},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":0,
+		"max":2147483647
+	}
+},
+
+//-------------------------------------------
+// RUNTIME ROOM VARIABLES
+//-------------------------------------------
+
+// ROOM VARIABLES
+{
+	"name":"roomVariables",
+	"label":"Room Variables",
+	"tooltip":"The list of Room Variables. If the owner is set to 'null', the Variable is owned by the server itself; otherwise a string containing the main user details is displayed",
+	"category":"Runtime Room Variables",
+	"type":"DataGrid",
+	"componentParams": // DEPRECATED
+	{
+		"height":200
+	},
+	"defaultListItem":
+	[
+		{
+			"name":"name",
+			"label":"Name",
+			"tooltip":"Name",
+			"type":"TextInput",
+			"value":"",
+			"validator":"notNull"
+		},
+		{
+			"name":"type",
+			"label":"Type",
+			"tooltip":"The data type",
+			"type":"ComboBox",
+			"value":"STRING",
+			"componentParams": // DEPRECATED
+			{
+				"dataProvider":"BOOLEAN,INT,DOUBLE,STRING,OBJECT,ARRAY"
+			},
+			"dataProvider":"BOOLEAN,INT,DOUBLE,STRING,OBJECT,ARRAY"
+		},
+		{
+			"name":"value",
+			"label":"Value",
+			"tooltip":"Primitive value or JSON block",
+			"type":"TextInput",
+			"value":"",
+			"validator":"notNull"
+		},
+		{
+			"name":"ownerAsString",
+			"label":"Owner",
+			"tooltip":"Owner",
+			"type":"TextInput",
+			"value":""
+		},
+		{
+			"name":"private",
+			"label":"Private",
+			"tooltip":"The 'private' flag",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"persistent",
+			"label":"Persistent",
+			"tooltip":"The 'persistent' flag",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"global",
+			"label":"Global",
+			"tooltip":"The 'global' flag",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"hidden",
+			"label":"Hidden",
+			"tooltip":"The 'hidden' flag",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"storable",
+			"label":"Storable",
+			"tooltip":"The 'storable' flag",
+			"type":"CheckBox",
+			"value":false
+		}
+	],
+	"listValues":{$List=variables, instance=room, fields=name;type;value;ownerAsString;private;persistent;global;hidden;storable},
+	"edit":false
+},
+
+//-------------------------------------------
+// ROOM EXTENSION
+//-------------------------------------------
+
+// NAME
+{
+	"name":"extName",
+	"label":"Name",
+	"tooltip":"The name of the Extension; can be '__lib__' in case the Extension jar file was deployed in the homonymous folder for specific class-loading purposes",
+	"category":"Room Extension",
+	"type":"TextInput",
+	"value":"{$BasicValue=extension.name}",
+	"edit":false
+},
+
+// TYPE
+{
+	"name":"extType",
+	"label":"Type",
+	"tooltip":"The type of Extension",
+	"category":"Room Extension",
+	"type":"ComboBox",
+	"value":"{$BasicValue=extension.type}",
+	"edit":false
+},
+
+// MAIN CLASS
+{
+	"name":"extFileName",
+	"label":"Main class",
+	"tooltip":"The fully qualified name of the main Extension class",
+	"category":"Room Extension",
+	"type":"TextInput",
+	"value":"{$BasicValue=extension.extensionFileName}",
+	"edit":false
+},
+
+// PROPERTIES FILE
+{
+	"name":"extPropertiesFileName",
+	"label":"Properties file",
+	"tooltip":"The name of the optional properties file",
+	"category":"Room Extension",
+	"type":"TextInput",
+	"value":"{$BasicValue=extension.propertiesFileName}",
+	"edit":false
+},
+
+// RELOAD MODE
+{
+	"name":"extReloadMode",
+	"label":"Reload mode",
+	"tooltip":"The Extension reloading mode",
+	"category":"Room Extension",
+	"type":"ComboBox",
+	"value":"{$BasicValue=extension.reloadMode}",
+	"edit":false
+}

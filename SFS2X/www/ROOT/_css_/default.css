@@ -1,0 +1,170 @@
+@charset "UTF-8";
+
+
+
+/* MAIN LAYOUT */
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: medium;
+	text-shadow:1px 1px 0 #FFFFFF;
+	color: #919191;
+	background-color: #D2D2D2;
+}
+
+#wrapper1 {
+	background-color: #FFFFFF;
+	background-image: url('../_images_/background_logo.png'), url('../_images_/background_gradient.png');
+	background-repeat: no-repeat, repeat-x;
+	background-position: center -382px, top left;
+	
+	/* Hack for IE8 and previous versions (see \9 at the end of the property value) */
+	background: #FFFFFF url('../_images_/background_gradient.png') repeat-x top left\9;
+}
+
+#wrapper2 {
+	margin: 0px 60px;
+	padding-bottom: 10px;
+	min-height: 600px;
+}
+
+#header {
+	padding-top: 40px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 0px;
+}
+
+#main {
+	clear: both;
+	min-height: 650px;
+	padding-top: 26px;
+	padding-left: 22px;
+	padding-right: 22px;
+	padding-bottom: 10px;
+	line-height: 1.5em;
+}
+
+#footer {
+	font-size: 90%;
+	text-shadow: none;
+	padding-top: 10px;
+	color: #666666;
+}
+
+#footer #copyright {
+	clear: both;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	text-align: center;
+	font-size: 90%;
+	color: #AAAAAA;
+}
+
+#plugin {
+	background: #2B2B2B;
+	border: 4px #FFFFFF solid;
+	border-radius: 10px;
+	padding: 30px;
+	margin: 20px 0;
+	float: left;
+}
+
+#text {
+	clear: both;
+}
+
+#links dl {
+	margin: 30px 0px;
+}
+
+/* Floats self-clearing */
+
+.group:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/* for IE6 */
+* html .group {
+	height: 1%;
+}
+
+/* for IE7 */
+*:first-child+html .group {
+	min-height: 1px;
+}
+
+
+/* BASIC STYLES */
+
+a:link, a:visited, a:hover
+{
+	color: #CC0000;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+a img {
+	border: none;
+}
+
+a:hover {
+	color: #FF0000;
+}
+
+.imgBorder {
+	padding: 5px;
+	border: 1px solid #D9E0E6;
+	border-bottom-color: #C8CDD2;
+	border-right-color: #C8CDD2;
+	background: #FFFFFF;
+}
+
+h1 {
+	font-weight: bold;
+	font-size: 150%;
+	color: #FF6600;
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+h2 {
+	font-weight: normal;
+	font-size: 120%;
+	color: #FF6600;
+	margin-top: 40px;
+	margin-bottom: 10px;
+	border-bottom: solid 1px #FF9933;
+}
+
+h3 {
+	font-weight: normal;
+	font-size: 100%;
+	color: #FF6600;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+ol {
+	list-style: decimal;
+	margin-left: 30px;
+}
+
+
+ul {
+	list-style: circle;
+	margin-left: 30px;
+}
+
+.note {
+	font-style: italic;
+	font-size: 80%;
+	margin: 5px;
+	padding: 5px;
+	line-height: 1.3em;
+	border: dashed 1px #CCCCCC;
+}

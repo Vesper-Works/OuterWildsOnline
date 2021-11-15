@@ -1,0 +1,3 @@
+This file prevents uploads using the Administration Tool's modules that allow it (e.g. Extension Manager).
+This is an additional security measure. Delete this file to enable file uploads in all modules.
+For more information, please visit this URL: http://docs2x.smartfoxserver.com/GettingStarted/admintool-ExtensionManager

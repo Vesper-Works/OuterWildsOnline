@@ -1,0 +1,328 @@
+<analytics-module class="module" id="analytics-module">
+	<style>
+		#anl-progressBar {
+			width: 100%;
+		}
+
+		#anl-compareGroup .card-body {
+			background-color: #f7f7f7;
+		}
+	</style>
+
+	<view-stack id="anl-viewstack" class="flex-grow-1">
+
+		<!-- Waiting for the response to the init request -->
+		<div id="anl-init-wait" class="position-relative">
+			<div class="float-centered-loading">
+				Initializing, please wait...
+				<div id="anl-progressBar"></div>
+			</div>
+		</div>
+
+		<!-- Initialization not completed because DB is busy. User must wait -->
+		<div id="anl-init-busy" class="position-relative">
+			<div class="float-centered-text w-50">
+				<div class="mb-3">Initialization can't be completed because the stats update process is currently in progress. Please wait for process completion and hit the 'Refresh' button below.</div>
+				<button id="anl-refreshInitBt" type="button" class="k-button k-primary mr-1"><i class="fas fa-redo-alt mr-1"></i>Refresh</button>
+			</div>
+		</div>
+
+		<!-- Database is empty. Run log analysis -->
+		<div id="anl-init-run" class="position-relative">
+			<div class="float-centered-text w-50">
+				<h3 class="my-3 anl-welcome">Welcome</h3>
+				<div class="my-3">The stats database is currently empty. Click the button below to start the log analysis. Please note that the process can take several hours, depending on the log size. You might consider using the bash script for the first execution.</div>
+				<div>
+					<button id="anl-initAnalyzeLogBt" type="button" class="k-button k-primary mr-1"><i class="fas fa-database mr-1"></i>Start log analysis</button>
+					<i class="fas fa-circle-notch fa-spin text-primary align-middle ml-1 upload-spinner"></i>
+				</div>
+			</div>
+		</div>
+
+		<div id="anl-data" class="pt-3 px-3">
+			<div class="row align-items-center">
+				<div id="anl-dataRange" class="col-12 col-sm-auto d-flex align-items-center">
+					<div>
+						<h5 id="anl-mainRange" class="mb-0"></h5>
+						<small id="anl-comparedRange" class="text-muted"></small>
+					</div>
+					<div id="anl-hourAlert" class="text-muted mx-3 show-tooltip" title="Selected period doesn't range from 0 to 24 hours" style="display: none;">
+						<i class="far fa-clock"></i>
+						<i class="fas fa-exclamation text-warning"></i>
+					</div>
+				</div>
+				<div class="col-12 col-sm text-right pt-2 pt-sm-0">
+					<button id="anl-configRangeBt" type="button" class="btn btn-primary btn-sm" title="Configure data range"><i class="fas fa-clock"></i></button>
+					<button id="anl-refreshBt" type="button" class="btn btn-secondary btn-sm" title="Refresh"><i class="fas fa-sync-alt"></i></button>
+					<button id="anl-stopBt" type="button" class="btn btn-secondary btn-sm" title="Stop after next" disabled><i class="fas fa-times"></i></button>
+					<span>|</span>
+					<button id="anl-analyzeLogBt" type="button" class="btn btn-secondary btn-sm" title="Analyze logs"><i class="fas fa-database"></i></button>
+				</div>
+			</div>
+			<div id="anl-licenseAlert" class="alert alert-warning mt-3 mb-0" role="alert" style="display: none;">
+				This is the <strong>unlicensed version</strong> of Analytics; data range is limited to last three days.
+				<a href="https://www.smartfoxserver.com/shop/?dispatch=products.view&product_id=30" target="_blank">Click here to buy a license.</a>
+			</div>
+			<div id="anl-tabNavigator" class="my-3">
+				<ul class="nav nav-tabs" id="tabs">
+					<li class="nav-item">
+						<a class="nav-link active" id="anl-overview-tab" data-toggle="tab" href="#anl-overview" role="tab" aria-controls="anl-overview" aria-selected="true">Overview</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="anl-demographics-tab" data-toggle="tab" href="#anl-demographics" role="tab" aria-controls="anl-demographics" aria-selected="false">Demographics</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="anl-technology-tab" data-toggle="tab" href="#anl-technology" role="tab" aria-controls="anl-technology" aria-selected="false">Technology</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="anl-application-tab" data-toggle="tab" href="#anl-application" role="tab" aria-controls="anl-application" aria-selected="false">Application</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="anl-exceptions-tab" data-toggle="tab" href="#anl-exceptions" role="tab" aria-controls="anl-exceptions" aria-selected="false">Exceptions</a>
+					</li>
+				</ul>
+				<div class="tab-content" id="tabPanels">
+					<div class="tab-pane show active" id="anl-overview" role="tabpanel" aria-labelledby="anl-overview-tab">
+						<analytics-data-view id="anl-dataview-overview"></analytics-data-view>
+					</div>
+					<div class="tab-pane" id="anl-demographics" role="tabpanel" aria-labelledby="anl-demographics-tab">
+						<analytics-data-view id="anl-dataview-demographics">
+							<div slot="custom-column">
+								<hr>
+								<ul class="nav nav-pills mb-3 align-items-center" role="tablist">
+									<li class="nav-item">
+										<a class="nav-link active" id="anl-demographics-location-tab" data-toggle="pill" href="#anl-demographics-location" role="tab" aria-controls="anl-demographics-location" aria-selected="true">Location</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" id="anl-demographics-top-countries-tab" data-toggle="pill" href="#anl-demographics-top-countries" role="tab" aria-controls="anl-demographics-top-countries" aria-selected="false">Top Countries</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" id="anl-demographics-map-tab" data-toggle="pill" href="#anl-demographics-map" role="tab" aria-controls="anl-demographics-map" aria-selected="false">Map Overlay</a>
+									</li>
+									<li class="flex-grow-1 text-right range-notice">
+										<small class="text-muted">Main range data</small>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane show active p-0 border-0" id="anl-demographics-location" role="tabpanel" aria-labelledby="anl-demographics-location-tab">
+										<demographics-table-view class="data-table"></demographics-table-view>
+									</div>
+									<div class="tab-pane p-0 border-0" id="anl-demographics-top-countries" role="tabpanel" aria-labelledby="anl-demographics-top-countries-tab">
+										<demographics-chart-view class="data-chart"></demographics-chart-view>
+									</div>
+									<div class="tab-pane p-0 border-0" id="anl-demographics-map" role="tabpanel" aria-labelledby="anl-demographics-map-tab">
+										<demographics-map-view class="data-map"></demographics-map-view>
+									</div>
+								</div>
+							</div>
+						</analytics-data-view>
+					</div>
+					<div class="tab-pane" id="anl-technology" role="tabpanel" aria-labelledby="anl-technology-tab">
+						<analytics-data-view id="anl-dataview-technology">
+							<div slot="custom-column">
+								<hr>
+								<ul class="nav nav-pills mb-3 align-items-center" role="tablist">
+									<li class="nav-item">
+										<a class="nav-link active" id="anl-technology-client-types-tab" data-toggle="pill" href="#anl-technology-client-types" role="tab" aria-controls="anl-technology-client-types" aria-selected="true">Client Types</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" id="anl-technology-top-clients-tab" data-toggle="pill" href="#anl-technology-top-clients" role="tab" aria-controls="anl-technology-top-clients" aria-selected="false">Top Clients</a>
+									</li>
+									<li class="flex-grow-1 text-right range-notice">
+										<small class="text-muted">Main range data</small>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane show active p-0 border-0" id="anl-technology-client-types" role="tabpanel" aria-labelledby="anl-technology-client-types-tab">
+										<technology-table-view class="data-table"></technology-table-view>
+									</div>
+									<div class="tab-pane p-0 border-0" id="anl-technology-top-clients" role="tabpanel" aria-labelledby="anl-technology-top-clients-tab">
+										<technology-chart-view class="data-chart"></technology-chart-view>
+									</div>
+								</div>
+							</div>
+						</analytics-data-view>
+					</div>
+					<div class="tab-pane" id="anl-application" role="tabpanel" aria-labelledby="anl-application-tab">
+						<analytics-data-view id="anl-dataview-application">
+							<div slot="custom-column">
+								<hr>
+								<ul class="nav nav-pills mb-3 align-items-center" role="tablist">
+									<li class="nav-item">
+										<a class="nav-link active" id="anl-application-zones-tab" data-toggle="pill" href="#anl-application-zones" role="tab" aria-controls="anl-application-zones" aria-selected="true">Server Zones</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" id="anl-application-top-zones-tab" data-toggle="pill" href="#anl-application-top-zones" role="tab" aria-controls="anl-application-top-zones" aria-selected="false">Top Zones</a>
+									</li>
+									<li class="flex-grow-1 text-right range-notice">
+										<small class="text-muted">Main range data</small>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane show active p-0 border-0" id="anl-application-zones" role="tabpanel" aria-labelledby="anl-application-zones-tab">
+										<application-table-view class="data-table"></application-table-view>
+									</div>
+									<div class="tab-pane p-0 border-0" id="anl-application-top-zones" role="tabpanel" aria-labelledby="anl-application-top-zones-tab">
+										<application-chart-view class="data-chart"></application-chart-view>
+									</div>
+								</div>
+							</div>
+						</analytics-data-view>
+					</div>
+					<div class="tab-pane" id="anl-exceptions" role="tabpanel" aria-labelledby="anl-exceptions-tab">
+						<analytics-data-view id="anl-dataview-exceptions">
+							<div slot="custom-column">
+								<ul class="nav nav-pills mb-3 align-items-center" role="tablist">
+									<li class="nav-item">
+										<a class="nav-link active" id="anl-exceptions-ranking-tab" data-toggle="pill" href="#anl-exceptions-ranking" role="tab" aria-controls="anl-exceptions-ranking" aria-selected="true">Exceptions Ranking</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" id="anl-exceptions-types-tab" data-toggle="pill" href="#anl-exceptions-types" role="tab" aria-controls="anl-exceptions-types" aria-selected="false">Errors vs Warnings</a>
+									</li>
+									<li class="flex-grow-1 text-right range-notice">
+										<small class="text-muted">Main range data</small>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane show active p-0 border-0" id="anl-exceptions-ranking" role="tabpanel" aria-labelledby="anl-exceptions-ranking-tab">
+										<exceptions-table-view class="data-table"></exceptions-table-view>
+									</div>
+									<div class="tab-pane p-0 border-0" id="anl-exceptions-types" role="tabpanel" aria-labelledby="anl-exceptions-types-tab">
+										<exceptions-chart-view class="data-chart"></exceptions-chart-view>
+									</div>
+								</div>
+							</div>
+						</analytics-data-view>
+					</div>
+				</div>
+			</div>
+		</div>
+	</view-stack>
+
+	<div class="modal" id="anl-logAnalysisModal" tabindex="-1" role="dialog" aria-labelledby="anl-logAnalysisModalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title text-primary" id="anl-logAnalysisModalTitle">Log analysis</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p id="anl-latestEntryNotice">Latest processed log entry:<br><strong id="anl-latestEntryDateLb"></strong><i id="anl-geolocDisabledAlert" class="fas fa-exclamation-circle text-warning show-tooltip ml-2" title="Geo-location was disabled during the last log analysis"></i></p>
+					<div class="custom-control custom-checkbox d-inline mb-3">
+						<input class="custom-control-input" type="checkbox" id="anl-rebuildDataCb">
+						<label class="custom-control-label" for="anl-rebuildDataCb">Rebuild data</label>
+					</div>
+					<div class="mt-3"><small class="text-muted"><strong>NOTE</strong>: stats data can't be accessed while log analysis is in progress.</small></div>
+				</div>
+				<div class="modal-footer flex-column">
+					<div class="d-flex w-100">
+						<div class="flex-grow-1 text-left">
+							<button id="anl-startLogAnalysisBt" type="button" class="k-button k-primary"><i class="fas fa-database mr-1"></i>Start analysis</button>
+							<i class="fas fa-circle-notch fa-spin text-primary align-middle ml-1 upload-spinner"></i>
+						</div>
+						<div class="flex-grow-1 text-right">
+							<button type="button" class="k-button k-secondary" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="anl-dataRangeModal" tabindex="-1" role="dialog" aria-labelledby="anl-dataRangeModalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title text-primary" id="anl-logAnalysisModalTitle">Data range</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<fieldset id="anl-rangeForm">
+						<div class="form-group">
+							<select id="anl-rangePreselectDD"></select>
+						</div>
+						<div class="form-group">
+							<div class="col-form-label form-label-container">
+								<label class="form-label">From</label>
+							</div>
+							<div class="form-row align-items-center">
+								<div class="col-auto">
+									<div class="d-inline mr-2">
+										<input id="anl-fromDateDP" disabled/>
+									</div>
+									<div class="d-inline">
+										<div class="d-inline-block">h <input id="anl-fromHourNS" class="form-control" name="fromHour" value="0" disabled style="max-width: 80px;"/></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-form-label form-label-container">
+								<label class="form-label">To</label>
+							</div>
+							<div class="form-row align-items-center">
+								<div class="col-auto">
+									<div class="d-inline mr-2">
+										<input id="anl-toDateDP" disabled/>
+									</div>
+									<div class="d-inline">
+										<div class="d-inline-block">h <input id="anl-toHourNS" class="form-control" name="toHour" value="24" disabled style="max-width: 80px;"/></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="custom-control custom-checkbox">
+								<input class="custom-control-input" type="checkbox" id="anl-compareCb" data-toggle="collapse" data-target="#anl-compareGroup" aria-expanded="false" aria-controls="anl-compareGroup">
+								<label class="custom-control-label" id="anl-compareLb"  for="anl-compareCb">Compare</label>
+							</div>
+						</div>
+						<div class="collapse" id="anl-compareGroup">
+							<div class="card card-body">
+								<div class="form-group">
+									<div class="form-label-container">
+										<label class="form-label">Shift</label>
+									</div>
+									<div class="">
+										<input id="anl-shiftNS" class="form-control" name="shift" value="-1" style="max-width: 80px;"/> <span id="anl-shiftLb"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="form-label-container">
+										<label class="form-label">From</label>
+									</div>
+									<div class="">
+										<strong id="anl-compareFromDateLb"></strong>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="form-label-container">
+										<label class="form-label">To</label>
+									</div>
+									<div class="">
+										<strong id="anl-compareToDateLb"></strong>
+									</div>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+				</div>
+				<div class="modal-footer flex-column">
+					<div class="d-flex w-100">
+						<div class="flex-grow-1 text-left">
+							<button id="anl-setDataRangeBt" type="button" class="k-button k-primary"><i class="fas fa-clock mr-1"></i>Set range</button>
+						</div>
+						<div class="flex-grow-1 text-right">
+							<button type="button" class="k-button k-secondary" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</analytics-module>

@@ -1,0 +1,25 @@
+<admintool>
+	
+	<!--
+		Administration Tool modules
+		- List in the required order of appearance on the client
+		- Save module icons in the icons/ folder as png; name must be equal to the module id
+		- Icon should be 30x30 px, but the transparent canvas must be 50x50 px
+	-->
+	<modules>
+		<module id="Dashboard" name="Dashboard" description="Access the global runtime informations of the SmartFoxServer instance" />
+		<module id="ZoneMonitor" name="Zone Monitor" description="Monitor SmartFoxServer Zones, Rooms and Users behavior at runtime, and live edit some of their settings"/>
+		<module id="Analytics" name="Analytics" description="Check the SmartFoxServer usage statistics from a business point of view"/>
+		<module id="BanManager" name="Ban Manager" description="Check banned users lists, cancel bannings and ban other users/IPs"/>
+		<module id="LogViewer" name="Log Viewer" description="Check and download SmartFoxServer boot and runtime logs"/>
+		<module id="BlueBoxMonitor" name="BlueBox Monitor" description="Monitor clients connected through the BlueBox http tunnelling system"/>
+		<!-- <module id="Console" name="Console" description="Interact with the SmartFoxServer instance via command line"/> -->
+		<module id="ServerConfigurator" name="Server Configurator" description="Edit the global settings of the SmartFoxServer instance"/>
+		<module id="ZoneConfigurator" name="Zone Configurator" description="Create and delete SmartFoxServer Zones and static Rooms, or edit the settings of the existing ones"/>
+		<module id="ExtensionManager" name="Extension Manager" description="Upload Extension files to the SmartFoxServer instance"/>
+		<module id="ServletManager" name="Servlet Manager" description="Upload servlets to SmartFoxServer instance's web server"/>
+		<module id="LicenseManager" name="License Manager" description="Configure the license of the SmartFoxServer instance"/>
+		<!-- <module id="CustomTool" name="Custom Tool" description="This is a test custom module" className="my.namespace.CustomToolReqHandler"/> -->
+	</modules>
+	
+</admintool>

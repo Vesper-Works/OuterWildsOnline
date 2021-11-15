@@ -1,0 +1,55 @@
+<server-configurator-module class="module" id="server-configurator-module">
+	<style>
+		#src-progressBar {
+			width: 100%;
+		}
+	</style>
+
+	<view-stack id="src-viewstack" class="flex-grow-1">
+		<div id="src-loading" class="position-relative">
+			<div class="float-centered-loading">
+				Requesting data...
+				<div id="src-progressBar"></div>
+			</div>
+		</div>
+		<div id="src-main" class="pt-3 px-3">
+			<div id="src-tabNavigator">
+				<ul class="nav nav-tabs" id="tabs" role="tablist"></ul>
+				<div class="tab-content" id="tabPanels">
+					<div class="tab-pane" id="tabpane-webServer" role="tabpanel" aria-labelledby="tab-webServer">
+						<!-- A form is created here automatically, containing the web server settings -->
+						<hr/>
+						<div class="custom-tab-content">
+							<label class="config-form-separator-label mb-3 font-weight-bold">SSL Certificate</label>
+							<p id="src-manageSslWarn" class="mt-3"><em>This feature is currently locked as an additional security measure. Please access the server and delete the <strong>/config/UploadsLock.txt</strong> file, then reload this module.</em></p>
+							<ssl-certificate-manager id="src-sslCertManager" class="form-group row"></ssl-certificate-manager>
+						</div>
+					</div>
+					<div class="tab-pane" id="tabpane-geolocationDB" role="tabpanel" aria-labelledby="tab-geolocationDB">
+						<!-- A form is created here automatically, containing the web server settings -->
+						<div class="custom-tab-content">
+							<div class="form-group row">
+								<div class="col-sm-5 col-lg-4 col-form-label form-label-container">
+									<label class="form-label">Update database <i class="fas fa-question-circle text-muted help" title="Download and install the latest version of GeoLite2 Country database from MaxMind's website"></i></label>
+								</div>
+								<div class="inner-widget align-self-center align-self-sm-start col-auto">
+									<button id="src-updateGeolocDbButton" type="button" class="k-button k-primary"><i class="fas fa-download mr-1"></i>Install latest release</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="src-buttons" class="sticky-bottom-controls py-3 bg-color-default">
+				<button id="src-reloadButton" type="button" class="k-button k-primary mr-1"><i class="fas fa-redo-alt mr-1"></i>Reload</button>
+				<button id="src-submitButton" type="button" class="k-button k-primary mx-1"><i class="fas fa-check-circle mr-1"></i>Submit</button>
+				<div class="custom-control custom-checkbox d-inline ml-1">
+				  <input class="custom-control-input" type="checkbox" id="src-backupCheck">
+				  <label class="custom-control-label" for="src-backupCheck">Backup</label>
+				</div>
+			</div>
+		</div>
+	</view-stack>
+
+</server-configurator-module>

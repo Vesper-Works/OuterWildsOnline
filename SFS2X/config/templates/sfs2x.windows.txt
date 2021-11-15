@@ -1,0 +1,1 @@
+@..\jre\bin\java.exe -cp "<CLASSPATH_PLACEHOLDER>" <OPTIONS_PLACEHOLDER> com.smartfoxserver.v2.Main %1 %2

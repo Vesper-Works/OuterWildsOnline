@@ -1,0 +1,354 @@
+<zone-monitor-module class="module" id="zone-monitor-module">
+
+	<style>
+		#znm-progressBar {
+			width: 100%;
+		}
+	</style>
+
+	<sidebar-layout id="znm-view" class="split-sm flex-grow-1 row no-gutters">
+		<div slot="side-column" id="znm-sidebarPanel" class="col-md-4 col-lg-3 d-flex flex-column p-3 bg-color-highlight">
+			<ul id="znm-panelbar">
+                <li class="k-state-active" data-item-type="zone">
+                    <span class="k-link k-state-selected px-3 py-2">Zones</span>
+                    <div>
+						<select id="znm-zoneList" class="accordion-list"></select>
+                    </div>
+                </li>
+				<li data-item-type="room">
+                    <span class="k-link px-3 py-2">Rooms</span>
+                    <div>
+						<fieldset id="roomTools" disabled>
+	                        <div class="d-flex align-items-center my-2 mx-3">
+								<div class="pr-2"><i class="fas fa-map-signs"></i></div>
+								<div id="znm-roomScopeLb" class="scope-label flex-grow-1"></div>
+							</div>
+							<hr class="m-0">
+							<div class="d-flex align-items-center my-2 mx-3">
+								<div class="pr-2"><i class="fas fa-layer-group"></i></div>
+								<select id="znm-roomGroupsDD" class="dropdown-sm dropdown-secondary"></select>
+							</div>
+							<div class="d-flex align-items-center my-2 mx-3 mt-0">
+								<div class="pr-2"><i class="fas fa-filter"></i></div>
+								<button id="znm-filterRoomBt" type="button" class="btn btn-secondary btn-sm mr-2">Filter</button>
+								<div class="custom-control custom-checkbox checkbox-sm checkbox-secondary">
+								  <input class="custom-control-input" type="checkbox" id="znm-applyRoomFilterCB" checked disabled>
+								  <label class="custom-control-label" for="znm-applyRoomFilterCB">Apply</label>
+								</div>
+								<div class="flex-grow-1 text-right">
+									<i id="znm-roomListWarning" class="fas fa-exclamation-circle fa-lg hidden text-danger limit-warning"></i>
+								</div>
+							</div>
+							<hr class="m-0">
+							<div class="d-flex align-items-center my-2 mx-3">
+								<button id="znm-createRoomBt" type="button" class="btn btn-secondary btn-sm mr-2"><i class="fas fa-plus"></i> Create</button>
+								<button id="znm-removeRoomBt" type="button" class="btn btn-secondary btn-sm mr-2"><i class="fas fa-times"></i> Remove</button>
+							</div>
+						</<fieldset>
+						<hr class="m-0">
+                    </div>
+					<div>
+                        <select id="znm-roomList" class="accordion-list"></select>
+                    </div>
+                </li>
+				<li data-item-type="user">
+                    <span class="k-link px-3 py-2">Users</span>
+					<div>
+						<fieldset id="userTools" disabled>
+	                        <div class="d-flex align-items-center my-2 mx-3">
+								<div class="pr-2"><i class="fas fa-map-signs"></i></div>
+								<div id="znm-userScopeLb" class="scope-label flex-grow-1 no-overflow"></div>
+							</div>
+							<hr class="m-0">
+							<div class="d-flex align-items-center my-2 mx-3">
+								<div class="pr-2"><i class="fas fa-filter"></i></div>
+								<button id="znm-filterUserBt" type="button" class="btn btn-secondary btn-sm mr-2">Filter</button>
+								<div class="custom-control custom-checkbox checkbox-sm checkbox-secondary">
+								  <input class="custom-control-input" type="checkbox" id="znm-applyUserFilterCB" checked disabled>
+								  <label class="custom-control-label" for="znm-applyUserFilterCB">Apply</label>
+								</div>
+								<div class="flex-grow-1 text-right">
+									<i id="znm-userListWarning" class="fas fa-exclamation-circle fa-lg hidden text-danger limit-warning"></i>
+								</div>
+							</div>
+						</fieldset>
+						<hr class="m-0">
+                    </div>
+					<div>
+                        <select id="znm-userList" class="accordion-list"></select>
+                    </div>
+                </li>
+			</ul>
+
+			<fieldset id="znm-mainControls" class="pt-3" disabled> <!-- NOTE Make this sticky? (use sticky-bottom-controls bg-color-highlight) -->
+				<button id="znm-monitorBt" type="button" class="k-button k-primary w-100"><i class="fas fa-desktop mr-1"></i>Monitor<span id="znm-monitorTargetLb" class="ml-1">selection</span></button>
+				<div class="d-flex flex-wrap justify-content-end mt-1">
+					<input id="znm-messageIn" class="k-textbox flex-grow-1 mt-1" placeholder="Message to selection"/>
+					<button id="znm-sendMessageBt" type="button" class="k-button k-primary ml-2 mt-1"><i class="fas fa-comment-dots mr-1"></i>Send</button>
+				</div>
+			</fieldset>
+		</div>
+
+		<div slot="main-column" id="znm-mainPanel" class="col-md-8 col-lg-9 d-flex flex-column">
+			<div class="d-flex align-items-center p-3">
+				<div id="znm-monitoredHeader" class="flex-grow-1"></div>
+				<div class="flex-grow-1 text-right">
+					<select id="znm-intervalDD" class="dropdown-sm dropdown-secondary">
+				        <option value="1">1 sec</option>
+				        <option value="2" selected>2 sec</option>
+						<option value="5">5 sec</option>
+						<option value="10">10 sec</option>
+						<option value="30">30 sec</option>
+				    </select>
+				</div>
+			</div>
+			<view-stack id="znm-viewstack" class="">
+				<div id="znm-select">
+					<div class="float-centered-text w-25">
+						<div class="my-3">Select a Zone, Room or User and click the <i class="fas fa-desktop"></i> <em>Monitor</em> button to start monitoring its status.</div>
+					</div>
+				</div>
+				<div id="znm-loading">
+					<div class="float-centered-loading">
+						Requesting data...
+						<div id="znm-progressBar"></div>
+					</div>
+				</div>
+				<div id="znm-zoneMonitor" class="px-3">
+					<div id="znm-zoneTabNavigator">
+						<ul class="nav nav-tabs" id="tabs" role="tablist"></ul>
+						<div class="tab-content" id="tabPanels">
+							<div class="tab-pane" id="tabpane-zoneTraffic" role="tabpanel" aria-labelledby="tab-zoneTraffic">
+								<!-- A form is created here automatically, containing the traffic details -->
+								<hr/>
+								<div class="custom-tab-content">
+									<label class="config-form-separator-label mb-3 font-weight-bold">Concurrent Users Progress</label>
+									<div>
+										<user-count-chart id="znm-userCountChart"></user-count-chart>
+										<div class="d-flex align-items-center">
+											<span class="mr-3">Time range</span>
+											<div id="znm-timeSlider" class="flex-grow-1">
+												<input value="-2"/>
+												<input value="0"/>
+											</div>
+										</div>
+										<div class="d-flex">
+											<span class="mr-3 invisible">Time range</span>
+											<div class="text-muted flex-grow-1">
+												<small class="float-left">-24h</small>
+												<small class="float-right">Now</small>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane" id="tabpane-runtimeZoneSettings" role="tabpanel" aria-labelledby="tab-runtimeZoneSettings">
+								<!-- A form is created here automatically, containing the zone settings -->
+								<hr/>
+								<div class="custom-tab-content">
+									<label class="config-form-separator-label mb-3 font-weight-bold">Words Filter</label>
+									<div class="row">
+										<div class="col-sm-5 col-lg-4 col-form-label form-label-container">
+											<label class="form-label">Manual words list reloading <i class="fas fa-question-circle text-muted help" title="Force words list reloading for runtime update"></i></label>
+										</div>
+										<div class="inner-widget align-self-center align-self-sm-start col-auto">
+											<button id="znm-reloadWordsBt" type="button" class="k-button k-primary"><i class="fas fa-redo-alt mr-1"></i>Reload</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="tab-pane" id="tabpane-zoneExtension" role="tabpanel" aria-labelledby="tab-zoneExtension">
+								<!-- A form is created here automatically, containing the extension settings -->
+								<hr/>
+								<div class="custom-tab-content">
+									<label class="config-form-separator-label mb-3 font-weight-bold">Extension Reloading</label>
+									<div class="row">
+										<div class="col-sm-5 col-lg-4 col-form-label form-label-container">
+											<label class="form-label">Manual Extension reloading <i class="fas fa-question-circle text-muted help" title="Force reloading of the Zone Extension; this should be used when Extension auto-reload is disabled"></i></label>
+										</div>
+										<div class="inner-widget align-self-center align-self-sm-start col-auto">
+											<button id="znm-reloadZoneExtBt" type="button" class="k-button k-primary"><i class="fas fa-redo-alt mr-1"></i>Reload</button>
+										</div>
+									</div>
+								</div>
+								<hr/>
+								<div class="custom-tab-content">
+									<label class="config-form-separator-label mb-3 font-weight-bold">Extension Log</label>
+									<p>List of messages traced by the Extension during the current monitoring session.</p>
+									<div id="znm-zoneExtLogGrid" class="limited-height-2x"></div>
+									<p class="mt-3 mb-0 text-muted"><em>Messages are not displayed in realtime, but with a fixed refresh rate of 1 second. The list can contain a maximum of 300 messages, then older messages are discarded when new ones are traced.</em></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="znm-roomMonitor" class="px-3">
+					<div id="znm-roomTabNavigator">
+						<ul class="nav nav-tabs" id="tabs" role="tablist"></ul>
+						<div class="tab-content" id="tabPanels">
+							<div class="tab-pane" id="tabpane-roomExtension" role="tabpanel" aria-labelledby="tab-roomExtension">
+								<!-- A form is created here automatically, containing the extension settings -->
+								<hr/>
+								<div class="custom-tab-content">
+									<label class="config-form-separator-label mb-3 font-weight-bold">Extension Log</label>
+									<p>List of messages traced by the Extension during the current monitoring session.</p>
+									<div id="znm-roomExtLogGrid" class="limited-height-2x"></div>
+									<p class="mt-3 mb-0 text-muted"><em>Messages are not displayed in realtime, but with a fixed refresh rate of 1 second. The list can contain a maximum of 300 messages, then older messages are discarded when new ones are traced.</em></p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="znm-userMonitor" class="px-3">
+					<div id="znm-userTabNavigator">
+						<ul class="nav nav-tabs" id="tabs" role="tablist"></ul>
+						<div class="tab-content" id="tabPanels">
+							<div class="tab-pane" id="tabpane-userManagement" role="tabpanel" aria-labelledby="tab-userManagement">
+								<!-- A form is created here automatically, containing the user details -->
+								<hr/>
+								<div class="custom-tab-content">
+									<label class="config-form-separator-label mb-3 font-weight-bold">User Stats</label>
+									<div class="row">
+										<div class="col-sm-6 col-xl-3 mb-3 mb-xl-0">
+											<label class="form-label">Packet queue usage <i class="fas fa-question-circle text-muted help" title="Usage percentage of the outgoing packet queue; packets are temporarily held in the queue when the client socket is too slow reading"></i></label>
+											<div id="znm-packetQueueChart"></div>
+										</div>
+										<div class="col-sm-6 col-xl-3 mb-3 mb-xl-0">
+											<label class="form-label">Dropped messages <i class="fas fa-question-circle text-muted help" title="Number of dropped packets since login; messages are dropped when the packet queue is full"></i></label>
+											<div id="znm-droppedMsgChart"></div>
+										</div>
+										<div class="col-sm-6 col-xl-3 mb-3 mb-sm-0">
+											<label class="form-label">Written data <i class="fas fa-question-circle text-muted help" title="Amount of data sent by the server to the client since user login"></i></label>
+											<div id="znm-writtenDataChart"></div>
+										</div>
+										<div class="col-sm-6 col-xl-3">
+											<label class="form-label">Read data <i class="fas fa-question-circle text-muted help" title="Amount of data sent by the client to the server since user login"></i></label>
+											<div id="znm-readDataChart"></div>
+										</div>
+									</div>
+								</div>
+								<hr/>
+								<div class="custom-tab-content">
+									<label class="config-form-separator-label mb-3 font-weight-bold">User Geo-Localization</label>
+									<div>Location of the user in the world down to the country, region and city, based on the device IP address.</div>
+									<div class="d-flex align-items-center my-2">
+										<a id="znm-showMapBt" class="k-button k-primary my-1 mr-2" href="#" target="_blank" disabled><i class="fas fa-map-marker-alt mr-1"></i>Show</a>
+										<div id="znm-geoLocationLb" class="my-1 font-weight-bold"></div>
+									</div>
+									<div class="text-muted">Service provided by <a href="https://www.geoplugin.com" target="_blank">geoPlugin</a>; includes GeoLite data created by <a href="https://www.maxmind.com" target="_blank">MaxMind</a>.</div>
+								</div>
+								<hr/>
+								<div class="custom-tab-content">
+									<label class="config-form-separator-label mb-3 font-weight-bold">Disconnect User</label>
+									<div>Force immediate user disconnection.</div>
+									<div class="row no-gutters my-2">
+										<button id="znm-disconnectBt" type="button" class="k-button k-primary my-1"><i class="fas fa-plug mr-1"></i>Disconnect</button>
+									</div>
+								</div>
+								<hr/>
+								<div class="custom-tab-content">
+									<label class="config-form-separator-label mb-3 font-weight-bold">Kick User</label>
+									<div>Force user disconnection by kicking him/her; a message can be sent to the user to describe the reason of the action.</div>
+									<div class="row no-gutters my-2">
+										<div class="col-lg pr-lg-2">
+											<input id="znm-kickMsgIn" class="k-textbox form-control w-100 my-1" placeholder="Message"/>
+										</div>
+										<div class="col-lg-auto col-xl-6">
+											<div class="d-inline-block" class="my-1">
+												<input id="znm-kickDelayNS" class="form-control" style="max-width: 130px"/>
+											</div>
+											<button id="znm-kickBt" type="button" class="k-button k-primary my-1 ml-1"><i class="fas fa-bolt mr-1"></i>Kick</button>
+										</div>
+									</div>
+									<div class="text-muted">Kicked users can reconnect immediately.</div>
+								</div>
+								<hr/>
+								<div class="custom-tab-content">
+									<label class="config-form-separator-label mb-3 font-weight-bold">Ban User</label>
+									<div>Force user disconnection by banning his/her username (default) or IP address; a message can be sent to the user to describe the reason of the action.</div>
+									<div class="row no-gutters my-2">
+										<div class="col-lg pr-lg-2">
+											<input id="znm-banMsgIn" class="k-textbox form-control w-100 my-1" placeholder="Message"/>
+										</div>
+										<div class="d-inline-flex col-lg-auto pr-xl-2">
+											<input id="znm-banModeDD" class="form-control my-1" style="width: 90px"/>
+											<div class="d-inline-block my-1 ml-2">
+												<input id="znm-banDelayNS" class="form-control" style="max-width: 130px"/>
+											</div>
+										</div>
+										<div class="d-inline-flex col-xl-auto">
+											<div class="d-inline-block my-1">
+												<input id="znm-banDurationNS" class="form-control" style="max-width: 130px"/>
+											</div>
+											<select id="znm-banDurationUnitDD" class="form-control my-1 mx-2" style="width: 90px">
+										        <option value="minutes">minutes</option>
+										        <option value="hours">hours</option>
+										        <option value="days" selected>days</option>
+										    </select>
+											<button id="znm-banBt" type="button" class="k-button k-primary my-1"><i class="fas fa-ban mr-1"></i>Ban</button>
+										</div>
+									</div>
+									<div class="text-muted">Banned users can't reconnect until the ban duration time has passed (default: 1 day).</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</view-stack>
+			<div id="znm-monitoredFooter" class="sticky-bottom-controls bg-color-default p-3">
+				<div class="flex-grow-1">
+					<button id="znm-closeMonitorBt" type="button" class="k-button k-secondary mx-1"><i class="fas fa-sign-out-alt fa-flip-horizontal mr-1"></i>Close</button>
+				</div>
+				<div class="flex-grow-1 text-right">
+					<button id="znm-editBt" type="button" class="k-button k-primary mx-1"><i class="fas fa-pen mr-1"></i>Edit</button>
+					<div id="znm-editControls">
+						<button id="znm-submitBt" type="button" class="k-button k-primary mx-1"><i class="fas fa-check-circle mr-1"></i>Submit</button>
+						<button id="znm-cancelBt" type="button" class="k-button k-secondary mx-1">Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</sidebar-layout>
+
+	<!-- Room Creation Modal -->
+	<div class="modal" id="znm-createRoomModal" tabindex="-1" role="dialog" aria-labelledby="znm-createRoomModalTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title text-primary" id="znm-createRoomModalTitle">Room Creator</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div id="znm-roomCreatorTabNav">
+						<ul class="nav nav-tabs" id="tabs" role="tablist"></ul>
+						<div class="tab-content" id="tabPanels"></div>
+					</div>
+				</div>
+				<div class="modal-footer flex-column">
+					<div class="d-flex w-100">
+						<div class="flex-grow-1 flex-wrap d-flex align-items-center mr-3">
+							<button id="znm-roomCreatorCreateBt" type="button" class="k-button k-primary mr-2"><i class="fas fa-plus-circle mr-1"></i>Create</button>
+							<div class="custom-control custom-checkbox d-inline-block">
+							  <input class="custom-control-input" type="checkbox" id="znm-notifyClientsCB" checked>
+							  <label class="custom-control-label" for="znm-notifyClientsCB">Notify clients</label>
+							</div>
+						</div>
+						<div class="">
+							<button type="button" class="k-button k-secondary" data-dismiss="modal">Cancel</button>
+						</div>
+					</div>
+					<div id="znm-createRoomError" class="text-danger mt-3"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Room Filter Expression Builder Modal -->
+	<match-expression-builder id="znm-roomFilter"></match-expression-builder>
+
+	<!-- User Filter Expression Builder Modal -->
+	<match-expression-builder id="znm-userFilter"></match-expression-builder>
+
+</zone-monitor-module>

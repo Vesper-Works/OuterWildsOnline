@@ -21,22 +21,24 @@ namespace ModTemplate
 
         public void SetTransform(Vector3 pos, Quaternion rot, bool interpolate, int sectorID)
         {
-            // If interpolation, then set the desired pososition+rotation; else force set (for spawning new models)
+            if (transform.parent != SFSSectorManager.Instance.Sectors[sectorID].transform)
+            { transform.SetParent(SFSSectorManager.Instance.Sectors[sectorID].transform); }
+
             if (interpolate)
             {
-                desiredPos = SFSSectorManager.Instance.Sectors[sectorID].transform.TransformPoint(pos);
+                desiredPos = pos;
                 desiredRot = rot;
             }
             else
             {
-                this.transform.position = SFSSectorManager.Instance.Sectors[sectorID].transform.TransformPoint(pos);
+                this.transform.localPosition = pos;
                 this.transform.rotation = rot;
             }
         }
 
         void Update()
         {
-            this.transform.position = Vector3.Lerp(transform.position, desiredPos, Time.deltaTime * dampingFactor);
+            this.transform.localPosition = Vector3.Lerp(transform.localPosition, desiredPos, Time.deltaTime * dampingFactor);
             this.transform.rotation = Quaternion.Slerp(transform.rotation, desiredRot, Time.deltaTime * dampingFactor);
         }
     }

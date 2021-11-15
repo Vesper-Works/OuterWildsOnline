@@ -1,0 +1,25 @@
+{
+  "short_name": "AdminTool",
+  "name": "SFS2X Administration Tool",
+  "icons": [
+    {
+      "src": "assets/images/favicon-64x64.png",
+      "type": "image/png",
+      "sizes": "64x64"
+    },
+    {
+      "src": "assets/images/favicon-32x32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    },
+    {
+      "src": "assets/images/favicon-16x16.png",
+      "type": "image/png",
+      "sizes": "16x16"
+    }
+  ],
+  "start_url": "/admin",
+  "background_color": "#f4f4f4",
+  "display": "standalone",
+  "theme_color": "#484848"
+}

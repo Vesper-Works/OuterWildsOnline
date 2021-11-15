@@ -1,0 +1,63 @@
+// SMARTFOXSERVER 2X ADMIN TOOL'S ZONE MONITOR MODULE
+// SFSGame room settings descriptor file. This must be merged with the Room descriptor.
+// 
+// The "category" attribute indicates in which tab on the interface (if a TabNavigator is used) the parameter will be displayed. If missing a default category is used.
+
+//-------------------------------------------
+// GAME SETTINGS
+//-------------------------------------------
+
+// MIN PLAYERS TO START GAME
+{
+	"name":"minPlayersToStartGame",
+	"label":"Minimum # of players to start the game",
+	"tooltip":"The minimum number of players required to start the game",
+	"category":"Game Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=room.minPlayersToStartGame},
+	"edit":false
+},
+
+// LEAVE LAST ROOM ON JOIN
+{
+	"name":"leaveLastRoomOnJoin",
+	"label":"Leave last Room on game join",
+	"tooltip":"If active players joining the game will auto-leave their previous Room",
+	"category":"Game Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=room.leaveLastRoomOnJoin},
+	"edit":false
+},
+
+// NOTIFY GAME STARTED
+{
+	"name":"notifyGameStarted",
+	"label":"Notify game started",
+	"tooltip":"When active the notification of the game start/stop is done via a reserved Room Variable",
+	"category":"Game Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=room.notifyGameStarted},
+	"edit":false
+},
+
+// PLAYER MATCH EXPRESSION
+{
+	"name":"playerMatchExpression",
+	"label":"Player matching expression",
+	"tooltip":"A match expression used to filter players joining the Room",
+	"category":"Game Settings",
+	"type":"TextInput",
+	"value":"{$BasicValue=room.playerMatchExpression}",
+	"edit":false
+},
+
+// SPECTATOR MATCH EXPRESSION
+{
+	"name":"spectatorMatchExpression",
+	"label":"Spectator matching expression",
+	"tooltip":"A match expression used to filter spectators joining the Room",
+	"category":"Game Settings",
+	"type":"TextInput",
+	"value":"{$BasicValue=room.spectatorMatchExpression}",
+	"edit":false
+}

@@ -1,0 +1,74 @@
+// SMARTFOXSERVER 2X ADMIN TOOL'S ZONE MONITOR MODULE
+// MMORoom room settings descriptor file. This must be merged with the Room descriptor.
+// 
+// The "category" attribute indicates in which tab on the interface (if a TabNavigator is used) the parameter will be displayed. If missing a default category is used.
+
+//-------------------------------------------
+// MMO SETTINGS
+//-------------------------------------------
+
+// DEFAULT AOI
+{
+	"name":"defaultAOI",
+	"label":"Default AoI",
+	"tooltip":"The distance along the x,y,z axes describing the 'Area of Interest' within which the other users presence in the Room is 'known' to the client",
+	"category":"MMO Settings",
+	"type":"Vector3D",
+	"value":"{$BasicValue=room.defaultAOI}",
+	"edit":false
+},
+
+// LOWER MAP LIMITS
+{
+	"name":"mapLowerLimit",
+	"label":"Lower map limits",
+	"tooltip":"The lower limits for each of the user position coordinates (x,y,z) in the MMORoom",
+	"category":"MMO Settings",
+	"type":"Vector3D",
+	"value":"{$BasicValue=room.mapLowerLimit}",
+	"edit":false
+},
+
+// HIGHER MAP LIMITS
+{
+	"name":"mapHigherLimit",
+	"label":"Higher map limits",
+	"tooltip":"The upper limits for each of the user position coordinates (x,y,z) in the MMORoom",
+	"category":"MMO Settings",
+	"type":"Vector3D",
+	"value":"{$BasicValue=room.mapHigherLimit}",
+	"edit":false
+},
+
+// MAX LIMBO SECONDS
+{
+	"name":"userLimboMaxSeconds",
+	"label":"User max limbo time",
+	"tooltip":"The maximum amount of seconds allowed between the MMORoom join and the first time the user position is set in the Room; if this time is exeeded, the user is kicked from the Room automatically",
+	"category":"MMO Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=room.userLimboMaxSeconds},
+	"edit":false
+},
+
+// PROXIMITY LIST UPDATES MILLISECONDS
+{
+	"name":"proximityListUpdateMillis",
+	"label":"Millis between proximity list updates",
+	"tooltip":"Minimum time between two subsequent PROXIMITY_LIST_UPDATE events sent to the clients",
+	"category":"MMO Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=room.proximityListUpdateMillis},
+	"edit":false
+},
+
+// SEND AOI ENTRY POINT
+{
+	"name":"sendAOIEntryPoint",
+	"label":"Send AoI entry point",
+	"tooltip":"Send the other users entry coordinates in the client's AoI as reserved properties on the User object in the PROXIMITY_LIST_UPDATE event",
+	"category":"MMO Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=room.sendAOIEntryPoint},
+	"edit":false
+}

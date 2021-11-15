@@ -1,0 +1,495 @@
+// SMARTFOXSERVER 2X ADMIN TOOL'S ZONE CONFIGURATOR MODULE
+// Room configuration settings descriptor file
+// 
+// The "category" attribute indicates in which tab on the interface (if a TabNavigator is used) the parameter will be displayed. If missing a default category is used.
+
+//-------------------------------------------
+// GENERAL SETTINGS
+//-------------------------------------------
+
+// ROOM NAME
+{
+	"name":"name",
+	"label":"Room name",
+	"tooltip":"The Room name",
+	"type":"TextInput",
+	"value":"{$BasicValue=roomSettings.name}",
+	"validator":"notNull"
+},
+
+// GROUP ID
+{
+	"name":"groupId",
+	"label":"Group ID",
+	"tooltip":"The Group to which the Room belongs; if left empty, the Room is assigned to the 'default' Group",
+	"type":"TextInput",
+	"value":"{$BasicValue=roomSettings.groupId}"
+},
+
+// PASSWORD
+{
+	"name":"password",
+	"label":"Password",
+	"tooltip":"The Room password (optional). If null or empty string the Room will be public",
+	"type":"TextInput",
+	"value":"{$BasicValue=roomSettings.password}",
+	"componentParams": // DEPRECATED
+	{
+		"displayAsPassword":true
+	},
+	"attributes":
+	{
+		"type":"password"
+	}
+},
+
+// MAX USERS
+{
+	"name":"maxUsers",
+	"label":"Maximum # of users",
+	"tooltip":"The maximum number of users/players allowed in the Room",
+	"type":"NumericStepper",
+	"value":{$BasicValue=roomSettings.maxUsers},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":1,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"minimum":1,
+		"maximum":2147483647
+	}
+},
+
+// MAX SPECTATORS
+{
+	"name":"maxSpectators",
+	"label":"Maximum # of spectators",
+	"tooltip":"The maximum number of spectators allowed in the Room",
+	"type":"NumericStepper",
+	"value":{$BasicValue=roomSettings.maxSpectators},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"minimum":0,
+		"maximum":2147483647
+	}
+},
+
+// IS DYNAMIC
+{
+	"name":"isDynamic",
+	"label":"Is dynamic",
+	"tooltip":"Dynamic Rooms are removed automatically according the 'Auto-remove mode' setting",
+	"type":"CheckBox",
+	"value":{$BasicValue=roomSettings.isDynamic}
+},
+
+// IS GAME
+{
+	"name":"isGame",
+	"label":"Is game",
+	"tooltip":"Marks the Room as a Game Room",
+	"type":"CheckBox",
+	"value":{$BasicValue=roomSettings.isGame}
+},
+
+// IS HIDDEN
+{
+	"name":"isHidden",
+	"label":"Is hidden",
+	"tooltip":"This Room can be hidden from the view of the users",
+	"type":"CheckBox",
+	"value":{$BasicValue=roomSettings.isHidden}
+},
+
+// AUTO-REMOVE MODE
+
+{
+	"name":"autoRemoveMode",
+	"label":"Auto-remove mode",
+	"tooltip":"Declares the modality of dynamic Rooms removal; if the 'DEFAULT' setting is used, regular Rooms will be removed when empty and their creator is disconnected, while Game Rooms will be removed when empty",
+	"type":"ComboBox",
+	"value":"{$BasicValue=roomSettings.autoRemoveMode}",
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":"DEFAULT,WHEN_EMPTY,WHEN_EMPTY_AND_CREATOR_IS_GONE,NEVER_REMOVE"
+	},
+	"dataProvider":"DEFAULT,WHEN_EMPTY,WHEN_EMPTY_AND_CREATOR_IS_GONE,NEVER_REMOVE"
+},
+
+// ACTIVATE BAD WORDS FILTER
+{
+	"name":"badWordsFilter.isActive",
+	"label":"Use bad words filter",
+	"tooltip":"Toggles on/off the words filter for public messages",
+	"type":"CheckBox",
+	"value":{$BasicValue=badWordsFilter.isActive}
+},
+
+// ALLOW JOIN INVITATIONS FOR ROOM OWNERS ONLY
+{
+	"name":"allowOwnerInvitation",
+	"label":"Restrict JoinRoom invitations to Room owner",
+	"tooltip":"If enabled, only the Room's owner will be able to invite users in the Room. If disabled any User will be able to invite more users, with the exception of spectators in a game-type Room",
+	"type":"CheckBox",
+	"value":{$BasicValue=roomSettings.allowOwnerInvitation}
+},
+
+//-------------------------------------------
+// PERMISSIONS AND EVENTS
+//-------------------------------------------
+
+// PERMISSIONS
+{
+	"name":"permissions.flags",
+	"label":"Permission flags",
+	"tooltip":"These flags indicate which operations are permitted in the Room",
+	"category":"Permissions & Events",
+	"type":"DualList",
+	"value":"{$BasicValue=permissions.flags}",
+	"componentParams": // DEPRECATED
+	{
+		"selectableValues":"{$BasicValue=permissions.availableFlags}"
+	},
+	"dataProvider":"{$BasicValue=permissions.availableFlags}"
+},
+
+// MAX ROOM VARIABLES ALLOWED
+{
+	"name":"permissions.maxRoomVariablesAllowed",
+	"label":"Max # of Room Variables",
+	"tooltip":"The maximum number of Room Variables allowed in the Room",
+	"category":"Permissions & Events",
+	"type":"NumericStepper",
+	"value":{$BasicValue=permissions.maxRoomVariablesAllowed},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":0,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"minimum":0,
+		"maximum":2147483647
+	}
+},
+
+// EVENTS
+{
+	"name":"events",
+	"label":"Events",
+	"tooltip":"Specify which events can be fired by the Room",
+	"category":"Permissions & Events",
+	"type":"DualList",
+	"value":"{$BasicValue=roomSettings.events}",
+	"componentParams": // DEPRECATED
+	{
+		"selectableValues":"{$BasicValue=roomSettings.availableEvents}"
+	},
+	"dataProvider":"{$BasicValue=roomSettings.availableEvents}"
+},
+
+//-------------------------------------------
+// ROOM VARIABLES
+//-------------------------------------------
+
+// ROOM VARIABLES
+{
+	"name":"roomVariables",
+	"label":"Room Variables",
+	"tooltip":"Customize the Room Variables",
+	"category":"Room Variables",
+	"type":"DataGrid",
+	"componentParams": // DEPRECATED
+	{
+		"height":200
+	},
+	"defaultListItem":
+	[
+		{
+			"name":"name",
+			"label":"Name",
+			"tooltip":"Name",
+			"type":"TextInput",
+			"value":"",
+			"validator":"notNull"
+		},
+		{
+			"name":"type",
+			"label":"Type",
+			"tooltip":"The variable data type",
+			"type":"ComboBox",
+			"value":"STRING",
+			"componentParams": // DEPRECATED
+			{
+				"dataProvider":"BOOL,INT,DOUBLE,STRING,OBJECT,ARRAY"
+			},
+			"dataProvider":"BOOL,INT,DOUBLE,STRING,OBJECT,ARRAY"
+		},
+		{
+			"name":"value",
+			"label":"Value",
+			"tooltip":"Primitive value or JSON block",
+			"type":"TextInput",
+			"value":"",
+			"validator":"notNull"
+		},
+		{
+			"name":"isPrivate",
+			"label":"Private",
+			"tooltip":"A private variable can be modified only by its owner",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"isPersistent",
+			"label":"Persistent",
+			"tooltip":"A persistent variable will remain active in the Room even if the owner is not in that Room any more. It will be removed when the user disconnects",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"isGlobal",
+			"label":"Global",
+			"tooltip":"A global variable will be broadcast not only to the users in the Room but also outside of it",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"isHidden",
+			"label":"Hidden",
+			"tooltip":"An hidden variable will be server-side only and it is never transmitted to the client(s)",
+			"type":"CheckBox",
+			"value":false
+		},
+		{
+			"name":"isStorable",
+			"label":"Storable",
+			"tooltip":"A storable variable will be saved by the active Room persistence system, if any",
+			"type":"CheckBox",
+			"value":true
+		}
+	],
+	"listValues":{$List=roomVariables, instance=roomSettings, fields=name;type;value;isPrivate;isPersistent;isGlobal;isHidden;isStorable},
+	"clazz":"ZoneSettings$RoomVariableDefinition"
+},
+
+//-------------------------------------------
+// EXTENSION
+//-------------------------------------------
+
+// NAME
+{
+	"name":"extension.name",
+	"label":"Name",
+	"tooltip":"The name of the Extension to be plugged at Room level; the '__lib__' folder is also listed, in case one or more Java Extensions are deployed there for specific class-loading purposes\n\nIf a new Extension is deployed on the server while editing the Zone settings, cancel and re-edit the zone to update this list",
+	"category":"Room Extension",
+	"type":"ComboBox",
+	"value":"{$BasicValue=extension.name}",
+	"trigger":true,
+	"triggerData":{$List=extClasses, instance=extensionsHelper, fields=name;type;classesString},
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":"{$ListToString=extNames, instance=extensionsHelper}"
+	},
+	"dataProvider":"{$ListToString=extNames, instance=extensionsHelper}"
+},
+
+// TYPE
+{
+	"name":"extension.type",
+	"label":"Type",
+	"tooltip":"If 'JAVA' is selected, all jar files contained in the Extension's folder are processed, provided their name ends with 'Extension.jar' (for example 'MyExtension.jar'); this is required to avoid receiving useless data on the Admin Tool (like the list of classes contained in library jar files)\n\n<b>NOTE</b>: 'PYTHON' Extension type can be useful for fast testing and prototyping, but it is NOT RECOMMENDED for production environments (due to performance limitations)",
+	"category":"Room Extension",
+	"type":"ComboBox",
+	"value":"{$BasicValue=extension.type}",
+	"trigger":true,
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":"JAVA,JAVASCRIPT,PYTHON"
+	},
+	"dataProvider":"JAVA,JAVASCRIPT,PYTHON"
+},
+
+// MAIN CLASS
+{
+	"name":"extension.file",
+	"label":"Main class",
+	"tooltip":"The fully qualified name of the main Extension class; Java Extensions must extend either SFSExtension or BaseSFSExtension classes",
+	"category":"Room Extension",
+	"type":"ComboBox",
+	"value":"{$BasicValue=extension.file}",
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":""
+	},
+	"dataProvider":""
+},
+
+// USE NAMING CONVENTION
+{
+	"name":"extension.filterClass",
+	"label":"Use naming convention",
+	"tooltip":"Filter the 'Main class' box showing the classes with names ending with the word 'Extension' only (for example 'com.example.MyJavaExtension' or 'MyJavaScriptExtension.js')\n\n<b>NOTE</b>: this setting is used to improve the Admin Tool usage only, so it doesn't affect the server configuration in any way",
+	"category":"Room Extension",
+	"type":"CheckBox",
+	"value":false,
+	"trigger":true,
+	"clientOnly":true
+},
+
+// PROPERTIES FILE
+{
+	"name":"extension.propertiesFile",
+	"label":"Properties file",
+	"tooltip":"The name of a properties file that will be loaded during the initialization of the Extension. By default a 'config.properties' file is load, if existing",
+	"category":"Room Extension",
+	"type":"TextInput",
+	"value":"{$BasicValue=extension.propertiesFile}"
+},
+
+// RELOAD MODE
+{
+	"name":"extension.reloadMode",
+	"label":"Reload mode",
+	"tooltip":"Determine which mode will be used for Extensions reloading. 'AUTO' is recommended for development/testing environments, 'MANUAL' or 'NONE' for production environments",
+	"category":"Room Extension",
+	"type":"ComboBox",
+	"value":"{$BasicValue=extension.reloadMode}",
+	"componentParams": // DEPRECATED
+	{
+		"dataProvider":"AUTO,MANUAL,NONE"
+	},
+	"dataProvider":"AUTO,MANUAL,NONE"
+},
+
+//-------------------------------------------
+// MMO SETTINGS
+//-------------------------------------------
+
+// IS ACTIVE
+{
+	"name":"mmoSettings.isActive",
+	"label":"Is MMO Room",
+	"tooltip":"Create a Room of type MMORoom, in which joined users are mutually 'visible' based on each other's proximity. Read the documentation for more informations\n\n<b>IMPORTANT</b>\nThe following Room characteristics do not apply to MMORooms:\n<i>Spectators</i> - even if the Room is a Game Room, users can't join it as spectators\n<i>USER_ENTER event</i> - this event is never dispatched; other users entering the current user's Area of Interest (AoI) are notified through the PROXIMITY_LIST_UPDATE event\n<i>USER_EXIT event</i> - this event is dispatched to the user leaving the Room only; other users leaving the current user's Area of Interest are notified through the PROXIMITY_LIST_UPDATE event",
+	"category":"MMO Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=mmoSettings.isActive}
+},
+
+// DEFAULT AOI
+{
+	"name":"mmoSettings.defaultAOI",
+	"label":"Default AoI",
+	"tooltip":"The distance along the x,y,z axes describing the 'Area of Interest' within which the other users presence in the Room is notified to each client through the PROXIMITY_LIST_UPDATE event. Similarly, users actions (public messages, User Variables updates, etc) are notified when they are within this area only\n\n<b>NOTE</b>\nA value of 100 for an axis means an AoI ranging from -100 to +100 along that axis",
+	"category":"MMO Settings",
+	"type":"Vector3D",
+	"value":"{$BasicValue=mmoSettings.defaultAOI}",
+	"validator":"aoi"
+},
+
+// LOWER MAP LIMITS
+{
+	"name":"mmoSettings.lowerMapLimit",
+	"label":"Lower map limits",
+	"tooltip":"The lower limits for each of the user position coordinates (x,y,z) in the MMORoom. Limits are used to validate the request to set the user position coming from the client. Leave empty for no limits\n\n<b>NOTE</b>\nLower and higher map limits must be both set or not set; if only one of the two properties is set, it will be ignored",
+	"category":"MMO Settings",
+	"type":"Vector3D",
+	"value":"{$BasicValue=mmoSettings.lowerMapLimit}",
+	"componentParams": // DEPRECATED
+	{
+		"enableClear":true,
+		"allowNegative":true
+	},
+	"attributes":
+	{
+		"enableClear":true,
+		"allowNegative":true
+	}
+},
+
+// HIGHER MAP LIMITS
+{
+	"name":"mmoSettings.higherMapLimit",
+	"label":"Higher map limits",
+	"tooltip":"The upper limits for each of the user position coordinates (x,y,z) in the MMORoom. Limits are used to validate the request to set the user position coming from the client. Leave empty for no limits\n\n<b>NOTE</b>\nLower and higher map limits must be both set or not set; if only one of the two properties is set, it will be ignored",
+	"category":"MMO Settings",
+	"type":"Vector3D",
+	"value":"{$BasicValue=mmoSettings.higherMapLimit}",
+	"componentParams": // DEPRECATED
+	{
+		"enableClear":true,
+		"allowNegative":true
+	},
+	"attributes":
+	{
+		"enableClear":true,
+		"allowNegative":true
+	}
+},
+
+// FORCE FLOATS
+{
+	"name":"mmoSettings.forceFloats",
+	"label":"Force floating point",
+	"tooltip":"Force the values entered in the AoI and map limits settings above to be parsed as floating point values, even if integers have been entered. Please note that even if this setting is off, if a decimal value is entered above, it will be treated as a floating point value",
+	"category":"MMO Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=mmoSettings.forceFloats}
+},
+
+// MAX LIMBO SECONDS
+{
+	"name":"mmoSettings.userMaxLimboSeconds",
+	"label":"User max limbo time",
+	"tooltip":"The maximum amount of seconds allowed between the MMORoom join and the first time the user position is set in the Room (known as 'limbo', because the user is inside the Room but he knows nothing about the other users in it, because the proximity system based on the AoI requires his position to be set at least one time); if this time is exeeded, the user is kicked from the Room automatically",
+	"category":"MMO Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=mmoSettings.userMaxLimboSeconds},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":10,
+		"maximum":120
+	},
+	"attributes":
+	{
+		"min":10,
+		"max":120
+	}
+},
+
+// PROXIMITY LIST UPDATES MILLISECONDS
+{
+	"name":"mmoSettings.proximityListUpdateMillis",
+	"label":"Millis between proximity list updates",
+	"tooltip":"Minimum time between two subsequent PROXIMITY_LIST_UPDATE events sent to the clients; this should be balanced taking into account the user speed when moving inside the MMORoom (frequency of position updates) and the ratio between the actual client viewport size (or area of visibility in case of 3D environments) and the AoI size",
+	"category":"MMO Settings",
+	"type":"NumericStepper",
+	"value":{$BasicValue=mmoSettings.proximityListUpdateMillis},
+	"componentParams": // DEPRECATED
+	{
+		"minimum":10,
+		"maximum":2147483647
+	},
+	"attributes":
+	{
+		"min":10,
+		"max":2147483647
+	}
+},
+
+// SEND AOI ENTRY POINT
+{
+	"name":"mmoSettings.sendAOIEntryPoint",
+	"label":"Send AoI entry point",
+	"tooltip":"Send the other users entry coordinates in the client's AoI as reserved properties on the User object in the PROXIMITY_LIST_UPDATE event",
+	"category":"MMO Settings",
+	"type":"CheckBox",
+	"value":{$BasicValue=mmoSettings.sendAOIEntryPoint}
+}

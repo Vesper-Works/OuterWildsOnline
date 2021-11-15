@@ -1,0 +1,15 @@
+Changes to default Bootstrap theme
+https://bootstrap.build/app
+(custom-bootstrap.min.css)
+
+Color system > $primary = $orange
+
+
+---------------------------------------------------
+
+
+Changes to Kendo default Bootstrap 4 theme
+https://themebuilder.telerik.com/kendo-ui
+(kendo.custom-bootstrap-v4.css)
+
+Theme colors > Primary = #fd7d24
