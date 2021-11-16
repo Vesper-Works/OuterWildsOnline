@@ -32,14 +32,30 @@ namespace ModTemplate
             else
             {
                 this.transform.localPosition = pos;
-                this.transform.rotation = rot;
+                if (gameObject.name.ToLower().Contains("player"))
+                {
+                    this.transform.rotation = rot;
+                }
+                else
+                {
+                    this.transform.localRotation = rot;
+                }
+           
             }
         }
 
         void Update()
         {
             this.transform.localPosition = Vector3.Lerp(transform.localPosition, desiredPos, Time.deltaTime * dampingFactor);
-            this.transform.rotation = Quaternion.Slerp(transform.rotation, desiredRot, Time.deltaTime * dampingFactor);
+            if (gameObject.name.ToLower().Contains("player"))
+            {
+                this.transform.rotation = Quaternion.Slerp(transform.rotation, desiredRot, Time.deltaTime * dampingFactor);
+            }
+            else
+            {
+                this.transform.localRotation = Quaternion.Slerp(transform.localRotation, desiredRot, Time.deltaTime * dampingFactor);
+            }
+          
         }
     }
 }

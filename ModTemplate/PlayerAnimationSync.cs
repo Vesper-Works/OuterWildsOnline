@@ -17,7 +17,7 @@ namespace ModTemplate
 		public event PlayerAnimController.PlayerAnimationEvent OnRightFootGrounded;
 		public event PlayerAnimController.PlayerAnimationEvent OnRightFootLift;
 
-		private bool grounded;
+		private bool _grounded;
 		// Token: 0x04000032 RID: 50
 		private Animator _animator;
 
@@ -97,10 +97,11 @@ namespace ModTemplate
 
 		private void Start()
 		{
-            this._playerController = gameObject.GetComponent<PlayerControllerSync>();
+            this._playerController = gameObject.GetComponentInParent<PlayerControllerSync>();
 			_unsuitedGroup = transform.Find("player_mesh_noSuit:Traveller_HEA_Player").gameObject;
 			_suitedGroup = transform.Find("Traveller_Mesh_v01:Traveller_Geo").gameObject;
 			_playerStateSync = GetComponentInParent<PlayerStateSync>();
+			_grounded = true;
 		}
 
 		// Token: 0x0600003B RID: 59 RVA: 0x00033324 File Offset: 0x00031524
@@ -114,10 +115,10 @@ namespace ModTemplate
 
         private void LateUpdate()
         {
-            bool flag = grounded;
+            bool flag = _grounded;
             bool flag2 = _playerStateSync.IsAttached();
             bool flag3 = _playerStateSync.InZeroG();
-            bool flag4 = true;
+            //bool flag4 = this._playerJetpack.GetLocalAcceleration().y > 0f;
 			
             Vector3 vector = Vector3.zero;
             if (!flag2)
@@ -150,7 +151,7 @@ namespace ModTemplate
             this._animator.SetBool("Grounded", flag || flag2 || _playerStateSync.IsRecentlyDetached());
             this._animator.SetLayerWeight(1, this._playerController.GetJumpCrouchFraction());
             this._animator.SetFloat("FreefallSpeed", num / 15f * (num2 / 3f));
-			this._animator.SetBool("InZeroG", flag3); //|| flag4);
+			this._animator.SetBool("InZeroG", flag3);//|| flag4);
             this._animator.SetBool("UsingJetpack", flag3 && _playerStateSync.IsWearingSuit());
             if (this._justBecameGrounded)
             {
@@ -232,14 +233,14 @@ namespace ModTemplate
 				return;
 			}
 			this._justBecameGrounded = true;
-			grounded = true;
+			_grounded = true;
 		}
 
 		// Token: 0x0600003F RID: 63 RVA: 0x00002C45 File Offset: 0x00000E45
 		public void OnPlayerUngrounded()
 		{
 			this._ungroundedTime = Time.time;
-			grounded = false;
+			_grounded = false;
 		}
 
 		// Token: 0x06000040 RID: 64 RVA: 0x00002C52 File Offset: 0x00000E52

@@ -9,6 +9,9 @@ namespace ModTemplate
             this._transform = this.GetRequiredComponent<Transform>();
             this._owRigidbody = this.GetComponentInParent<OWRigidbody>();
 
+            //_groundSurface = SurfaceType.Dirt;
+            this._raycastHits = new RaycastHit[32];
+            this._raycastHitNormals = new Vector3[32];
             //GlobalMessenger.AddListener("InitPlayerForceAlignment", new Callback(this.OnInitPlayerForceAlignment));
             //GlobalMessenger.AddListener("BreakPlayerForceAlignment", new Callback(this.OnBreakPlayerForceAlignment));
             //GlobalMessenger.AddListener("SuitUp", new Callback(this.OnSuitUp));
@@ -33,6 +36,105 @@ namespace ModTemplate
             //GlobalMessenger<DeathType>.RemoveListener("PlayerDeath", new Callback<DeathType>(this.OnPlayerDeath));
             //GlobalMessenger.RemoveListener("PlayerResurrection", new Callback(this.OnPlayerResurrection));
         }
+        private bool IsValidGroundedHit(RaycastHit hit)
+        {
+            return hit.distance > 0f && hit.rigidbody != this._owRigidbody.GetRigidbody();
+        }
+        private float GetGroundHitDistance(RaycastHit hit)
+        {
+            Vector3 vector = this._transform.InverseTransformPoint(hit.point);
+            float magnitude = Vector3.ProjectOnPlane(vector, Vector3.up).magnitude;
+            float num = Mathf.Abs(vector.y) - 0.5f;
+            if (magnitude > 0.5f)
+            {
+                Debug.LogError("ERROR: Player grounded spherecast is not underneath the player. Probably need to sync transforms somewhere.");
+                //return 0f;
+            }
+            return num - Mathf.Sqrt(0.25f - magnitude * magnitude);
+        }
+        private bool AllowGroundedOnRigidbody(Rigidbody body)
+        {
+            return body != null && body != this._owRigidbody.GetRigidbody() && body.mass > this._owRigidbody.GetRigidbody().mass;
+        }
+        private void CastForGrounded()
+        {
+            float num = Time.fixedDeltaTime * 60f;
+
+            Vector3 localUpDirection = this._owRigidbody.GetLocalUpDirection();
+            float num2 = 0.06f * num;
+            float num3 = 0.46f;
+            float maxDistance = num2 + (1f - num3);
+            int num4 = Physics.SphereCastNonAlloc(this._owRigidbody.GetPosition(), num3, -localUpDirection, this._raycastHits, maxDistance, OWLayerMask.groundMask, QueryTriggerInteraction.Ignore);
+            RaycastHit raycastHit = default(RaycastHit);
+            bool flag3 = false;
+            for (int i = 0; i < num4; i++)
+            {
+                if (this.IsValidGroundedHit(this._raycastHits[i]))
+                {
+                    if (!flag3)
+                    {
+                        raycastHit = this._raycastHits[i];
+                        flag3 = true;
+                    }
+                    else if (this._raycastHits[i].distance < raycastHit.distance)
+                    {
+                        raycastHit = this._raycastHits[i];
+                    }
+                }
+            }
+            if (flag3)
+            {
+                float num5 = float.PositiveInfinity;
+                bool flag4 = false;
+                {
+                    for (int j = 0; j < num4; j++)
+                    {
+                        if (this.IsValidGroundedHit(this._raycastHits[j]) && this.AllowGroundedOnRigidbody(this._raycastHits[j].rigidbody))
+                        {
+                            float groundHitDistance = this.GetGroundHitDistance(this._raycastHits[j]);
+                            num5 = Mathf.Min(num5, groundHitDistance);
+                            if (Vector3.Angle(localUpDirection, this._raycastHits[j].normal) <= (float)this._maxAngleToBeGrounded)
+                            {
+                                raycastHit = this._raycastHits[j];
+                                flag4 = true;
+                            }
+                            else
+                            {
+                                this._raycastHitNormals[j] = Vector3.ProjectOnPlane(this._raycastHits[j].normal, localUpDirection);
+                            }
+                        }
+                    }
+                    if (!flag4)
+                    {
+                        int num6 = 0;
+                        while (num6 < num4 && !this._isGrounded)
+                        {
+                            if (this.IsValidGroundedHit(this._raycastHits[num6]))
+                            {
+                                int num7 = num6 + 1;
+                                while (num7 < num4 && !this._isGrounded)
+                                {
+                                    if (this.IsValidGroundedHit(this._raycastHits[num6]) && Vector3.Angle(this._raycastHitNormals[num6], this._raycastHitNormals[num7]) > (float)this._maxAngleBetweenSlopes)
+                                    {
+                                        flag4 = true;
+                                        raycastHit = this._raycastHits[num6];
+                                        num5 = this.GetGroundHitDistance(this._raycastHits[num6]);
+                                        break;
+                                    }
+                                    num7++;
+                                }
+                            }
+                            num6++;
+                        }
+                    }
+                }
+                IgnoreCollision ignoreCollision = flag4 ? raycastHit.collider.GetComponent<IgnoreCollision>() : null;
+                if (flag4 && (ignoreCollision == null || !ignoreCollision.IgnoresPlayer()))
+                {
+                    this._groundSurface = Locator.GetSurfaceManager().GetHitSurfaceType(raycastHit);
+                }
+            }
+        }
 
         // Token: 0x06001796 RID: 6038 RVA: 0x000130C1 File Offset: 0x000112C1
         public OWRigidbody GetBody()
@@ -55,7 +157,8 @@ namespace ModTemplate
         // Token: 0x06001799 RID: 6041 RVA: 0x000130FD File Offset: 0x000112FD
         public SurfaceType GetGroundSurface()
         {
-            return this._groundSurface;
+            CastForGrounded();
+            return _groundSurface;
         }
 
         // Token: 0x0600179A RID: 6042 RVA: 0x00013105 File Offset: 0x00011305
@@ -265,6 +368,14 @@ namespace ModTemplate
 
         // Token: 0x04001C01 RID: 7169
         private SurfaceType _groundSurface;
+
+        // Token: 0x04001C11 RID: 7185
+        private RaycastHit[] _raycastHits;
+
+        private int _maxAngleToBeGrounded = 45;
+        private int _maxAngleBetweenSlopes = 115;
+
+        private Vector3[] _raycastHitNormals;
     }
 
 }
