@@ -43,14 +43,15 @@ public class MainExtension extends SFSExtension {
 
 	@Override
 	public void init() {
-		addRequestHandler("SyncCharacterController", CharacterControllerSyncHandler.class);
-	
+		
 		userVariablesHandler = new UserVariablesHandler();
 
 		mmoAPi = SmartFoxServer.getInstance().getAPIManager().getMMOApi();
 
 		addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, userVariablesHandler);		
-
+		addRequestHandler("SyncCharacterController", CharacterControllerSyncHandler.class);
+		addRequestHandler("SyncShipPosition", ShipTransformSyncHandler.class);
+		
 
 	}
 
