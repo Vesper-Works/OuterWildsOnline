@@ -304,6 +304,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatHandler.cs" />
     <Compile Include="PlayerAnimationSync.cs" />
     <Compile Include="ConnectionController.cs" />
     <Compile Include="gizmos-master\Runtime\Constants.cs" />
@@ -321,7 +322,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SFSSectorManager.cs" />
     <Compile Include="SimpleRemoteInterpolation.cs" />
-    <Compile Include="SmartFoxConnection.cs" />
     <Compile Include="ThrusterFlameControllerSync.cs" />
     <Compile Include="ThrusterWashControllerSync.cs" />
   </ItemGroup>

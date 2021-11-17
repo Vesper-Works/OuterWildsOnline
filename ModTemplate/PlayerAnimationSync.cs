@@ -74,7 +74,7 @@ namespace ModTemplate
 		private int _probeOnlyLayer;
 		
 		private PlayerStateSync _playerStateSync;
-
+		public float ThrusterModelLocalYAcceleration;
 		// Token: 0x0200000D RID: 13
 		// (Invoke) Token: 0x06000048 RID: 72
 		public delegate void PlayerAnimationEvent();
@@ -118,7 +118,7 @@ namespace ModTemplate
             bool flag = _grounded;
             bool flag2 = _playerStateSync.IsAttached();
             bool flag3 = _playerStateSync.InZeroG();
-            //bool flag4 = this._playerJetpack.GetLocalAcceleration().y > 0f;
+            bool flag4 = ThrusterModelLocalYAcceleration > 0f;
 			
             Vector3 vector = Vector3.zero;
             if (!flag2)
@@ -133,10 +133,10 @@ namespace ModTemplate
             {
                 vector.z = 0f;
             }
-            //if (flag4)
-            //{
-            //    this._ungroundedTime = Time.time;
-            //}
+            if (flag4)
+            {
+                this._ungroundedTime = Time.time;
+            }
             float num = 0f;
             float num2 = 0f;
             OWRigidbody lastGroundBody = this._playerController.GetLastGroundBody();
@@ -151,7 +151,7 @@ namespace ModTemplate
             this._animator.SetBool("Grounded", flag || flag2 || _playerStateSync.IsRecentlyDetached());
             this._animator.SetLayerWeight(1, this._playerController.GetJumpCrouchFraction());
             this._animator.SetFloat("FreefallSpeed", num / 15f * (num2 / 3f));
-			this._animator.SetBool("InZeroG", flag3);//|| flag4);
+			this._animator.SetBool("InZeroG", flag3 || flag4);
             this._animator.SetBool("UsingJetpack", flag3 && _playerStateSync.IsWearingSuit());
             if (this._justBecameGrounded)
             {

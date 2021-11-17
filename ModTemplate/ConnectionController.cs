@@ -24,6 +24,7 @@ namespace ModTemplate
     public class ConnectionController : ModBehaviour
     {
         public static IModHelper ModHelperInstance;
+        public static SmartFox Connection { get => Instance.sfs; }
 
         private SmartFox sfs;
 
@@ -31,8 +32,8 @@ namespace ModTemplate
         private Dictionary<int, GameObject> remoteShips = new Dictionary<int, GameObject>();
 
         private Sector closestSectorToPlayer;
-        private int closestSectorToPlayerID; 
-        
+        private int closestSectorToPlayerID;
+
         private Sector closestSectorToShip;
         private int closestSectorToShipID;
 
@@ -44,10 +45,13 @@ namespace ModTemplate
 
         private PlayerCharacterController playerCharacterController;
         private JetpackThrusterModel playerThrusterModel;
+
+        private static ConnectionController Instance { get; set; }
         void Start()
         {
+            Instance = this;
             ModHelperInstance = ModHelper;
-            UnityExplorer.ExplorerStandalone.CreateInstance();
+            //UnityExplorer.ExplorerStandalone.CreateInstance();
             Gizmos.Enabled = true;
             Application.runInBackground = true;
             // Skip flash screen.
@@ -177,9 +181,10 @@ namespace ModTemplate
                 data.PutFloat("y", pos.y);
                 data.PutFloat("z", pos.z);
 
-                data.PutFloat("rotx", Locator.GetShipTransform().rotation.eulerAngles.x);
-                data.PutFloat("roty", Locator.GetShipTransform().rotation.eulerAngles.x);
-                data.PutFloat("rotz", Locator.GetShipTransform().rotation.eulerAngles.x);
+                Vector3 rot = Locator.GetShipTransform().rotation.eulerAngles;
+                data.PutFloat("rotx", rot.x);
+                data.PutFloat("roty", rot.y);
+                data.PutFloat("rotz", rot.z);
                 data.PutInt("sec", closestSectorToPlayerID);
 
                 sfs.Send(new ExtensionRequest("SyncShipPosition", data, sfs.LastJoinedRoom));
@@ -207,8 +212,11 @@ namespace ModTemplate
                         closestSectorID = sector.Key;
                     }
                 }
-                closestSectorToPlayer = closestSector;
-                closestSectorToPlayerID = closestSectorID;
+                if (closestSector != null)
+                {
+                    closestSectorToPlayer = closestSector;
+                    closestSectorToPlayerID = closestSectorID;
+                }
                 yield return new WaitForSeconds(0.4f);
             }
         }
@@ -293,32 +301,35 @@ namespace ModTemplate
 
             //Instantiate(GameObject.Find("Ship_Body/ShipDetector"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(293.9875f, 0f, 0f);
 
-            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Shadowcaster_Cabin"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
+            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Shadowcaster_Cabin"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
 
-            Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Tech/Cockpit_Tech_Exterior"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/ShadowCaster_Cockpit"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
+            Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Tech/Cockpit_Tech_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/ShadowCaster_Cockpit"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
 
-            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Geo_Engine/Engine_Geometry/Engine_Exterior"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Geo_Engine/ShadowCaster_Engine"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
+            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Geo_Engine/Engine_Geometry/Engine_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Geo_Engine/ShadowCaster_Engine"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
 
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontFoot"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontLeg"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontFoot"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontLeg"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/LandingGear_Front_Tech"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
+            Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Geo_Supplies/Supplies_Geometry/Supplies_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Geo_Supplies/ShadowCaster_Supplies"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
 
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftFoot"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftLeg"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftFoot"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftLeg"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/LandingGear_Front_Tech"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
 
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/LandingGear_RightFoot"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/LandingGear_RightLeg"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightFoot"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightLeg"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(360 - 293.9875f, 0f, 0f); ;
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/LandingGear_RightFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/LandingGear_RightLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
 
             RemoveCollisionFromObjectRecursively(remotePlayerShip.transform);
 
@@ -360,7 +371,7 @@ namespace ModTemplate
         {
             foreach (Transform child in transform)
             {
-                if (child.TryGetComponent<Collider>(out _))
+                if (child.TryGetComponent<Collider>(out _) || child.TryGetComponent<Rigidbody>(out _) || child.TryGetComponent<OWRigidbody>(out _))
                 {
                     Destroy(child.gameObject);
                 }
@@ -441,6 +452,7 @@ namespace ModTemplate
             if (changedVars.Contains("tmla"))
             {
                 remotePlayers[user.Id].GetComponentInChildren<ThrusterWashControllerSync>().ThrusterModelLocalYAcceleration = (float)user.GetVariable("tmla").GetDoubleValue();
+                remotePlayers[user.Id].GetComponentInChildren<PlayerAnimationSync>().ThrusterModelLocalYAcceleration = (float)user.GetVariable("tmla").GetDoubleValue();
             }
 
         }
@@ -463,6 +475,8 @@ namespace ModTemplate
             playerThrusterModel = FindObjectOfType<JetpackThrusterModel>();
 
             SortOutListeners();
+
+            gameObject.AddComponent<ChatHandler>();
         }
 
         private void SortOutListeners()
@@ -588,7 +602,7 @@ namespace ModTemplate
         {
             // Create SmartFox client instance
             sfs = new SmartFox();
-
+            
             // Add event listeners
             sfs.AddEventListener(SFSEvent.CONNECTION, OnConnection);
             sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
