@@ -42,7 +42,7 @@ namespace ModTemplate
         private Dictionary<ChatMode, bool> allowedChatModes = new Dictionary<ChatMode, bool>();
         private Dictionary<ChatMode, Text> chatBoxes = new Dictionary<ChatMode, Text>();
 
-
+        private bool NoChatsAvailable { get => !allowedChatModes.ContainsValue(true); }
 
         private GameObject inputBox;
         private GameObject inputText;
@@ -52,11 +52,17 @@ namespace ModTemplate
         private Text inputFieldText;
         private Text nameFieldText;
 
+        private NotificationData shipAloneInSpace;
+        //private NotificationData shipShowChat;
+        private int shipMessageCount;
+
         private bool selected;
 
         public static ChatMode chatMode;
         private void Start()
         {
+            shipAloneInSpace = new NotificationData(NotificationTarget.Ship, "Alone in space", 5f, true);
+
 
             chatMode = ChatMode.TimberHearth;
 
@@ -107,35 +113,59 @@ namespace ModTemplate
                 }
                 if (Keyboard.current.tabKey.wasPressedThisFrame)
                 {
-                    chatBoxes[chatMode].gameObject.SetActive(false);
-                    IterateChatMode();
-                    nameFieldText.text = chatMode.ToString() + " (" + sfs.MySelf.Name + "):";
-                    chatBoxes[chatMode].gameObject.SetActive(true);
+                    UpdateOpenChat();
                 }
             }
 
             if (Keyboard.current.enterKey.wasPressedThisFrame && !selected)
             {
                 OWInput.ChangeInputMode(InputMode.KeyboardInput);
-                foreach (var chatText in chatBoxes.Values)
-                {
-                    chatText.color = Color.white;
-                }
+                //nameFieldText.color = Color.white; 
+                //inputFieldText.color = Color.white; 
+                //foreach (var chatText in chatBoxes.Values)
+                //{
+                //    chatText.color = Color.white;
+                //}
                 selected = true;
 
             }
             if (Keyboard.current.escapeKey.wasPressedThisFrame && selected)
             {
-                OWInput.ChangeInputMode(InputMode.Character);              
-                foreach (var chatText in chatBoxes.Values)
-                {
-                    chatText.color = new Color(1, 1, 1, 0.5f);
-                }
+                OWInput.ChangeInputMode(InputMode.Character);
+                //nameFieldText.color = new Color(1, 1, 1, 0.5f);
+                //inputFieldText.color = new Color(1, 1, 1, 0.5f);
+                //foreach (var chatText in chatBoxes.Values)
+                //{
+                //    chatText.color = new Color(1, 1, 1, 0.5f);
+                //}
                 selected = false;
             }
         }
+        private void UpdateOpenChat()
+        {
+       
+            if (NoChatsAvailable)
+            {
+                nameFieldText.text = "Alone in space";
+                if (PlayerState.AtFlightConsole())
+                {
+                    NotificationManager.SharedInstance.PostNotification(shipAloneInSpace, true);
+                }
+
+            }
+            else
+            {
+                chatBoxes[chatMode].gameObject.SetActive(false);
+                NotificationManager.SharedInstance.UnpinNotification(shipAloneInSpace);
+                IterateChatMode();
+                nameFieldText.text = chatMode.ToString() + " (" + sfs.MySelf.Name + "):";
+                chatBoxes[chatMode].gameObject.SetActive(true);
+            }
+        }
+
         private void IterateChatMode()
         {
+            if (NoChatsAvailable) { return; }
             chatMode++;
             if (((int)chatMode) == 16)
             {
@@ -152,41 +182,69 @@ namespace ModTemplate
                     ChatMode astroChatMode = GetChatModeFromAstroObjectName(astroObject.GetAstroObjectName().ToString());
                     if (Mathf.Abs(Vector3.Distance(Locator.GetPlayerTransform().position, astroObject.transform.position)) < 520)
                     {
-                        allowedChatModes[astroChatMode] = true;
-                    }
-                    else
-                    {
-                        allowedChatModes[astroChatMode] = false;
-                        if (chatMode == astroChatMode)
+                        if (allowedChatModes[astroChatMode] == false && astroChatMode != ChatMode.NA)
                         {
-                            IterateChatMode();
+                            if (PlayerState.AtFlightConsole())
+                            {
+                                var data = new NotificationData(NotificationTarget.Ship, FormatTextFirstTime("Arrived at: " + astroChatMode.ToString()), 4f, true);
+                                NotificationManager.SharedInstance.PostNotification(data, false);
+                            }
+                            else
+                            {
+                                var data = new NotificationData(NotificationTarget.Player, FormatTextFirstTime("Arrived at: " + astroChatMode.ToString()), 4f, true);
+                                NotificationManager.SharedInstance.PostNotification(data, false);
+                            }
+
+                        }
+                        bool onlyChat = NoChatsAvailable;
+                        allowedChatModes[astroChatMode] = true;
+                        if (onlyChat)
+                        {
+                            UpdateOpenChat();
                         }
                     }
-                }                
-                foreach (var campfire in FindObjectsOfType<Campfire>())
-                {
-                    ChatMode astroChatMode = ChatMode.Campfire;
-                    if (Mathf.Abs(Vector3.Distance(Locator.GetPlayerTransform().position, campfire.transform.position)) < 5)
-                    {
-                        allowedChatModes[astroChatMode] = true;
-                    }
                     else
                     {
                         allowedChatModes[astroChatMode] = false;
                         if (chatMode == astroChatMode)
                         {
-                            IterateChatMode();
+                            UpdateOpenChat();
                         }
                     }
                 }
+                //foreach (var campfire in FindObjectsOfType<Campfire>())
+                //{
+                //    ChatMode astroChatMode = ChatMode.Campfire;
+                //    if (Mathf.Abs(Vector3.Distance(Locator.GetPlayerTransform().position, campfire.transform.position)) < 5)
+                //    {
+                //        allowedChatModes[astroChatMode] = true;
+                //    }
+                //    else
+                //    {
+                //        allowedChatModes[astroChatMode] = false;
+                //        if (chatMode == astroChatMode)
+                //        {
+                //            IterateChatMode();
+                //        }
+                //    }
+                //}
                 if (PlayerState.InDreamWorld())
                 {
                     allowedChatModes[ChatMode.DreamWorld] = true;
-                }    
+                }
+                else
+                {
+                    allowedChatModes[ChatMode.DreamWorld] = false;
+                }
                 if (PlayerState.InBrambleDimension())
                 {
                     allowedChatModes[ChatMode.DarkBramble] = true;
                 }
+                else
+                {
+                    allowedChatModes[ChatMode.DarkBramble] = false;
+                }
+
                 yield return new WaitForSeconds(2f);
             }
         }
@@ -215,8 +273,6 @@ namespace ModTemplate
         }
         private void LateStart()
         {
-            StartCoroutine(GetAllowedChatModes());
-
             inputFieldText = inputText.GetComponent<Text>();
             inputFieldText.horizontalOverflow = HorizontalWrapMode.Overflow;
             inputFieldText.verticalOverflow = VerticalWrapMode.Overflow;
@@ -242,10 +298,10 @@ namespace ModTemplate
                 chatBoxText.alignment = TextAnchor.LowerLeft;
                 chatBoxText.text = "";
             }
+            StartCoroutine(GetAllowedChatModes());
 
             Destroy(inputBox.GetComponent<Text>());
         }
-
         private void FormatText(Text text)
         {
             if (text.text.Length == 20) { text.text = text.text.Insert(19, Environment.NewLine); ; }
@@ -267,6 +323,12 @@ namespace ModTemplate
             ChatMode chatmode = (ChatMode)Enum.Parse(typeof(ChatMode), message[0]);
             ConnectionController.ModHelperInstance.Console.WriteLine(chatmode.ToString());
             chatBoxes[chatMode].text += FormatTextFirstTime("\n" + sender.Name + ": " + message[1]);
+            if (PlayerState.AtFlightConsole())
+            {
+                shipMessageCount++;
+                var data = new NotificationData(NotificationTarget.Ship, FormatTextFirstTime("\n" + sender.Name + ": " + message[1]), 5f, true);
+                NotificationManager.SharedInstance.PostNotification(data, false);
+            }
         }
     }
 }

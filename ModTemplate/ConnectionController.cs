@@ -46,13 +46,14 @@ namespace ModTemplate
         private PlayerCharacterController playerCharacterController;
         private JetpackThrusterModel playerThrusterModel;
 
+        private UnityEngine.UI.Text pingText;
         private static ConnectionController Instance { get; set; }
         void Start()
         {
             Instance = this;
             ModHelperInstance = ModHelper;
             //UnityExplorer.ExplorerStandalone.CreateInstance();
-            Gizmos.Enabled = true;
+            //Gizmos.Enabled = true;
             Application.runInBackground = true;
             // Skip flash screen.
             var titleScreenAnimation = FindObjectOfType<TitleScreenAnimation>();
@@ -230,10 +231,9 @@ namespace ModTemplate
                 };
             }
 
-
             ModHelper.Console.WriteLine("Spawned: " + user);
 
-            GameObject remotePlayer = new GameObject("Player: " + user.Name);
+            GameObject remotePlayer = new GameObject(user.Name);
             GameObject remotePlayerBody = Instantiate(Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2").gameObject);
 
             remotePlayer.AddComponent<OWRigidbody>().MakeKinematic();
@@ -252,7 +252,7 @@ namespace ModTemplate
             remotePlayerBody.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
             remotePlayerBody.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
 
-            var animSync = remotePlayerBody.AddComponent<PlayerAnimationSync>();
+            remotePlayerBody.AddComponent<PlayerAnimationSync>();
             remotePlayer.AddComponent<PlayerControllerSync>();
 
             GameObject remoteVFXObjects = new GameObject("RemotePlayerVFX");
@@ -273,8 +273,20 @@ namespace ModTemplate
                 child2.gameObject.AddComponent<ThrusterFlameControllerSync>();
             }
 
-
             remotePlayer.AddComponent<PlayerStateSync>();
+
+            var obj = GameObject.FindWithTag("MapCamera");
+            var markerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
+            var canvasMarker = markerManager.InstantiateNewMarker(true);
+            markerManager.RegisterMarker(canvasMarker, remotePlayer.GetComponent<OWRigidbody>());
+            canvasMarker.SetLabel(user.Name.ToUpper());
+            canvasMarker.SetColor(Color.white);
+            canvasMarker.SetVisibility(true);
+
+            remotePlayer.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(user.Name);
+            //remotePlayer.AddComponent<LockOnReticule>().Init();
+
+
             remotePlayer.transform.position = vector3;
             remotePlayer.transform.rotation = quaternion;
             remotePlayers.Add(user.Id, remotePlayer);
@@ -290,7 +302,6 @@ namespace ModTemplate
             remoteShips.Remove(user.Id);
 
         }
-
         private void SpawnRemoteShip(SFSUser user)
         {
             GameObject remotePlayerShip = new GameObject(user.Name + "'s ship");
@@ -298,6 +309,7 @@ namespace ModTemplate
             remotePlayerShip.AddComponent<ProxyShadowCasterSuperGroup>();
             remotePlayerShip.AddComponent<SimpleRemoteInterpolation>();
             remotePlayerShip.AddComponent<OWRigidbody>().MakeKinematic();
+            //remotePlayerShip.AddComponent<LockOnReticule>().Init();
 
             //Instantiate(GameObject.Find("Ship_Body/ShipDetector"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(293.9875f, 0f, 0f);
 
@@ -401,7 +413,7 @@ namespace ModTemplate
             {
                 SpawnRemotePlayer(
                     (SFSUser)user,
-                    new Vector3(user.AOIEntryPoint.FloatX, user.AOIEntryPoint.FloatY, user.AOIEntryPoint.FloatZ),
+                    new Vector3((float)user.GetVariable("x").GetDoubleValue(), (float)user.GetVariable("y").GetDoubleValue(), (float)user.GetVariable("z").GetDoubleValue()),
                     Quaternion.Euler((float)user.GetVariable("rotx").GetDoubleValue(), (float)user.GetVariable("roty").GetDoubleValue(), (float)user.GetVariable("rotz").GetDoubleValue())
                 );
             }
@@ -460,11 +472,15 @@ namespace ModTemplate
         private void LoadedGame()
         {
             ModHelper.Console.WriteLine("Loaded game scene!");
+
+            sfs.EnableLagMonitor(true, 2, 5);
+
             // Register callback delegates
             sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
             sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariableUpdate);
             sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
             sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
+            sfs.AddEventListener(SFSEvent.PING_PONG, PingPongHandler);
 
             gameObject.AddComponent<SFSSectorManager>();
 
@@ -472,11 +488,25 @@ namespace ModTemplate
             StartCoroutine(GetClosestSectorToPlayer());
             StartCoroutine(SendCharacterControllerData());
             StartCoroutine(SendShipData());
+            StartCoroutine(SendJoinedGameMessage());
             playerThrusterModel = FindObjectOfType<JetpackThrusterModel>();
 
             SortOutListeners();
 
             gameObject.AddComponent<ChatHandler>();
+
+        }
+
+        private IEnumerator SendJoinedGameMessage()
+        {
+            yield return new WaitForSeconds(3f);
+            var data = new SFSObject();
+            data.PutNull("jg"); //JoinedGame
+            sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
+        }
+        private void PingPongHandler(BaseEvent evt)
+        {
+            if (pingText != null) { pingText.text = (int)evt.Params["lagValue"] + "ms"; }
         }
 
         private void SortOutListeners()
@@ -563,6 +593,21 @@ namespace ModTemplate
         }
         private void PlayerSuitUp()
         {
+            if (GameObject.Find("PlayerHUD/HelmetOnUI/UICanvas/SecondaryGroup/GForce/Ping") == null)
+            {
+                var pingTextObject = Instantiate(GameObject.Find("PlayerHUD/HelmetOnUI/UICanvas/SecondaryGroup/GForce/NumericalReadout"), GameObject.Find("PlayerHUD/HelmetOnUI/UICanvas/SecondaryGroup/GForce").transform);
+                foreach (Transform child in pingTextObject.transform)
+                {
+                    if (child.gameObject.name.ToLower().Contains("clone")) { Destroy(child.gameObject); }
+                }
+                pingTextObject.name = "Ping";
+                Destroy(pingTextObject.GetComponentInChildren<LocalizedText>());
+                pingTextObject.transform.GetChild(0).GetComponent<UnityEngine.UI.Text>().text = "PING";
+                pingTextObject.transform.position += new Vector3(0, 0.07f, 0);
+                pingText = pingTextObject.GetComponent<UnityEngine.UI.Text>();
+            }
+
+
             var data = new SFSObject();
             data.PutBool("suit", true);
             sfs.Send(new ExtensionRequest("SyncCharacterController", data, sfs.LastJoinedRoom));
@@ -602,7 +647,7 @@ namespace ModTemplate
         {
             // Create SmartFox client instance
             sfs = new SmartFox();
-            
+
             // Add event listeners
             sfs.AddEventListener(SFSEvent.CONNECTION, OnConnection);
             sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
@@ -614,7 +659,7 @@ namespace ModTemplate
 
             // Set connection parameters
             ConfigData cfg = new ConfigData();
-            cfg.Host = "127.0.0.1";
+            cfg.Host = "25.87.145.173";
             cfg.Port = 9933;
             cfg.Zone = "OuterWildsMMO";
 
@@ -629,7 +674,12 @@ namespace ModTemplate
                 ModHelper.Console.WriteLine("Connected");
 
                 // Send login request
-                sfs.Send(new Sfs2X.Requests.LoginRequest(""));
+
+#if DEBUG
+                sfs.Send(new LoginRequest(""));
+#else
+                sfs.Send(new LoginRequest(StandaloneProfileManager.SharedInstance.currentProfile.profileName));
+#endif
             }
             else
                 ModHelper.Console.WriteLine("Connection failed", MessageType.Error);
@@ -658,6 +708,7 @@ namespace ModTemplate
                 settings.MaxUsers = 100;
                 settings.Extension = new RoomExtension("OuterWildsMMO", "MainExtension");
                 settings.IsGame = true;
+                settings.SendAOIEntryPoint = false;
                 sfs.Send(new CreateRoomRequest(settings, true));
             }
         }
@@ -681,26 +732,23 @@ namespace ModTemplate
 
             if (!responseParams.ContainsKey("userId")) { return; }
             if (remotePlayers == null) { return; }
+            GameObject remotePlayer = null;
+            try
+            {
+                remotePlayer = remotePlayers[responseParams.GetInt("userId")];
+            }
+            catch (Exception)
+            {
+                ModHelper.Console.WriteLine("No remote player found!", MessageType.Error);
+                return;
+            }
+            if (remotePlayer == null) { return; }
 
             switch (cmd)
             {
 
                 case "SyncCharacterController":
                     #region SyncCharacterController
-                    GameObject remotePlayer = null;
-                    try
-                    {
-                        remotePlayer = remotePlayers[responseParams.GetInt("userId")];
-                    }
-                    catch (Exception)
-                    {
-                        ModHelper.Console.WriteLine("Extension response broke!", MessageType.Error);
-                        return;
-                    }
-
-
-                    if (remotePlayer == null) { return; }
-
                     if (responseParams.ContainsKey("jcf"))
                     {
                         remotePlayer.GetComponent<PlayerControllerSync>().SetJumpCrouchFraction(responseParams.GetFloat("jcf"));
@@ -759,6 +807,7 @@ namespace ModTemplate
                     break;
 
                 case "SyncShipPosition":
+                    #region SyncShipPosition
                     GameObject remoteShip = null;
                     try
                     {
@@ -776,7 +825,25 @@ namespace ModTemplate
                         Quaternion.Euler(responseParams.GetFloat("rotx"), responseParams.GetFloat("roty"), responseParams.GetFloat("rotz")),
                         true,
                         responseParams.GetInt("sec"));
+                    #endregion
+                    break;
 
+                case "GeneralEvent":
+                    #region GeneralEvent
+                    if (responseParams.ContainsKey("jg"))
+                    {
+                        if (PlayerState.AtFlightConsole())
+                        {
+                            var data = new NotificationData(NotificationTarget.Ship, "Hearthian joined: " + remotePlayer.name, 4f, true);
+                            NotificationManager.SharedInstance.PostNotification(data, false);
+                        }
+                        else
+                        {
+                            var data = new NotificationData(NotificationTarget.Player, "Hearthian joined: " + remotePlayer.name, 4f, true);
+                            NotificationManager.SharedInstance.PostNotification(data, false);
+                        }
+                    }
+                    #endregion
                     break;
             }
 

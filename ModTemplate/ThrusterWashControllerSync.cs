@@ -107,7 +107,6 @@ namespace ModTemplate
 		// Token: 0x0600167F RID: 5759 RVA: 0x00003004 File Offset: 0x00001204
 		public void OnStartTranslationalThrust()
 		{
-			ConnectionController.ModHelperInstance.Console.WriteLine("Starting thrust!");
 			base.enabled = true;
 		}
 

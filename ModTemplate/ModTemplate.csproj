@@ -320,6 +320,7 @@
     <Compile Include="PlayerParticlesControllerSync.cs" />
     <Compile Include="PlayerStateSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RemotePlayerHUDMarker.cs" />
     <Compile Include="SFSSectorManager.cs" />
     <Compile Include="SimpleRemoteInterpolation.cs" />
     <Compile Include="ThrusterFlameControllerSync.cs" />
