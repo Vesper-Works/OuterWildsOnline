@@ -318,13 +318,18 @@ namespace ModTemplate
             remotePlayerShip.AddComponent<ProxyShadowCasterSuperGroup>();
             remotePlayerShip.AddComponent<SimpleRemoteInterpolation>();
             remotePlayerShip.AddComponent<OWRigidbody>().MakeKinematic();
-            //remotePlayerShip.AddComponent<LockOnReticule>().Init();
+            remotePlayerShip.AddComponent<FluidDetector>();
 
-            //Instantiate(GameObject.Find("Ship_Body/ShipDetector"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(293.9875f, 0f, 0f);
+            GameObject remoteVFXObjects = new GameObject("RemoteShipVFX");
+            remoteVFXObjects.transform.SetParent(remotePlayerShip.transform);
 
-            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters/Particles"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Effects_Cabin/ThrusterWash/ThrusterWash_Ship"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            
+            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Effects_Cabin/ThrusterWash/ThrusterWash_Ship"), remoteVFXObjects.transform);
+            //Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/ThrusterWash_Supplies"), remoteVFXObjects.transform);
+            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
+            Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters"), remoteVFXObjects.transform);
+
+            ReplaceThrusterFlameControllerRecursively(remoteVFXObjects.transform);
+
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Shadowcaster_Cabin"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
@@ -360,7 +365,7 @@ namespace ModTemplate
 
             remoteShips.Add(user.Id, remotePlayerShip);
 
- 
+
         }
 
         private void RemoveCollisionFromObjectRecursively(Transform transform)
@@ -374,6 +379,23 @@ namespace ModTemplate
                 if (child.childCount > 0)
                 {
                     RemoveCollisionFromObjectRecursively(child);
+                }
+            }
+        }
+
+        private void ReplaceThrusterFlameControllerRecursively(Transform transform)
+        {
+            ThrusterFlameController thrusterFlameController = null;
+            foreach (Transform child in transform)
+            {
+                if (child.TryGetComponent<ThrusterFlameController>(out thrusterFlameController))
+                {
+                    Destroy(thrusterFlameController);
+                    child.gameObject.AddComponent<ThrusterFlameControllerSync>();
+                }
+                if (child.childCount > 0)
+                {
+                    ReplaceThrusterFlameControllerRecursively(child);
                 }
             }
         }
@@ -497,8 +519,8 @@ namespace ModTemplate
             playerCharacterController.OnBecomeUngrounded += PlayerUngrounded;
 
             playerThrusterModel.OnStartTranslationalThrust += PlayerStartedTranslationalThrust;
-            playerThrusterModel.OnStopTranslationalThrust += PlayerStoppedTranslationalThrust;        
-            
+            playerThrusterModel.OnStopTranslationalThrust += PlayerStoppedTranslationalThrust;
+
             shipThrusterModel.OnStartTranslationalThrust += ShipStartedTranslationalThrust;
             shipThrusterModel.OnStopTranslationalThrust += ShipStoppedTranslationalThrust;
 
@@ -624,7 +646,7 @@ namespace ModTemplate
             var data = new SFSObject();
             data.PutBool("tt", false);
             sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
-        }   
+        }
         private void ShipStartedTranslationalThrust()
         {
             var data = new SFSObject();
@@ -838,18 +860,18 @@ namespace ModTemplate
                         if (responseParams.GetBool("tt") == true)
                         {
                             remoteShip.GetComponent<ThrusterWashControllerSync>().OnStartTranslationalThrust();
-                            //foreach (var thrusterController in remotePlayer.GetComponentsInChildren<ThrusterFlameControllerSync>())
-                            //{
-                            //    thrusterController.OnStartTranslationalThrust();
-                            //}
+                            foreach (var thrusterController in remoteShip.GetComponentsInChildren<ThrusterFlameControllerSync>())
+                            {
+                                thrusterController.OnStartTranslationalThrust();
+                            }
                         }
                         else
                         {
                             remoteShip.GetComponent<ThrusterWashControllerSync>().OnStopTranslationalThrust();
-                            //foreach (var thrusterController in remotePlayer.GetComponentsInChildren<ThrusterFlameControllerSync>())
-                            //{
-                            //    thrusterController.OnStopTranslationalThrust();
-                            //}
+                            foreach (var thrusterController in remoteShip.GetComponentsInChildren<ThrusterFlameControllerSync>())
+                            {
+                                thrusterController.OnStopTranslationalThrust();
+                            }
                         }
                     }
                     #endregion
