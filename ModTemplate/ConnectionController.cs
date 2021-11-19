@@ -230,6 +230,28 @@ namespace ModTemplate
                 yield return new WaitForSeconds(0.4f);
             }
         }
+        
+        // For compatibility with NomaiVR. NomaiVR hides the player body, so we need to show it again.
+        private static void MakeBodyPartsVisible(Transform bodyTransform)
+        {
+            var renderers = bodyTransform.GetComponentsInChildren<SkinnedMeshRenderer>(true);
+            foreach (var renderer in renderers)
+            {
+                if (renderer.gameObject.layer == LayerMask.NameToLayer("VisibleToProbe"))
+                {
+                    renderer.gameObject.layer = LayerMask.NameToLayer("Default");
+                }
+            }
+
+            // NomaiVR also completely disables the player arms, so we gotta enable those.
+            var withoutSuit = bodyTransform.Find("player_mesh_noSuit:Traveller_HEA_Player");
+            withoutSuit.Find("player_mesh_noSuit:Player_LeftArm").gameObject.SetActive(true);
+            withoutSuit.Find("player_mesh_noSuit:Player_RightArm").gameObject.SetActive(true);
+            var withSuit = bodyTransform.Find("Traveller_Mesh_v01:Traveller_Geo");
+            withSuit.Find("Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject.SetActive(true);
+            withSuit.Find("Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject.SetActive(true);
+        }
+        
         private void SpawnRemotePlayer(SFSUser user, Vector3 vector3, Quaternion quaternion)
         {
             foreach (var camera in FindObjectsOfType<Camera>())
@@ -243,7 +265,9 @@ namespace ModTemplate
             ModHelper.Console.WriteLine("Spawned: " + user);
 
             GameObject remotePlayer = new GameObject(user.Name);
-            GameObject remotePlayerBody = Instantiate(Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2").gameObject);
+            GameObject localPlayerBody = Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2").gameObject;
+            GameObject remotePlayerBody = Instantiate(localPlayerBody);
+            MakeBodyPartsVisible(remotePlayerBody.transform);
 
             remotePlayer.AddComponent<OWRigidbody>().MakeKinematic();
             remotePlayer.AddComponent<ImpactSensor>();
