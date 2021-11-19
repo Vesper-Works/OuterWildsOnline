@@ -53,7 +53,7 @@ namespace ModTemplate
         {
             Instance = this;
             ModHelperInstance = ModHelper;
-            //UnityExplorer.ExplorerStandalone.CreateInstance();
+            UnityExplorer.ExplorerStandalone.CreateInstance();
             //Gizmos.Enabled = true;
             Application.runInBackground = true;
             // Skip flash screen.
@@ -318,11 +318,13 @@ namespace ModTemplate
             remotePlayerShip.AddComponent<ProxyShadowCasterSuperGroup>();
             remotePlayerShip.AddComponent<SimpleRemoteInterpolation>();
             remotePlayerShip.AddComponent<OWRigidbody>().MakeKinematic();
-            remotePlayerShip.AddComponent<ThrusterWashControllerSync>();
             //remotePlayerShip.AddComponent<LockOnReticule>().Init();
 
             //Instantiate(GameObject.Find("Ship_Body/ShipDetector"), remotePlayerShip.transform).transform.rotation = Quaternion.Euler(293.9875f, 0f, 0f);
 
+            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters/Particles"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Effects_Cabin/ThrusterWash/ThrusterWash_Ship"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Shadowcaster_Cabin"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
@@ -354,39 +356,11 @@ namespace ModTemplate
             Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
 
             RemoveCollisionFromObjectRecursively(remotePlayerShip.transform);
+            remotePlayerShip.AddComponent<ThrusterWashControllerSync>();
 
             remoteShips.Add(user.Id, remotePlayerShip);
 
-            /* 
-             * Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior
-             * Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior
-             * Ship_Body/Module_Cabin/Geo_Cabin/Shadowcaster_Cabin
-             * 
-             * Ship_Body/Module_Cockpit/Cockpit_Exterior
-             * Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Tech/Cockpit_Tech_Exterior
-             * Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/ShadowCaster_Cockpit
-             * 
-             * Ship_Body/Module_Supplies/Geo_Supplies/Supplies_Geometry/Supplies_Exterior
-             * 
-             * Ship_Body/Module_Engine/Geo_Engine/Engine_Geometry/Engine_Exterior
-             * Ship_Body/Module_Engine/Geo_Engine/ShadowCaster_Engine
-             * 
-             * Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontFoot
-             * Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontLeg
-             * Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontFoot
-             * Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontLeg
-             * Ship_Body/Module_LandingGear/LandingGear_Front/LandingGear_Front_Tech
-             * 
-             * Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftFoot
-             * Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftLeg  
-             * Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftFoot
-             * Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftLeg             
-             *  
-             * Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Right/LandingGear_RightFoot
-             * Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Right/LandingGear_RightLeg  
-             * Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Right/ShadowCaster_RightFoot
-             * Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Right/ShadowCaster_RightLeg
-             */
+ 
         }
 
         private void RemoveCollisionFromObjectRecursively(Transform transform)
@@ -523,7 +497,10 @@ namespace ModTemplate
             playerCharacterController.OnBecomeUngrounded += PlayerUngrounded;
 
             playerThrusterModel.OnStartTranslationalThrust += PlayerStartedTranslationalThrust;
-            playerThrusterModel.OnStopTranslationalThrust += PlayerStoppedTranslationalThrust;
+            playerThrusterModel.OnStopTranslationalThrust += PlayerStoppedTranslationalThrust;        
+            
+            shipThrusterModel.OnStartTranslationalThrust += ShipStartedTranslationalThrust;
+            shipThrusterModel.OnStopTranslationalThrust += ShipStoppedTranslationalThrust;
 
             //GlobalMessenger.AddListener("EnterConversation", new Callback(this.OnEnterConversation));
             //GlobalMessenger.AddListener("ExitConversation", new Callback(this.OnExitConversation));
@@ -647,6 +624,18 @@ namespace ModTemplate
             var data = new SFSObject();
             data.PutBool("tt", false);
             sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
+        }   
+        private void ShipStartedTranslationalThrust()
+        {
+            var data = new SFSObject();
+            data.PutBool("tt", true);
+            sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
+        }
+        private void ShipStoppedTranslationalThrust()
+        {
+            var data = new SFSObject();
+            data.PutBool("tt", false);
+            sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
         }
 
         private void StartUpConnection()
@@ -843,6 +832,25 @@ namespace ModTemplate
                     if (responseParams.ContainsKey("tmla"))
                     {
                         remoteShip.GetComponent<ThrusterWashControllerSync>().ThrusterModelLocalYAcceleration = responseParams.GetFloat("tmla");
+                    }
+                    if (responseParams.ContainsKey("tt"))
+                    {
+                        if (responseParams.GetBool("tt") == true)
+                        {
+                            remoteShip.GetComponent<ThrusterWashControllerSync>().OnStartTranslationalThrust();
+                            //foreach (var thrusterController in remotePlayer.GetComponentsInChildren<ThrusterFlameControllerSync>())
+                            //{
+                            //    thrusterController.OnStartTranslationalThrust();
+                            //}
+                        }
+                        else
+                        {
+                            remoteShip.GetComponent<ThrusterWashControllerSync>().OnStopTranslationalThrust();
+                            //foreach (var thrusterController in remotePlayer.GetComponentsInChildren<ThrusterFlameControllerSync>())
+                            //{
+                            //    thrusterController.OnStopTranslationalThrust();
+                            //}
+                        }
                     }
                     #endregion
                     break;

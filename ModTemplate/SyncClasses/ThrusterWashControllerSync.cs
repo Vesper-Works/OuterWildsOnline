@@ -26,6 +26,10 @@ namespace ModTemplate
 					this._baseSurfaceEmissionRate[i] = this._particleSystemBySurfaceType[i].emission.rateOverTimeMultiplier;
 				}
 			}
+            if (gameObject.name.ToLower().Contains("ship"))
+            {
+				_raycastDistance = 30f;
+			}
 			base.enabled = false;
 		}
 
