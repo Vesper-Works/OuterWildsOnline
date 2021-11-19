@@ -12,7 +12,6 @@ namespace ModTemplate
 		// Token: 0x0600167C RID: 5756 RVA: 0x0008A99C File Offset: 0x00088B9C
 		private void Awake()
 		{
-			_playerCharacterController = GetComponentInParent<PlayerControllerSync>();
 			_particleSystemBySurfaceType = OWML.Utils.TypeExtensions.GetValue<ParticleSystem[]>(FindObjectOfType<ThrusterWashController>(), "_particleSystemBySurfaceType");
 			this._defaultParticleSystem = GetComponentInChildren<ParticleSystem>();
 			this._defaultMainModule = this._defaultParticleSystem.main;
@@ -26,6 +25,10 @@ namespace ModTemplate
 				{
 					this._baseSurfaceEmissionRate[i] = this._particleSystemBySurfaceType[i].emission.rateOverTimeMultiplier;
 				}
+			}
+            if (gameObject.name.ToLower().Contains("ship"))
+            {
+				_raycastDistance = 30f;
 			}
 			base.enabled = false;
 		}
@@ -61,7 +64,7 @@ namespace ModTemplate
 					this._defaultMainModule.customSimulationSpace = hitInfo.transform;
 					this._defaultParticleSystem.Clear();
 				}
-				SurfaceType hitSurfaceType = _playerCharacterController.GetGroundSurface();
+				SurfaceType hitSurfaceType = Locator.GetSurfaceManager().GetHitSurfaceType(hitInfo);
 				ParticleSystem particleSystem = this._particleSystemBySurfaceType[(int)hitSurfaceType];
 				if (particleSystem != this._activeSurfaceParticleSystem)
 				{
@@ -126,7 +129,6 @@ namespace ModTemplate
 		}
 
 		public float ThrusterModelLocalYAcceleration;
-		private PlayerControllerSync _playerCharacterController;
 		// Token: 0x04001AE3 RID: 6883
 		[SerializeField]
 		private float _raycastDistance = 10f;
