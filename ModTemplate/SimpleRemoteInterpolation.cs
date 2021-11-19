@@ -6,8 +6,6 @@ namespace ModTemplate
 {
     public class SimpleRemoteInterpolation : MonoBehaviour
     {
-
-
         private Vector3 desiredPos;
         private Quaternion desiredRot;
 
@@ -34,7 +32,7 @@ namespace ModTemplate
                 this.transform.localPosition = pos;
                 //if (gameObject.name.ToLower().Contains("player"))
                 {
-                    this.transform.rotation = rot;
+                    this.transform.localRotation = rot;
                 }
                 //else
                 {
@@ -49,7 +47,7 @@ namespace ModTemplate
             this.transform.localPosition = Vector3.Lerp(transform.localPosition, desiredPos, Time.deltaTime * dampingFactor);
             //if (gameObject.name.ToLower().Contains("player"))
             {
-                this.transform.rotation = Quaternion.Slerp(transform.rotation, desiredRot, Time.deltaTime * dampingFactor);
+                this.transform.localRotation = Quaternion.Slerp(transform.localRotation, desiredRot, Time.deltaTime * dampingFactor);
             }
             //else
             {

@@ -180,18 +180,19 @@ namespace ModTemplate
                 foreach (var astroObject in FindObjectsOfType<AstroObject>())
                 {
                     ChatMode astroChatMode = GetChatModeFromAstroObjectName(astroObject.GetAstroObjectName().ToString());
+                    if(PlayerState.InBrambleDimension() || PlayerState.InDreamWorld()) { break; }
                     if (Mathf.Abs(Vector3.Distance(Locator.GetPlayerTransform().position, astroObject.transform.position)) < 520)
                     {
                         if (allowedChatModes[astroChatMode] == false && astroChatMode != ChatMode.NA)
                         {
                             if (PlayerState.AtFlightConsole())
                             {
-                                var data = new NotificationData(NotificationTarget.Ship, FormatTextFirstTime("Arrived at: " + astroChatMode.ToString()), 4f, true);
+                                var data = new NotificationData(NotificationTarget.Ship, "Arrived at: " + astroChatMode.ToString(), 4f, true);
                                 NotificationManager.SharedInstance.PostNotification(data, false);
                             }
                             else
                             {
-                                var data = new NotificationData(NotificationTarget.Player, FormatTextFirstTime("Arrived at: " + astroChatMode.ToString()), 4f, true);
+                                var data = new NotificationData(NotificationTarget.Player, "Arrived at: " + astroChatMode.ToString(), 4f, true);
                                 NotificationManager.SharedInstance.PostNotification(data, false);
                             }
 
@@ -304,14 +305,15 @@ namespace ModTemplate
         }
         private void FormatText(Text text)
         {
-            if (text.text.Length == 20) { text.text = text.text.Insert(19, Environment.NewLine); ; }
+            if (text.text.Length % 40 == 0) { text.text += Environment.NewLine; }
         }
         private string FormatTextFirstTime(string text)
         {
-            if (text.Length < 21) { return text; }
-            for (int i = 21; i < text.Length; i += 20)
+            var numOfLines = Mathf.FloorToInt(text.Length / 40);
+            
+            for (int i = 1; i < numOfLines; i ++)
             {
-                text = text.Insert(i, Environment.NewLine);
+                text = text.Insert(i * 40, Environment.NewLine);
             }
             return text;
         }
@@ -322,11 +324,11 @@ namespace ModTemplate
             string[] message = ((string)evt.Params["message"]).Split('ʣ');
             ChatMode chatmode = (ChatMode)Enum.Parse(typeof(ChatMode), message[0]);
             ConnectionController.ModHelperInstance.Console.WriteLine(chatmode.ToString());
-            chatBoxes[chatMode].text += FormatTextFirstTime("\n" + sender.Name + ": " + message[1]);
+            chatBoxes[chatMode].text += "\n" + sender.Name + ": " + message[1];
             if (PlayerState.AtFlightConsole())
             {
                 shipMessageCount++;
-                var data = new NotificationData(NotificationTarget.Ship, FormatTextFirstTime("\n" + sender.Name + ": " + message[1]), 5f, true);
+                var data = new NotificationData(NotificationTarget.Ship, "\n" + sender.Name + ": " + message[1], 5f, true);
                 NotificationManager.SharedInstance.PostNotification(data, false);
             }
         }
