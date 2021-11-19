@@ -48,12 +48,18 @@ namespace ModTemplate
         private ShipThrusterModel shipThrusterModel;
 
         private UnityEngine.UI.Text pingText;
+
+        private string serverIP = "34.125.152.123";
         private static ConnectionController Instance { get; set; }
+        public override void Configure(IModConfig config)
+        {
+            serverIP = config.GetSettingsValue<string>("serverIP");
+        }
         void Start()
         {
             Instance = this;
             ModHelperInstance = ModHelper;
-            UnityExplorer.ExplorerStandalone.CreateInstance();
+            //UnityExplorer.ExplorerStandalone.CreateInstance();
             //Gizmos.Enabled = true;
             Application.runInBackground = true;
             // Skip flash screen.
@@ -700,7 +706,7 @@ namespace ModTemplate
 
             // Set connection parameters
             ConfigData cfg = new ConfigData();
-            cfg.Host = "25.87.145.173";
+            cfg.Host = serverIP;
             cfg.Port = 9933;
             cfg.Zone = "OuterWildsMMO";
 

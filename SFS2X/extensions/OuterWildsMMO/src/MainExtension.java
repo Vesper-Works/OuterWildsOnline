@@ -49,9 +49,9 @@ public class MainExtension extends SFSExtension {
 		mmoAPi = SmartFoxServer.getInstance().getAPIManager().getMMOApi();
 
 		addEventHandler(SFSEventType.USER_VARIABLES_UPDATE, userVariablesHandler);		
-		addRequestHandler("SyncCharacterController", CharacterControllerSyncHandler.class);
-		addRequestHandler("SyncShipPosition", ShipTransformSyncHandler.class);
-		
+		addRequestHandler("SyncPlayerData", PlayerDataSyncHandler.class);
+		addRequestHandler("SyncShipData", ShipDataSyncHandler.class);
+		addRequestHandler("GeneralEvent", GeneralEventHandler.class);
 
 	}
 
