@@ -37,7 +37,10 @@ namespace ModTemplate
         private Sector closestSectorToShip;
         private int closestSectorToShipID;
 
-        private Vector3 lastPos;
+        private Vector3 lastPlayerPos;
+
+        private Vector3 lastShipPos;
+        private Vector3 lastShipRot;
 
         private bool playerJump = false;
         private bool playerGrounded = false;
@@ -60,7 +63,9 @@ namespace ModTemplate
             Instance = this;
             ModHelperInstance = ModHelper;
             //UnityExplorer.ExplorerStandalone.CreateInstance();
-            //Gizmos.Enabled = true;
+#if DEBUG
+            Gizmos.Enabled = true;
+#endif
             Application.runInBackground = true;
             // Skip flash screen.
             var titleScreenAnimation = FindObjectOfType<TitleScreenAnimation>();
@@ -117,9 +122,9 @@ namespace ModTemplate
                 if (Locator.GetPlayerTransform() != null && closestSectorToPlayer != null && playerCharacterController != null &&
                     playerThrusterModel != null)
                 {
-                    if (lastPos.ApproxEquals(Locator.GetPlayerTransform().position, 0.01f)) { return; }
+                    if (lastPlayerPos.ApproxEquals(Locator.GetPlayerTransform().position, 0.01f)) { return; }
 
-                    lastPos = Locator.GetPlayerTransform().position;
+                    lastPlayerPos = Locator.GetPlayerTransform().position;
                     Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetPlayerTransform().position);
                     List<UserVariable> userVariables = new List<UserVariable>();
                     userVariables.Add(new SFSUserVariable("x", (double)pos.x));
@@ -187,15 +192,25 @@ namespace ModTemplate
             {
                 var data = new SFSObject();
 
+
                 Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
-                data.PutFloat("x", pos.x);
-                data.PutFloat("y", pos.y);
-                data.PutFloat("z", pos.z);
+                if (!lastShipPos.ApproxEquals(pos, 0.01f))
+                {
+                    lastShipPos = pos;
+                    data.PutFloat("x", pos.x);
+                    data.PutFloat("y", pos.y);
+                    data.PutFloat("z", pos.z);
+                }
 
                 Vector3 rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
-                data.PutFloat("rotx", rot.x);
-                data.PutFloat("roty", rot.y);
-                data.PutFloat("rotz", rot.z);
+                if (!lastShipRot.ApproxEquals(rot, 0.01f))
+                {
+                    lastShipRot = rot;
+                    data.PutFloat("rotx", rot.x);
+                    data.PutFloat("roty", rot.y);
+                    data.PutFloat("rotz", rot.z);
+                }
+
                 data.PutInt("sec", closestSectorToPlayerID);
 
                 if (shipThrusterModel.IsTranslationalThrusterFiring())
@@ -236,7 +251,7 @@ namespace ModTemplate
                 yield return new WaitForSeconds(0.4f);
             }
         }
-        
+
         // For compatibility with NomaiVR. NomaiVR hides the player body, so we need to show it again.
         private static void MakeBodyPartsVisible(Transform bodyTransform)
         {
@@ -257,7 +272,7 @@ namespace ModTemplate
             withSuit.Find("Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject.SetActive(true);
             withSuit.Find("Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject.SetActive(true);
         }
-        
+
         private void SpawnRemotePlayer(SFSUser user, Vector3 vector3, Quaternion quaternion)
         {
             foreach (var camera in FindObjectsOfType<Camera>())
@@ -920,6 +935,12 @@ namespace ModTemplate
                         {
                             var data = new NotificationData(NotificationTarget.Player, "Hearthian joined: " + remotePlayer.name, 4f, true);
                             NotificationManager.SharedInstance.PostNotification(data, false);
+                        }
+                        if (PlayerState.IsWearingSuit())
+                        {
+                            var data = new SFSObject();
+                            data.PutBool("suit", true);
+                            sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
                         }
                     }
                     #endregion

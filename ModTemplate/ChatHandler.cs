@@ -181,7 +181,7 @@ namespace ModTemplate
                 {
                     ChatMode astroChatMode = GetChatModeFromAstroObjectName(astroObject.GetAstroObjectName().ToString());
                     if(PlayerState.InBrambleDimension() || PlayerState.InDreamWorld()) { break; }
-                    if (Mathf.Abs(Vector3.Distance(Locator.GetPlayerTransform().position, astroObject.transform.position)) < 520)
+                    if (Mathf.Abs(Vector3.Distance(Locator.GetPlayerTransform().position, astroObject.transform.position)) < 600)
                     {
                         if (allowedChatModes[astroChatMode] == false && astroChatMode != ChatMode.NA)
                         {
