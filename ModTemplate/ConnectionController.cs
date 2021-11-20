@@ -16,9 +16,6 @@ using UnityEngine;
 using Sfs2X.Entities;
 using Sfs2X.Entities.Variables;
 using System.Collections;
-
-using Gizmos = Popcron.Gizmos;
-
 namespace ModTemplate
 {
     public class ConnectionController : ModBehaviour
@@ -63,9 +60,7 @@ namespace ModTemplate
             Instance = this;
             ModHelperInstance = ModHelper;
             //UnityExplorer.ExplorerStandalone.CreateInstance();
-#if DEBUG
-            Gizmos.Enabled = true;
-#endif
+
             Application.runInBackground = true;
             // Skip flash screen.
             var titleScreenAnimation = FindObjectOfType<TitleScreenAnimation>();
@@ -96,16 +91,6 @@ namespace ModTemplate
             if (newScene == OWScene.SolarSystem || newScene == OWScene.EyeOfTheUniverse)
             {
                 LoadedGame();
-            }
-        }
-        private void Update()
-        {
-            //use custom material, if null it uses a default line material
-            Gizmos.Material = null;
-
-            foreach (var player in remotePlayers.Values)
-            {
-                Gizmos.Cube(player.transform.position, player.transform.rotation, player.transform.lossyScale);
             }
         }
         void FixedUpdate()
@@ -275,14 +260,6 @@ namespace ModTemplate
 
         private void SpawnRemotePlayer(SFSUser user, Vector3 vector3, Quaternion quaternion)
         {
-            foreach (var camera in FindObjectsOfType<Camera>())
-            {
-                Gizmos.CameraFilter += cam =>
-                {
-                    return cam.name == camera.name;
-                };
-            }
-
             ModHelper.Console.WriteLine("Spawned: " + user);
 
             GameObject remotePlayer = new GameObject(user.Name);
@@ -354,7 +331,6 @@ namespace ModTemplate
             Destroy(remoteShips[user.Id]);
             remotePlayers.Remove(user.Id);
             remoteShips.Remove(user.Id);
-
         }
         private void SpawnRemoteShip(SFSUser user)
         {

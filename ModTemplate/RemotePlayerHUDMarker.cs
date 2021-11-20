@@ -60,7 +60,7 @@ namespace ModTemplate
 
             if (_canvasMarker != null)
             {
-                _canvasMarker.SetVisibility(PlayerState.IsWearingSuit() && Vector3.Distance(Locator.GetPlayerCamera().transform.position, this._markerTarget.position) < 300);
+                _canvasMarker.SetVisibility(PlayerState.IsWearingSuit());// && Vector3.Distance(Locator.GetPlayerCamera().transform.position, this._markerTarget.position) < 300);
             }
             else
             {

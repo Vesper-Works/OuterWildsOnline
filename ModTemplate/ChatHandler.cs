@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Gizmos = Popcron.Gizmos;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using System.Collections;
