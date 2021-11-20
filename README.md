@@ -10,6 +10,6 @@ Once the mod is downloaded, press the CONNECT TO SERVER button and you should lo
 Known bugs during connection process:
 - Pressing connect multiple times will result in failure, in case of this restart the game and press connect once.
 
-If a bug occurs, either create an issue here for me to see or ping me @Vesper on the Discord.
+Any questions? Feel free to ping me on the Outer Wilds Discord - @Vesper
 
 Thanks for reading and I hope you have fun!
