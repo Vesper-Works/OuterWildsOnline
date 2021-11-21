@@ -29,19 +29,13 @@ namespace ModTemplate
         private Dictionary<int, GameObject> remoteShips = new Dictionary<int, GameObject>();
 
         private Sector closestSectorToPlayer;
-        private int closestSectorToPlayerID = 0;
-
-        private Sector closestSectorToShip;
-        private int closestSectorToShipID;
+        private int closestSectorToPlayerID;
 
         private Vector3 lastPlayerPos = Vector3.zero;
 
         private Vector3 lastShipPos = Vector3.zero;
         private Vector3 lastShipRot = Vector3.zero;
 
-        private bool playerJump = false;
-        private bool playerGrounded = false;
-        private bool playerUngrounded = false;
         private bool playerInGame = false;
 
         private PlayerCharacterController playerCharacterController;
@@ -172,35 +166,12 @@ namespace ModTemplate
         {
             yield return new WaitForSeconds(2f);
             var data = new SFSObject();
-            Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
-            if (!lastShipPos.ApproxEquals(pos, 0.01f))
-            {
-                lastShipPos = pos;
-                data.PutFloat("x", pos.x);
-                data.PutFloat("y", pos.y);
-                data.PutFloat("z", pos.z);
-            }
-
-            Vector3 rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
-            if (!lastShipRot.ApproxEquals(rot, 0.01f))
-            {
-                lastShipRot = rot;
-                data.PutFloat("rotx", rot.x);
-                data.PutFloat("roty", rot.y);
-                data.PutFloat("rotz", rot.z);
-            }
-
-            data.PutInt("sec", closestSectorToPlayerID);
-
-            if (shipThrusterModel.IsTranslationalThrusterFiring())
-            {
-                data.PutFloat("tmla", shipThrusterModel.GetLocalAcceleration().y);
-            }
-
-            sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
+            lastShipPos = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
             while (true)
             {
-                pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
+                if (closestSectorToPlayer == null) { yield return new WaitForFixedUpdate(); }
+
+                Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
                 if (!lastShipPos.ApproxEquals(pos, 0.01f))
                 {
                     lastShipPos = pos;
@@ -209,7 +180,7 @@ namespace ModTemplate
                     data.PutFloat("z", pos.z);
                 }
 
-                rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
+                Vector3 rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
                 if (!lastShipRot.ApproxEquals(rot, 0.01f))
                 {
                     lastShipRot = rot;
@@ -239,9 +210,9 @@ namespace ModTemplate
                 float closestDistance = float.MaxValue;
                 float currentDistance;
 
-                foreach (var sector in SFSSectorManager.Instance.Sectors)
+                foreach (var sector in SFSSectorManager.Sectors)
                 {
-                    if (!Locator.GetPlayerSectorDetector().IsWithinSector(sector.Value.GetName()) || sector.Value.GetName() == Sector.Name.Ship) { continue; } //If the player is in the sector
+                    if (!Locator.GetPlayerSectorDetector().IsWithinSector(sector.Value.GetName()) || sector.Value.GetName() == Sector.Name.Ship) { continue; }
                     currentDistance = Vector3.Distance(sector.Value.transform.position, Locator.GetPlayerTransform().position);
                     if (currentDistance < closestDistance)
                     {
@@ -665,7 +636,7 @@ namespace ModTemplate
             sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
             sfs.AddEventListener(SFSEvent.PING_PONG, PingPongHandler);
 
-            gameObject.AddComponent<SFSSectorManager>();
+            SFSSectorManager.RefreshSectors();
 
 
             StartCoroutine(GetClosestSectorToPlayer());
@@ -688,6 +659,8 @@ namespace ModTemplate
 
             sfs.EnableLagMonitor(true, 2, 5);
 
+            sfs.RemoveAllEventListeners();
+
             // Register callback delegates
             sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
             sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariableUpdate);
@@ -695,14 +668,14 @@ namespace ModTemplate
             sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
             sfs.AddEventListener(SFSEvent.PING_PONG, PingPongHandler);
 
-            gameObject.AddComponent<SFSSectorManager>();
+            SFSSectorManager.RefreshSectors();
 
             playerThrusterModel = FindObjectOfType<JetpackThrusterModel>();
             shipThrusterModel = FindObjectOfType<ShipThrusterModel>();
 
             SortOutListeners();
 
-            gameObject.AddComponent<ChatHandler>();
+            //gameObject.AddComponent<ChatHandler>();
 
             StopAllCoroutines();
             StartCoroutine(GetClosestSectorToPlayer());
@@ -1095,7 +1068,7 @@ namespace ModTemplate
 
                 case "SyncShipData":
                     #region SyncShipData
-                
+
                     if (!remoteShips.ContainsKey(responseParams.GetInt("userId")) || remoteShips[responseParams.GetInt("userId")] == null || remoteShips[responseParams.GetInt("userId")].TryGetComponent<SimpleRemoteInterpolation>(out _)) { return; }
                     GameObject remoteShip = null;
 

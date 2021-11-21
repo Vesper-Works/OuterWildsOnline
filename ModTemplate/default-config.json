@@ -1,6 +1,6 @@
 {
   "enabled": true,
   "settings": {
-    "serverIP": "34.125.152.123"
+    "serverIP": "127.0.0.1"
   }
 }

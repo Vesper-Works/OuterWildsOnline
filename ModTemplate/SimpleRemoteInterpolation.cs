@@ -19,9 +19,8 @@ namespace ModTemplate
 
         public void SetPosition(Vector3 pos, bool interpolate, int sectorID)
         {
-            if(pos == null || SFSSectorManager.Instance == null) { return; }
-            if (transform.parent != SFSSectorManager.Instance.Sectors[sectorID].transform)
-            { transform.SetParent(SFSSectorManager.Instance.Sectors[sectorID].transform); }
+            if (transform.parent != SFSSectorManager.Sectors[sectorID].transform)
+            { transform.SetParent(SFSSectorManager.Sectors[sectorID].transform); }
 
             if (interpolate)
             {
@@ -34,9 +33,8 @@ namespace ModTemplate
         }
         public void SetRotation(Quaternion rot, bool interpolate, int sectorID)
         {
-            if (rot == null || SFSSectorManager.Instance == null) { return; }
-            if (transform.parent != SFSSectorManager.Instance.Sectors[sectorID].transform)
-            { transform.SetParent(SFSSectorManager.Instance.Sectors[sectorID].transform); }
+            if (transform.parent != SFSSectorManager.Sectors[sectorID].transform)
+            { transform.SetParent(SFSSectorManager.Sectors[sectorID].transform); }
 
             if (interpolate)
             {
