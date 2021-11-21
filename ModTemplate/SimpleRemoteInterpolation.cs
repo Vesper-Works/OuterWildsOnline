@@ -17,43 +17,39 @@ namespace ModTemplate
             desiredRot = this.transform.rotation;
         }
 
-        public void SetTransform(Vector3 pos, Quaternion rot, bool interpolate, int sectorID)
+        public void SetPosition(Vector3 pos, bool interpolate, int sectorID)
         {
-            if (transform.parent != SFSSectorManager.Instance.Sectors[sectorID].transform)
-            { transform.SetParent(SFSSectorManager.Instance.Sectors[sectorID].transform); }
+            if (transform.parent != SFSSectorManager.Sectors[sectorID].transform)
+            { transform.SetParent(SFSSectorManager.Sectors[sectorID].transform); }
 
             if (interpolate)
             {
-                desiredPos = pos;
-                desiredRot = rot;
+                desiredPos = pos; 
             }
             else
             {
                 this.transform.localPosition = pos;
-                //if (gameObject.name.ToLower().Contains("player"))
-                {
-                    this.transform.localRotation = rot;
-                }
-                //else
-                {
-                    //this.transform.localRotation = rot;
-                }
-           
+            }
+        }
+        public void SetRotation(Quaternion rot, bool interpolate, int sectorID)
+        {
+            if (transform.parent != SFSSectorManager.Sectors[sectorID].transform)
+            { transform.SetParent(SFSSectorManager.Sectors[sectorID].transform); }
+
+            if (interpolate)
+            {
+                desiredRot = rot;
+            }
+            else
+            {
+                this.transform.localRotation = rot;
             }
         }
 
         void Update()
         {
             this.transform.localPosition = Vector3.Lerp(transform.localPosition, desiredPos, Time.deltaTime * dampingFactor);
-            //if (gameObject.name.ToLower().Contains("player"))
-            {
-                this.transform.localRotation = Quaternion.Slerp(transform.localRotation, desiredRot, Time.deltaTime * dampingFactor);
-            }
-            //else
-            {
-                //this.transform.localRotation = Quaternion.Slerp(transform.localRotation, desiredRot, Time.deltaTime * dampingFactor);
-            }
-          
+            this.transform.localRotation = Quaternion.Slerp(transform.localRotation, desiredRot, Time.deltaTime * dampingFactor);
         }
     }
 }

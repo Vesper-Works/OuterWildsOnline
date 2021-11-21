@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,34 +8,16 @@ using UnityEngine;
 
 namespace ModTemplate
 {
-    class SFSSectorManager : MonoBehaviour
+    static class SFSSectorManager
     {
-        public static SFSSectorManager Instance { get; set; }
-
-        public Dictionary<int, Sector> Sectors = new Dictionary<int, Sector>();
-
-        private void Awake()
+        public static Dictionary<int, Sector> Sectors = new Dictionary<int, Sector>();
+        public static void RefreshSectors()
         {
-            if(Instance == null)
+            if (UnityEngine.Object.FindObjectsOfType<Sector>().Length == 0) { ConnectionController.ModHelperInstance.Console.WriteLine("NoSectorsFound"); return; }
+            Sector[] sectorsFound = UnityEngine.Object.FindObjectsOfType<Sector>();
+            for (int i = 0; i < sectorsFound.Length; i++)
             {
-                Instance = this;
-            }
-            else
-            {
-                Destroy(this);
-            }
-        }
-
-        private void Update()
-        {
-            if(Sectors.Count == 0)
-            {
-                if(FindObjectOfType<Sector>() == null) { return; }
-         
-                foreach (var sector in FindObjectsOfType<Sector>())
-                {
-                    Sectors[Sectors.Count] = sector;
-                }
+                Sectors[i] = sectorsFound[i];
             }
         }
     }
