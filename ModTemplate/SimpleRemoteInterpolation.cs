@@ -39,7 +39,6 @@ namespace ModTemplate
             if (interpolate)
             {
                 desiredRot = rot;
-
             }
             else
             {

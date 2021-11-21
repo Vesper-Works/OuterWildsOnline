@@ -165,13 +165,13 @@ namespace ModTemplate
         IEnumerator SendShipData()
         {
             yield return new WaitForSeconds(2f);
-            var data = new SFSObject();
-            lastShipPos = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+            SyncShipInstant();
+
             while (true)
             {
-                if (closestSectorToPlayer == null) { yield return new WaitForFixedUpdate(); }
-
-                Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
+                //if (closestSectorToPlayer == null) { yield return new WaitForFixedUpdate(); }
+               var data = new SFSObject();
+               var pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
                 if (!lastShipPos.ApproxEquals(pos, 0.01f))
                 {
                     lastShipPos = pos;
@@ -180,7 +180,7 @@ namespace ModTemplate
                     data.PutFloat("z", pos.z);
                 }
 
-                Vector3 rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
+                var rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
                 if (!lastShipRot.ApproxEquals(rot, 0.01f))
                 {
                     lastShipRot = rot;
@@ -200,6 +200,27 @@ namespace ModTemplate
                 yield return new WaitForFixedUpdate();
             }
         }
+
+        private void SyncShipInstant()
+        {
+            var data = new SFSObject();
+
+            Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
+            lastShipPos = pos;
+            data.PutFloat("x", pos.x);
+            data.PutFloat("y", pos.y);
+            data.PutFloat("z", pos.z);
+
+            Vector3 rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
+            lastShipRot = rot;
+            data.PutFloat("rotx", rot.x);
+            data.PutFloat("roty", rot.y);
+            data.PutFloat("rotz", rot.z);
+
+            data.PutInt("sec", closestSectorToPlayerID);
+            sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
+        }
+
         IEnumerator GetClosestSectorToPlayer()
         {
             yield return new WaitForSeconds(2f);
@@ -253,7 +274,10 @@ namespace ModTemplate
 
         private void SpawnRemotePlayer(SFSUser user, Vector3 vector3, Quaternion quaternion)
         {
-            if (remotePlayers.ContainsKey(user.Id)) { return; }
+            if (remotePlayers.ContainsKey(user.Id))
+            {
+                ModHelper.Console.WriteLine("Player " + user + " is already spawned!"); return;
+            }
 
             ModHelper.Console.WriteLine("Spawned: " + user);
 
@@ -285,7 +309,6 @@ namespace ModTemplate
             remoteVFXObjects.transform.SetParent(remotePlayer.transform);
             remoteVFXObjects.AddComponent<PlayerParticlesControllerSync>();
 
-            //GameObject thrusters = Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject, remoteVFXObjects.transform);
             GameObject thrusterWash = new GameObject("ThrusterWash");
             thrusterWash.transform.SetParent(remoteVFXObjects.transform);
             Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/ThrusterWash/ThrusterWash_Default"), thrusterWash.transform);
@@ -294,13 +317,8 @@ namespace ModTemplate
             Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(false);
             GameObject thrusters = Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject, remoteVFXObjects.transform);
             Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(true);
-            foreach (Transform child in thrusters.transform)
-            {
-                Transform child2 = child.GetChild(0);
-                Destroy(child2.GetComponent<ThrusterFlameController>());
-                child2.gameObject.AddComponent<ThrusterFlameControllerSync>();
-            }
-
+            ReplaceThrusterFlameControllerRecursively(thrusters.transform);
+            //thrusters.SetActive(true);
             remotePlayer.AddComponent<PlayerStateSync>();
 
             var obj = GameObject.FindWithTag("MapCamera");
@@ -320,75 +338,6 @@ namespace ModTemplate
             remotePlayers.Add(user.Id, remotePlayer);
             SpawnRemoteShip(user);
 
-        }
-        private void SpawnRemotePlayer(User user, Vector3 vector3, Quaternion quaternion)
-        {
-            if (remotePlayers.ContainsKey(user.Id)) { return; }
-
-            ModHelper.Console.WriteLine("Spawned: " + user);
-
-            GameObject remotePlayer = new GameObject(user.Name);
-            GameObject localPlayerBody = Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2").gameObject;
-            GameObject remotePlayerBody = Instantiate(localPlayerBody);
-            MakeBodyPartsVisible(remotePlayerBody.transform);
-
-            remotePlayer.AddComponent<OWRigidbody>().MakeKinematic();
-            remotePlayer.AddComponent<ImpactSensor>();
-            remotePlayer.AddComponent<ForceDetector>();
-            remotePlayer.AddComponent<FluidDetector>();
-
-            remotePlayer.AddComponent<SimpleRemoteInterpolation>();
-            Destroy(remotePlayerBody.GetComponent<PlayerAnimController>());
-
-            remotePlayerBody.transform.SetParent(remotePlayer.transform);
-            remotePlayerBody.transform.localPosition = new Vector3(0f, -1.03f, -0.2f);
-            remotePlayerBody.transform.localRotation = Quaternion.Euler(-1.500009f, 0f, 0f);
-            remotePlayerBody.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-
-            remotePlayerBody.transform.Find("player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head").gameObject.layer = 0;
-            remotePlayerBody.transform.Find("Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_Helmet").gameObject.layer = 0;
-
-            remotePlayerBody.AddComponent<PlayerAnimationSync>();
-            remotePlayer.AddComponent<PlayerControllerSync>();
-
-            GameObject remoteVFXObjects = new GameObject("RemotePlayerVFX");
-            remoteVFXObjects.transform.SetParent(remotePlayer.transform);
-            remoteVFXObjects.AddComponent<PlayerParticlesControllerSync>();
-
-            //GameObject thrusters = Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject, remoteVFXObjects.transform);
-            GameObject thrusterWash = new GameObject("ThrusterWash");
-            thrusterWash.transform.SetParent(remoteVFXObjects.transform);
-            Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/ThrusterWash/ThrusterWash_Default"), thrusterWash.transform);
-            thrusterWash.AddComponent<ThrusterWashControllerSync>();
-
-            Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(false);
-            GameObject thrusters = Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject, remoteVFXObjects.transform);
-            Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(true);
-            foreach (Transform child in thrusters.transform)
-            {
-                Transform child2 = child.GetChild(0);
-                Destroy(child2.GetComponent<ThrusterFlameController>());
-                child2.gameObject.AddComponent<ThrusterFlameControllerSync>();
-            }
-
-            remotePlayer.AddComponent<PlayerStateSync>();
-
-            var obj = GameObject.FindWithTag("MapCamera");
-            var markerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
-            var canvasMarker = markerManager.InstantiateNewMarker(true);
-            markerManager.RegisterMarker(canvasMarker, remotePlayer.GetComponent<OWRigidbody>());
-            canvasMarker.SetLabel(user.Name.ToUpper());
-            canvasMarker.SetColor(Color.white);
-            canvasMarker.SetVisibility(true);
-
-            remotePlayer.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(user.Name);
-            //remotePlayer.AddComponent<LockOnReticule>().Init();
-
-
-            remotePlayer.transform.position = vector3;
-            remotePlayer.transform.rotation = quaternion;
-            remotePlayers.Add(user.Id, remotePlayer);
-            SpawnRemoteShip(user);
         }
         private void RemoveRemotePlayer(SFSUser user)
         {
@@ -398,14 +347,7 @@ namespace ModTemplate
             remotePlayers.Remove(user.Id);
             remoteShips.Remove(user.Id);
         }
-        private void RemoveRemotePlayer(User user)
-        {
-            ModHelper.Console.WriteLine("Removed: " + user);
-            Destroy(remotePlayers[user.Id]);
-            Destroy(remoteShips[user.Id]);
-            remotePlayers.Remove(user.Id);
-            remoteShips.Remove(user.Id);
-        }
+ 
         private void SpawnRemoteShip(SFSUser user)
         {
             GameObject remotePlayerShip = new GameObject(user.Name + "'s ship");
@@ -423,11 +365,12 @@ namespace ModTemplate
 
             GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").gameObject.SetActive(false);
             GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").gameObject.SetActive(false);
-            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
-            Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters"), remoteVFXObjects.transform);
+            GameObject thrusters1 = Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
+            GameObject thrusters2 = Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters"), remoteVFXObjects.transform);
             GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").gameObject.SetActive(true);
             GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").gameObject.SetActive(true);
             ReplaceThrusterFlameControllerRecursively(remoteVFXObjects.transform);
+
 
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
@@ -462,71 +405,13 @@ namespace ModTemplate
             RemoveCollisionFromObjectRecursively(remotePlayerShip.transform);
             remotePlayerShip.AddComponent<ThrusterWashControllerSync>();
 
-            remoteShips.Add(user.Id, remotePlayerShip);
-
-
-        }
-        private void SpawnRemoteShip(User user)
-        {
-            GameObject remotePlayerShip = new GameObject(user.Name + "'s ship");
-
-            remotePlayerShip.AddComponent<ProxyShadowCasterSuperGroup>();
-            remotePlayerShip.AddComponent<SimpleRemoteInterpolation>();
-            remotePlayerShip.AddComponent<OWRigidbody>().MakeKinematic();
-            remotePlayerShip.AddComponent<FluidDetector>();
-
-            GameObject remoteVFXObjects = new GameObject("RemoteShipVFX");
-            remoteVFXObjects.transform.SetParent(remotePlayerShip.transform);
-
-            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Effects_Cabin/ThrusterWash/ThrusterWash_Ship"), remoteVFXObjects.transform);
-            //Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/ThrusterWash_Supplies"), remoteVFXObjects.transform);
-
-            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").gameObject.SetActive(false);
-            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").gameObject.SetActive(false);
-            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
-            Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters"), remoteVFXObjects.transform);
-            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").gameObject.SetActive(true);
-            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").gameObject.SetActive(true);
-            ReplaceThrusterFlameControllerRecursively(remoteVFXObjects.transform);
-
-            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Shadowcaster_Cabin"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-
-            Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Tech/Cockpit_Tech_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/ShadowCaster_Cockpit"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-
-            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Geo_Engine/Engine_Geometry/Engine_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Geo_Engine/ShadowCaster_Engine"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-
-            Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Geo_Supplies/Supplies_Geometry/Supplies_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Geo_Supplies/ShadowCaster_Supplies"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/LandingGear_Front_Tech"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/LandingGear_RightFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/LandingGear_RightLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-
-            RemoveCollisionFromObjectRecursively(remotePlayerShip.transform);
-            remotePlayerShip.AddComponent<ThrusterWashControllerSync>();
+            thrusters1.SetActive(true);
+            thrusters2.SetActive(true);
 
             remoteShips.Add(user.Id, remotePlayerShip);
 
-
+            SyncShipInstant();
         }
-
         private void RemoveCollisionFromObjectRecursively(Transform transform)
         {
             foreach (Transform child in transform)
@@ -544,13 +429,18 @@ namespace ModTemplate
 
         private void ReplaceThrusterFlameControllerRecursively(Transform transform)
         {
-            ThrusterFlameController thrusterFlameController = null;
+            ThrusterFlameController thrusterFlameController;
+            ThrusterParticlesBehavior thrusterParticlesBehavior;
             foreach (Transform child in transform)
             {
                 if (child.TryGetComponent<ThrusterFlameController>(out thrusterFlameController))
                 {
                     Destroy(thrusterFlameController);
                     child.gameObject.AddComponent<ThrusterFlameControllerSync>();
+                }
+                if (child.TryGetComponent<ThrusterParticlesBehavior>(out thrusterParticlesBehavior))
+                {
+                    Destroy(thrusterParticlesBehavior);
                 }
                 if (child.childCount > 0)
                 {
@@ -602,7 +492,12 @@ namespace ModTemplate
             SFSUser user = (SFSUser)evt.Params["user"];
             if (user == sfs.MySelf) return;
 
-            if (!remotePlayers.ContainsKey(user.Id) || remotePlayers[user.Id] == null || remotePlayers[user.Id].TryGetComponent<SimpleRemoteInterpolation>(out _)) { return; }
+            if (!remotePlayers.ContainsKey(user.Id) ||
+                remotePlayers[user.Id] == null)
+            {
+                ModHelper.Console.WriteLine("Ship trying to sync not found!");
+                return;
+            }
 
             if (changedVars.Contains("x"))
             {
@@ -699,8 +594,8 @@ namespace ModTemplate
             foreach (var userID in userIDs)
             {
 
-                RemoveRemotePlayer(sfs.UserManager.GetUserById(userID));
-                SpawnRemotePlayer(sfs.UserManager.GetUserById(userID), Vector3.zero, Quaternion.identity);
+                RemoveRemotePlayer((SFSUser)sfs.UserManager.GetUserById(userID));
+                SpawnRemotePlayer((SFSUser)sfs.UserManager.GetUserById(userID), Vector3.zero, Quaternion.identity);
             }
         }
         private void OnExitToMainMenuPatch()
@@ -1069,8 +964,13 @@ namespace ModTemplate
                 case "SyncShipData":
                     #region SyncShipData
 
-                    if (!remoteShips.ContainsKey(responseParams.GetInt("userId")) || remoteShips[responseParams.GetInt("userId")] == null || remoteShips[responseParams.GetInt("userId")].TryGetComponent<SimpleRemoteInterpolation>(out _)) { return; }
-                    GameObject remoteShip = null;
+                    if (!remoteShips.ContainsKey(responseParams.GetInt("userId")) ||
+                        remoteShips[responseParams.GetInt("userId")] == null)
+                    {
+                        ModHelper.Console.WriteLine("Ship trying to sync not found!");
+                        return;
+                    }
+                    GameObject remoteShip = remoteShips[responseParams.GetInt("userId")];
 
                     if (responseParams.ContainsKey("x"))
                     {
@@ -1133,6 +1033,7 @@ namespace ModTemplate
                             data.PutBool("suit", true);
                             sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
                         }
+                        SyncShipInstant();
                     }
                     if (responseParams.ContainsKey("lg"))
                     {
