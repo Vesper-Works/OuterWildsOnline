@@ -87,8 +87,9 @@ namespace ModTemplate
         }
         private void DoMainMenuStuff()
         {
-            connectButton = ModHelper.Menus.MainMenu.NewExpeditionButton.Duplicate("CONNECT TO SERVER");
+            connectButton = ModHelper.Menus.MainMenu.NewExpeditionButton.Duplicate("");
             connectButton.OnClick += StartUpConnection;
+            SetButtonConnect();
         }
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
@@ -699,11 +700,18 @@ namespace ModTemplate
             connectButton.Title = "CONNECTED";
         }
 
-        private void ResetConnectButton()
+        private void SetButtonConnect()
         {
             if (connectButton == null) return;
             connectButton.Button.enabled = true;
             connectButton.Title = "CONNECT TO SERVER";
+        }
+
+        private void SetButtonError()
+        {
+            if (connectButton == null) return;
+            connectButton.Button.enabled = true;
+            connectButton.Title = "FAILED. TRY AGAIN?";
         }
 
         private void StartUpConnection()
@@ -712,7 +720,7 @@ namespace ModTemplate
 
             // Create SmartFox client instance
             sfs = new SmartFox();
-
+            
             // Add event listeners
             sfs.AddEventListener(SFSEvent.CONNECTION, OnConnection);
             sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
@@ -748,14 +756,14 @@ namespace ModTemplate
             }
             else
             {
-                ResetConnectButton();
+                SetButtonError();
                 ModHelper.Console.WriteLine("Connection failed", MessageType.Error);
             }
         }
 
         private void OnConnectionLost(BaseEvent evt)
         {
-            ResetConnectButton();
+            SetButtonConnect();
             sfs.RemoveAllEventListeners();
             ModHelper.Console.WriteLine("Disconnected");
         }
@@ -787,7 +795,7 @@ namespace ModTemplate
         private void OnLoginError(BaseEvent evt)
         {
             ModHelper.Console.WriteLine("Login error: " + (string)evt.Params["errorMessage"], MessageType.Error);
-            ResetConnectButton();
+            SetButtonError();
         }
 
         private void OnExtensionResponse(BaseEvent evt)
