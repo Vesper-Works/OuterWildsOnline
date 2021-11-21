@@ -1,6 +1,6 @@
 # Everyone playing Outer Wilds in the same universe at different times!
 
-## Harnessing the power of the Ash Twin Project I have managed to pluck hearthians from all different timelines into a singular, ~~buggier~~ one!
+## Harnessing the power of the Ash Twin Project I have managed to pluck hearthians from all different timelines into a singular, ~~buggier~~ universe!
 
 Essentially everyone is playing through their own loop, and broadcasting their positions and chat to each other to simulate a multiplayer experience.
 In the future I plan to sync certain things, such as rafts. Things to have fun with together!
