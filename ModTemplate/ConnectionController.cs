@@ -34,14 +34,15 @@ namespace ModTemplate
         private Sector closestSectorToShip;
         private int closestSectorToShipID;
 
-        private Vector3 lastPlayerPos;
+        private Vector3 lastPlayerPos = Vector3.zero;
 
-        private Vector3 lastShipPos;
-        private Vector3 lastShipRot;
+        private Vector3 lastShipPos = Vector3.zero;
+        private Vector3 lastShipRot = Vector3.zero;
 
         private bool playerJump = false;
         private bool playerGrounded = false;
         private bool playerUngrounded = false;
+        private bool playerInGame = false;
 
         private PlayerCharacterController playerCharacterController;
         private JetpackThrusterModel playerThrusterModel;
@@ -88,9 +89,10 @@ namespace ModTemplate
         }
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
-            if (newScene == OWScene.SolarSystem || newScene == OWScene.EyeOfTheUniverse)
+            if ((newScene == OWScene.SolarSystem || newScene == OWScene.EyeOfTheUniverse) && !playerInGame)
             {
                 LoadedGame();
+                playerInGame = true;
             }
         }
         void FixedUpdate()
@@ -104,8 +106,7 @@ namespace ModTemplate
 
                 //The SFSUserVariables are named after the abbreviation to keep network load low (apparently according to SFS docs)
 
-                if (Locator.GetPlayerTransform() != null && closestSectorToPlayer != null && playerCharacterController != null &&
-                    playerThrusterModel != null)
+                if (Locator.GetPlayerTransform() != null && closestSectorToPlayer != null)
                 {
                     if (lastPlayerPos.ApproxEquals(Locator.GetPlayerTransform().position, 0.01f)) { return; }
 
@@ -120,31 +121,14 @@ namespace ModTemplate
                     userVariables.Add(new SFSUserVariable("rotx", (double)rot.x));
                     userVariables.Add(new SFSUserVariable("roty", (double)rot.y));
                     userVariables.Add(new SFSUserVariable("rotz", (double)rot.z));
+
                     userVariables.Add(new SFSUserVariable("sec", closestSectorToPlayerID));
-
-                    if (playerJump == true)
-                    {
-                        userVariables.Add(new SFSUserVariable("j", true));
-                        playerJump = false;
-                    }
-                    if (playerGrounded == true)
-                    {
-                        userVariables.Add(new SFSUserVariable("g", true));
-                        playerGrounded = false;
-                    }
-                    if (playerUngrounded == true)
-                    {
-                        userVariables.Add(new SFSUserVariable("ug", true));
-                        playerUngrounded = false;
-                    }
-
-
 
                     sfs.Send(new SetUserVariablesRequest(userVariables));
                 }
             }
         }
-        IEnumerator SendPlayerData() //Need to be updated constantly? Slap it here
+        IEnumerator SendPlayerData()
         {
             yield return new WaitForSeconds(2f);
             while (true)
@@ -173,12 +157,36 @@ namespace ModTemplate
         IEnumerator SendShipData()
         {
             yield return new WaitForSeconds(2f);
+            var data = new SFSObject();
+            Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
+            if (!lastShipPos.ApproxEquals(pos, 0.01f))
+            {
+                lastShipPos = pos;
+                data.PutFloat("x", pos.x);
+                data.PutFloat("y", pos.y);
+                data.PutFloat("z", pos.z);
+            }
+
+            Vector3 rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
+            if (!lastShipRot.ApproxEquals(rot, 0.01f))
+            {
+                lastShipRot = rot;
+                data.PutFloat("rotx", rot.x);
+                data.PutFloat("roty", rot.y);
+                data.PutFloat("rotz", rot.z);
+            }
+
+            data.PutInt("sec", closestSectorToPlayerID);
+
+            if (shipThrusterModel.IsTranslationalThrusterFiring())
+            {
+                data.PutFloat("tmla", shipThrusterModel.GetLocalAcceleration().y);
+            }
+
+            sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
             while (true)
             {
-                var data = new SFSObject();
-
-
-                Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
+                pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
                 if (!lastShipPos.ApproxEquals(pos, 0.01f))
                 {
                     lastShipPos = pos;
@@ -187,7 +195,7 @@ namespace ModTemplate
                     data.PutFloat("z", pos.z);
                 }
 
-                Vector3 rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
+                rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
                 if (!lastShipRot.ApproxEquals(rot, 0.01f))
                 {
                     lastShipRot = rot;
@@ -260,6 +268,8 @@ namespace ModTemplate
 
         private void SpawnRemotePlayer(SFSUser user, Vector3 vector3, Quaternion quaternion)
         {
+            if (remotePlayers.ContainsKey(user.Id)) { return; }
+
             ModHelper.Console.WriteLine("Spawned: " + user);
 
             GameObject remotePlayer = new GameObject(user.Name);
@@ -296,7 +306,9 @@ namespace ModTemplate
             Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/ThrusterWash/ThrusterWash_Default"), thrusterWash.transform);
             thrusterWash.AddComponent<ThrusterWashControllerSync>();
 
+            Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(false);
             GameObject thrusters = Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject, remoteVFXObjects.transform);
+            Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(true);
             foreach (Transform child in thrusters.transform)
             {
                 Transform child2 = child.GetChild(0);
@@ -346,9 +358,13 @@ namespace ModTemplate
 
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Effects_Cabin/ThrusterWash/ThrusterWash_Ship"), remoteVFXObjects.transform);
             //Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/ThrusterWash_Supplies"), remoteVFXObjects.transform);
+
+            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").gameObject.SetActive(false);
+            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").gameObject.SetActive(false);
             Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
             Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters"), remoteVFXObjects.transform);
-
+            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").gameObject.SetActive(true);
+            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").gameObject.SetActive(true);
             ReplaceThrusterFlameControllerRecursively(remoteVFXObjects.transform);
 
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
@@ -466,27 +482,21 @@ namespace ModTemplate
 
             if (!remotePlayers.ContainsKey(user.Id)) { return; }
 
-            if (changedVars.Contains("x") || changedVars.Contains("y") || changedVars.Contains("z") || changedVars.Contains("rot"))
+            if (changedVars.Contains("x"))
             {
-                remotePlayers[user.Id].GetComponent<SimpleRemoteInterpolation>().SetTransform(
+                remotePlayers[user.Id].GetComponent<SimpleRemoteInterpolation>().SetPosition(
                     new Vector3((float)user.GetVariable("x").GetDoubleValue(), (float)user.GetVariable("y").GetDoubleValue(), (float)user.GetVariable("z").GetDoubleValue()),
-                    Quaternion.Euler((float)user.GetVariable("rotx").GetDoubleValue(), (float)user.GetVariable("roty").GetDoubleValue(), (float)user.GetVariable("rotz").GetDoubleValue()),
                     true,
                     user.GetVariable("sec").GetIntValue()
                 );
-
             }
-            if (changedVars.Contains("j"))
+             if (changedVars.Contains("rotx"))
             {
-                remotePlayers[user.Id].GetComponentInChildren<PlayerAnimationSync>().OnPlayerJump();
-            }
-            if (changedVars.Contains("g"))
-            {
-                remotePlayers[user.Id].GetComponentInChildren<PlayerAnimationSync>().OnPlayerGrounded();
-            }
-            if (changedVars.Contains("ug"))
-            {
-                remotePlayers[user.Id].GetComponentInChildren<PlayerAnimationSync>().OnPlayerUngrounded();
+                remotePlayers[user.Id].GetComponent<SimpleRemoteInterpolation>().SetRotation(
+                    Quaternion.Euler(new Vector3((float)user.GetVariable("rotx").GetDoubleValue(), (float)user.GetVariable("roty").GetDoubleValue(), (float)user.GetVariable("rotz").GetDoubleValue())),
+                    true,
+                    user.GetVariable("sec").GetIntValue()
+                );
             }
 
         }
@@ -518,6 +528,13 @@ namespace ModTemplate
 
             gameObject.AddComponent<ChatHandler>();
 
+            //ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
+
+        }
+
+        private void OnExitToMainMenuPatch()
+        {
+            StartCoroutine(SendLeftGameMessage());
         }
 
         private IEnumerator SendJoinedGameMessage()
@@ -525,6 +542,14 @@ namespace ModTemplate
             yield return new WaitForSeconds(3f);
             var data = new SFSObject();
             data.PutNull("jg"); //JoinedGame
+            sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
+        }
+
+        private IEnumerator SendLeftGameMessage()
+        {
+            yield return new WaitForSeconds(3f);
+            var data = new SFSObject();
+            data.PutNull("lg"); //LeftGame
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
         }
         private void PingPongHandler(BaseEvent evt)
@@ -607,15 +632,21 @@ namespace ModTemplate
 
         private void PlayerJump()
         {
-            playerJump = true;
+            var data = new SFSObject();
+            data.PutNull("jump");
+            sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
         }
         private void PlayerGrounded()
         {
-            playerGrounded = true;
+            var data = new SFSObject();
+            data.PutNull("g");//Grounded
+            sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
         }
         private void PlayerUngrounded()
         {
-            playerUngrounded = true;
+            var data = new SFSObject();
+            data.PutNull("ug");//Ungrounded
+            sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
         }
         private void PlayerSuitUp()
         {
@@ -848,6 +879,18 @@ namespace ModTemplate
                         remotePlayer.GetComponentInChildren<ThrusterWashControllerSync>().ThrusterModelLocalYAcceleration = responseParams.GetFloat("tmla");
                         remotePlayer.GetComponentInChildren<PlayerAnimationSync>().ThrusterModelLocalYAcceleration = responseParams.GetFloat("tmla");
                     }
+                    if (responseParams.ContainsKey("j"))
+                    {
+                        remotePlayer.GetComponentInChildren<PlayerAnimationSync>().OnPlayerJump();
+                    }
+                    if (responseParams.ContainsKey("g"))
+                    {
+                        remotePlayer.GetComponentInChildren<PlayerAnimationSync>().OnPlayerGrounded();
+                    }
+                    if (responseParams.ContainsKey("ug"))
+                    {
+                        remotePlayer.GetComponentInChildren<PlayerAnimationSync>().OnPlayerUngrounded();
+                    }
 
                     #endregion
                     break;
@@ -866,11 +909,20 @@ namespace ModTemplate
                     }
                     if (remoteShip == null) { return; }
 
-                    remoteShip.GetComponent<SimpleRemoteInterpolation>().SetTransform(
+                    if (responseParams.ContainsKey("x"))
+                    {
+                        remoteShip.GetComponent<SimpleRemoteInterpolation>().SetPosition(
                         new Vector3(responseParams.GetFloat("x"), responseParams.GetFloat("y"), responseParams.GetFloat("z")),
+                        true,
+                        responseParams.GetInt("sec"));
+                    }
+                    if (responseParams.ContainsKey("rotx"))
+                    {
+                        remoteShip.GetComponent<SimpleRemoteInterpolation>().SetRotation(
                         Quaternion.Euler(responseParams.GetFloat("rotx"), responseParams.GetFloat("roty"), responseParams.GetFloat("rotz")),
                         true,
                         responseParams.GetInt("sec"));
+                    }
 
                     if (responseParams.ContainsKey("tmla"))
                     {
@@ -917,6 +969,19 @@ namespace ModTemplate
                             var data = new SFSObject();
                             data.PutBool("suit", true);
                             sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
+                        }
+                    }
+                    if (responseParams.ContainsKey("lg"))
+                    {
+                        if (PlayerState.AtFlightConsole())
+                        {
+                            var data = new NotificationData(NotificationTarget.Ship, "Hearthian left: " + remotePlayer.name, 4f, true);
+                            NotificationManager.SharedInstance.PostNotification(data, false);
+                        }
+                        else
+                        {
+                            var data = new NotificationData(NotificationTarget.Player, "Hearthian left: " + remotePlayer.name, 4f, true);
+                            NotificationManager.SharedInstance.PostNotification(data, false);
                         }
                     }
                     #endregion

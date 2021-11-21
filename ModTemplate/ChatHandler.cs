@@ -91,6 +91,7 @@ namespace ModTemplate
             {
                 if (Keyboard.current.enterKey.wasPressedThisFrame)
                 {
+                    if (inputFieldText.text.Trim(' ') == "") { return; }
                     sfs.Send(new Sfs2X.Requests.PublicMessageRequest(chatMode.ToString() + "ʣ" + inputFieldText.text));
                     inputFieldText.text = "";
                 }
@@ -98,8 +99,16 @@ namespace ModTemplate
                 {
                     if (key.wasPressedThisFrame && key.displayName.Length == 1)
                     {
-                        inputFieldText.text += key.displayName;
-                        FormatText(inputFieldText);
+                        if (Keyboard.current.shiftKey.isPressed)
+                        {
+                            inputFieldText.text += key.displayName.ToUpper();
+                            FormatText(inputFieldText);
+                        }
+                        else
+                        {
+                            inputFieldText.text += key.displayName.ToLower();
+                            FormatText(inputFieldText);
+                        }               
                     }
                 }
                 if (Keyboard.current.backspaceKey.wasPressedThisFrame)
@@ -119,30 +128,30 @@ namespace ModTemplate
             if (Keyboard.current.enterKey.wasPressedThisFrame && !selected)
             {
                 OWInput.ChangeInputMode(InputMode.KeyboardInput);
-                //nameFieldText.color = Color.white; 
-                //inputFieldText.color = Color.white; 
-                //foreach (var chatText in chatBoxes.Values)
-                //{
-                //    chatText.color = Color.white;
-                //}
                 selected = true;
 
             }
             if (Keyboard.current.escapeKey.wasPressedThisFrame && selected)
             {
                 OWInput.ChangeInputMode(InputMode.Character);
-                //nameFieldText.color = new Color(1, 1, 1, 0.5f);
-                //inputFieldText.color = new Color(1, 1, 1, 0.5f);
-                //foreach (var chatText in chatBoxes.Values)
-                //{
-                //    chatText.color = new Color(1, 1, 1, 0.5f);
-                //}
                 selected = false;
             }
         }
+
+        private IEnumerator DeleteCharacters()
+        {
+            yield return new WaitForSeconds(1f);
+
+            while (Keyboard.current.backspaceKey.isPressed)
+            {
+                inputFieldText.text = inputFieldText.text.Remove(inputFieldText.text.Length - 1);
+                yield return new WaitForSeconds(0.2f);
+            }
+        }
+
         private void UpdateOpenChat()
         {
-       
+
             if (NoChatsAvailable)
             {
                 nameFieldText.text = "Alone in space";
@@ -179,7 +188,7 @@ namespace ModTemplate
                 foreach (var astroObject in FindObjectsOfType<AstroObject>())
                 {
                     ChatMode astroChatMode = GetChatModeFromAstroObjectName(astroObject.GetAstroObjectName().ToString());
-                    if(PlayerState.InBrambleDimension() || PlayerState.InDreamWorld()) { break; }
+                    if (PlayerState.InBrambleDimension() || PlayerState.InDreamWorld()) { break; }
                     if (Mathf.Abs(Vector3.Distance(Locator.GetPlayerTransform().position, astroObject.transform.position)) < 600)
                     {
                         if (allowedChatModes[astroChatMode] == false && astroChatMode != ChatMode.NA)
@@ -309,8 +318,8 @@ namespace ModTemplate
         private string FormatTextFirstTime(string text)
         {
             var numOfLines = Mathf.FloorToInt(text.Length / 40);
-            
-            for (int i = 1; i < numOfLines; i ++)
+
+            for (int i = 1; i < numOfLines; i++)
             {
                 text = text.Insert(i * 40, Environment.NewLine);
             }
