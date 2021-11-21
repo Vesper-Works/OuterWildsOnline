@@ -16,6 +16,8 @@ using UnityEngine;
 using Sfs2X.Entities;
 using Sfs2X.Entities.Variables;
 using System.Collections;
+using OWML.Common.Menus;
+
 namespace ModTemplate
 {
     public class ConnectionController : ModBehaviour
@@ -48,6 +50,8 @@ namespace ModTemplate
         private ShipThrusterModel shipThrusterModel;
 
         private UnityEngine.UI.Text pingText;
+
+        private IModButton connectButton;
 
         private string serverIP = "34.125.152.123";
         private static ConnectionController Instance { get; set; }
@@ -83,8 +87,8 @@ namespace ModTemplate
         }
         private void DoMainMenuStuff()
         {
-            var button = ModHelper.Menus.MainMenu.NewExpeditionButton.Duplicate("CONNECT TO SERVER");
-            button.OnClick += StartUpConnection;
+            connectButton = ModHelper.Menus.MainMenu.NewExpeditionButton.Duplicate("CONNECT TO SERVER");
+            connectButton.OnClick += StartUpConnection;
         }
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
@@ -681,8 +685,31 @@ namespace ModTemplate
             sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
         }
 
+        private void SetButtonConnecting()
+        {
+            if (connectButton == null) return;
+            connectButton.Button.enabled = false;
+            connectButton.Title = "CONNECTING...";
+        }
+        
+        private void SetButtonConnected()
+        {
+            if (connectButton == null) return;
+            connectButton.Button.enabled = false;
+            connectButton.Title = "CONNECTED";
+        }
+
+        private void ResetConnectButton()
+        {
+            if (connectButton == null) return;
+            connectButton.Button.enabled = true;
+            connectButton.Title = "CONNECT TO SERVER";
+        }
+
         private void StartUpConnection()
         {
+            SetButtonConnecting();
+
             // Create SmartFox client instance
             sfs = new SmartFox();
 
@@ -721,12 +748,14 @@ namespace ModTemplate
             }
             else
             {
+                ResetConnectButton();
                 ModHelper.Console.WriteLine("Connection failed", MessageType.Error);
             }
         }
 
         private void OnConnectionLost(BaseEvent evt)
         {
+            ResetConnectButton();
             sfs.RemoveAllEventListeners();
             ModHelper.Console.WriteLine("Disconnected");
         }
@@ -751,11 +780,14 @@ namespace ModTemplate
                 settings.SendAOIEntryPoint = false;
                 sfs.Send(new CreateRoomRequest(settings, true));
             }
+            
+            SetButtonConnected();
         }
 
         private void OnLoginError(BaseEvent evt)
         {
             ModHelper.Console.WriteLine("Login error: " + (string)evt.Params["errorMessage"], MessageType.Error);
+            ResetConnectButton();
         }
 
         private void OnExtensionResponse(BaseEvent evt)
