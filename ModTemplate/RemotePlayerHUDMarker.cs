@@ -11,20 +11,20 @@ namespace ModTemplate
     {
         private bool _needsInitializing;
         // Token: 0x06000AD8 RID: 2776 RVA: 0x0000A7F8 File Offset: 0x000089F8
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
         }
 
         // Token: 0x06000AD9 RID: 2777 RVA: 0x0005CE08 File Offset: 0x0005B008
-        public override void Start()
+        protected override void Start()
         {
             base.Start();
 
         }
 
         // Token: 0x06000ADA RID: 2778 RVA: 0x0005CF04 File Offset: 0x0005B104
-        public override void OnDestroy()
+        protected override void OnDestroy()
         {
             base.OnDestroy();
             if (this._canvasMarker != null)
@@ -40,7 +40,7 @@ namespace ModTemplate
             _needsInitializing = true;
         }
 
-        public override void InitCanvasMarker()
+        protected override void InitCanvasMarker()
         {
             _markerRadius = 10f;
 
