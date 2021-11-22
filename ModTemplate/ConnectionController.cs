@@ -1,22 +1,19 @@
-﻿using OWML.ModHelper;
-using OWML.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using OWML.Common;
+using OWML.Common.Menus;
+using OWML.ModHelper;
+using OWML.ModHelper.Events;
 using Sfs2X;
 using Sfs2X.Core;
-using Sfs2X.Util;
+using Sfs2X.Entities;
 using Sfs2X.Entities.Data;
-using OWML.ModHelper.Events;
+using Sfs2X.Entities.Variables;
 using Sfs2X.Requests;
 using Sfs2X.Requests.MMO;
-using UnityEngine.SceneManagement;
-using UnityEngine;
-using Sfs2X.Entities;
-using Sfs2X.Entities.Variables;
+using Sfs2X.Util;
+using System;
 using System.Collections;
-using OWML.Common.Menus;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace ModTemplate
 {
@@ -26,12 +23,6 @@ namespace ModTemplate
         public static SmartFox Connection { get => Instance.sfs; }
 
         private SmartFox sfs;
-
-        private Dictionary<int, GameObject> remotePlayers = new Dictionary<int, GameObject>();
-        private Dictionary<int, GameObject> remoteShips = new Dictionary<int, GameObject>();
-
-        private Sector closestSectorToPlayer;
-        private int closestSectorToPlayerID;
 
         private Vector3 lastPlayerPos = Vector3.zero;
 
@@ -48,13 +39,14 @@ namespace ModTemplate
 
         private IModButton connectButton;
 
-        private string serverIP = "34.125.152.123";
+        private string serverIP;
         private static ConnectionController Instance { get; set; }
         public override void Configure(IModConfig config)
         {
             serverIP = config.GetSettingsValue<string>("serverIP");
         }
-        void Start()
+
+        private void Start()
         {
             Instance = this;
             ModHelperInstance = ModHelper;
@@ -75,6 +67,9 @@ namespace ModTemplate
             titleAnimationController.SetValue("_optionsFadeDelay", 0.001f);
             titleAnimationController.SetValue("_optionsFadeDuration", 0.001f);
             titleAnimationController.SetValue("_optionsFadeSpacing", 0.001f);
+
+            RemoteObjects.AddNewObjectType("Player");
+            RemoteObjects.AddNewObjectType("Ship");
 
             ModHelper.Menus.MainMenu.OnInit += DoMainMenuStuff;
 
@@ -108,7 +103,8 @@ namespace ModTemplate
                 ReloadServerThings();
             }
         }
-        void FixedUpdate()
+
+        private void FixedUpdate()
         {
             if (sfs != null)
             {
@@ -119,29 +115,39 @@ namespace ModTemplate
 
                 //The SFSUserVariables are named after the abbreviation to keep network load low (apparently according to SFS docs)
 
-                if (Locator.GetPlayerTransform() != null && closestSectorToPlayer != null)
+                if (Locator.GetPlayerTransform() != null && SFSSectorManager.ClosestSectorToPlayer != null)
                 {
-                    if (lastPlayerPos.ApproxEquals(Locator.GetPlayerTransform().position, 0.01f)) { return; }
+                    //if (lastPlayerPos.ApproxEquals(Locator.GetPlayerTransform().position, 0.01f)) { return; }
 
                     lastPlayerPos = Locator.GetPlayerTransform().position;
-                    Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetPlayerTransform().position);
+                    Vector3 pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(Locator.GetPlayerTransform().position);
                     List<UserVariable> userVariables = new List<UserVariable>();
                     userVariables.Add(new SFSUserVariable("x", (double)pos.x));
                     userVariables.Add(new SFSUserVariable("y", (double)pos.y));
                     userVariables.Add(new SFSUserVariable("z", (double)pos.z));
 
-                    Vector3 rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetPlayerTransform().rotation).eulerAngles;
+                    Vector3 rot = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformRotation(Locator.GetPlayerTransform().rotation).eulerAngles;
                     userVariables.Add(new SFSUserVariable("rotx", (double)rot.x));
                     userVariables.Add(new SFSUserVariable("roty", (double)rot.y));
                     userVariables.Add(new SFSUserVariable("rotz", (double)rot.z));
 
-                    userVariables.Add(new SFSUserVariable("sec", closestSectorToPlayerID));
+                    userVariables.Add(new SFSUserVariable("sec", SFSSectorManager.ClosestSectorToPlayerID));
 
                     sfs.Send(new SetUserVariablesRequest(userVariables));
+                    ModHelper.Console.WriteLine("Sending player data!", MessageType.Info);
+                }
+                else
+                {
+                    ModHelper.Console.WriteLine("Not sending player data!", MessageType.Warning);
                 }
             }
+            else
+            {
+                ModHelper.Console.WriteLine("SFS null", MessageType.Warning);
+            }
         }
-        IEnumerator SendPlayerData()
+
+        private IEnumerator SendPlayerData()
         {
             yield return new WaitForSeconds(2f);
             while (true)
@@ -167,16 +173,16 @@ namespace ModTemplate
                 yield return new WaitForSeconds(0.1f);
             }
         }
-        IEnumerator SendShipData()
+
+        private IEnumerator SendShipData()
         {
             yield return new WaitForSeconds(2f);
             SyncShipInstant();
 
             while (true)
             {
-                //if (closestSectorToPlayer == null) { yield return new WaitForFixedUpdate(); }
-               var data = new SFSObject();
-               var pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
+                var data = new SFSObject();
+                var pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
                 if (!lastShipPos.ApproxEquals(pos, 0.01f))
                 {
                     lastShipPos = pos;
@@ -185,7 +191,7 @@ namespace ModTemplate
                     data.PutFloat("z", pos.z);
                 }
 
-                var rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
+                var rot = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
                 if (!lastShipRot.ApproxEquals(rot, 0.01f))
                 {
                     lastShipRot = rot;
@@ -194,7 +200,7 @@ namespace ModTemplate
                     data.PutFloat("rotz", rot.z);
                 }
 
-                data.PutInt("sec", closestSectorToPlayerID);
+                data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
 
                 if (shipThrusterModel.IsTranslationalThrusterFiring())
                 {
@@ -205,53 +211,32 @@ namespace ModTemplate
                 yield return new WaitForFixedUpdate();
             }
         }
-
         private void SyncShipInstant()
         {
             var data = new SFSObject();
 
-            Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
+            Vector3 pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
             lastShipPos = pos;
             data.PutFloat("x", pos.x);
             data.PutFloat("y", pos.y);
             data.PutFloat("z", pos.z);
 
-            Vector3 rot = closestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
+            Vector3 rot = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
             lastShipRot = rot;
             data.PutFloat("rotx", rot.x);
             data.PutFloat("roty", rot.y);
             data.PutFloat("rotz", rot.z);
 
-            data.PutInt("sec", closestSectorToPlayerID);
+            data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
             sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
         }
 
-        IEnumerator GetClosestSectorToPlayer()
+        private IEnumerator GetClosestSectorToPlayer()
         {
             yield return new WaitForSeconds(2f);
             while (true)
             {
-                int closestSectorID = -1;
-                Sector closestSector = null;
-                float closestDistance = float.MaxValue;
-                float currentDistance;
-
-                foreach (var sector in SFSSectorManager.Sectors)
-                {
-                    if (!Locator.GetPlayerSectorDetector().IsWithinSector(sector.Value.GetName()) || sector.Value.GetName() == Sector.Name.Ship) { continue; }
-                    currentDistance = Vector3.Distance(sector.Value.transform.position, Locator.GetPlayerTransform().position);
-                    if (currentDistance < closestDistance)
-                    {
-                        closestDistance = currentDistance;
-                        closestSector = sector.Value;
-                        closestSectorID = sector.Key;
-                    }
-                }
-                if (closestSector != null)
-                {
-                    closestSectorToPlayer = closestSector;
-                    closestSectorToPlayerID = closestSectorID;
-                }
+                SFSSectorManager.FindClosestSectorToPlayer();
                 yield return new WaitForSeconds(0.4f);
             }
         }
@@ -277,16 +262,9 @@ namespace ModTemplate
             withSuit.Find("Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject.SetActive(true);
         }
 
-        private void SpawnRemotePlayer(SFSUser user, Vector3 vector3, Quaternion quaternion)
+        private void CreatePlayerRemoteCopy()
         {
-            if (remotePlayers.ContainsKey(user.Id))
-            {
-                ModHelper.Console.WriteLine("Player " + user + " is already spawned!"); return;
-            }
-
-            ModHelper.Console.WriteLine("Spawned: " + user);
-
-            GameObject remotePlayer = new GameObject(user.Name);
+            GameObject remotePlayer = new GameObject("Remote Player");
             GameObject localPlayerBody = Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2").gameObject;
             GameObject remotePlayerBody = Instantiate(localPlayerBody);
             MakeBodyPartsVisible(remotePlayerBody.transform);
@@ -319,43 +297,21 @@ namespace ModTemplate
             Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/ThrusterWash/ThrusterWash_Default"), thrusterWash.transform);
             thrusterWash.AddComponent<ThrusterWashControllerSync>();
 
-            Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(false);
-            GameObject thrusters = Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject, remoteVFXObjects.transform);
-            Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(true);
-            ReplaceThrusterFlameControllerRecursively(thrusters.transform);
+            //Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(false);
+            //GameObject thrusters = Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject, remoteVFXObjects.transform);
+            //Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(true);
+            //ReplaceThrusterFlameControllerRecursively(thrusters.transform);
             //thrusters.SetActive(true);
             remotePlayer.AddComponent<PlayerStateSync>();
 
-            var obj = GameObject.FindWithTag("MapCamera");
-            var markerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
-            var canvasMarker = markerManager.InstantiateNewMarker(true);
-            markerManager.RegisterMarker(canvasMarker, remotePlayer.GetComponent<OWRigidbody>());
-            canvasMarker.SetLabel(user.Name.ToUpper());
-            canvasMarker.SetColor(Color.white);
-            canvasMarker.SetVisibility(true);
-
-            remotePlayer.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(user.Name);
             //remotePlayer.AddComponent<LockOnReticule>().Init();
+            remotePlayer.SetActive(false);
 
-
-            remotePlayer.transform.position = vector3;
-            remotePlayer.transform.rotation = quaternion;
-            remotePlayers.Add(user.Id, remotePlayer);
-            SpawnRemoteShip(user);
-
+            RemoteObjects.CloneStorage.Add("Player", remotePlayer);
         }
-        private void RemoveRemotePlayer(SFSUser user)
+        private void CreateShipRemoteCopy()
         {
-            ModHelper.Console.WriteLine("Removed: " + user);
-            Destroy(remotePlayers[user.Id]);
-            Destroy(remoteShips[user.Id]);
-            remotePlayers.Remove(user.Id);
-            remoteShips.Remove(user.Id);
-        }
- 
-        private void SpawnRemoteShip(SFSUser user)
-        {
-            GameObject remotePlayerShip = new GameObject(user.Name + "'s ship");
+            GameObject remotePlayerShip = new GameObject("Remote Ship");
 
             remotePlayerShip.AddComponent<ProxyShadowCasterSuperGroup>();
             remotePlayerShip.AddComponent<SimpleRemoteInterpolation>();
@@ -368,13 +324,13 @@ namespace ModTemplate
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Effects_Cabin/ThrusterWash/ThrusterWash_Ship"), remoteVFXObjects.transform);
             //Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/ThrusterWash_Supplies"), remoteVFXObjects.transform);
 
-            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").gameObject.SetActive(false);
-            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").gameObject.SetActive(false);
-            GameObject thrusters1 = Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
-            GameObject thrusters2 = Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters"), remoteVFXObjects.transform);
-            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").gameObject.SetActive(true);
-            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").gameObject.SetActive(true);
-            ReplaceThrusterFlameControllerRecursively(remoteVFXObjects.transform);
+            //GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").gameObject.SetActive(false);
+            //GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").gameObject.SetActive(false);
+            //GameObject thrusters1 = Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
+            //GameObject thrusters2 = Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters"), remoteVFXObjects.transform);
+            //GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").gameObject.SetActive(true);
+            //GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").gameObject.SetActive(true);
+            //ReplaceThrusterFlameControllerRecursively(remoteVFXObjects.transform);
 
 
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
@@ -410,21 +366,71 @@ namespace ModTemplate
             RemoveCollisionFromObjectRecursively(remotePlayerShip.transform);
             remotePlayerShip.AddComponent<ThrusterWashControllerSync>();
 
-            thrusters1.SetActive(true);
-            thrusters2.SetActive(true);
+            //thrusters1.SetActive(true);
+            //thrusters2.SetActive(true);
 
-            remoteShips.Add(user.Id, remotePlayerShip);
+            remotePlayerShip.SetActive(false);
+            RemoteObjects.CloneStorage.Add("Ship", remotePlayerShip);
+        }
+        private void SpawnRemotePlayer(SFSUser user, Vector3 position, Quaternion rotation)
+        {
+            if (!RemoteObjects.CloneStorage.ContainsKey("Player"))
+            {
+                CreatePlayerRemoteCopy();
+                CreateShipRemoteCopy();
+            }
+            if (RemoteObjects.Players.ContainsKey(user.Id))
+            {
+                ModHelper.Console.WriteLine("Player " + user + " is already spawned!"); return;
+            }
 
+            ModHelper.Console.WriteLine("Spawned: " + user);
+
+            GameObject remotePlayer = Instantiate(RemoteObjects.CloneStorage["Player"], position, rotation);
+
+            var obj = GameObject.FindWithTag("MapCamera");
+            var markerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
+            var canvasMarker = markerManager.InstantiateNewMarker(true);
+            markerManager.RegisterMarker(canvasMarker, remotePlayer.GetComponent<OWRigidbody>());
+            canvasMarker.SetLabel(user.Name.ToUpper());
+            canvasMarker.SetColor(Color.white);
+            canvasMarker.SetVisibility(true);
+
+            remotePlayer.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(user.Name);
+
+            remotePlayer.SetActive(true);
+
+            RemoteObjects.Players.Add(user.Id, remotePlayer);
+            SpawnRemoteShip(user);
+        }
+        private void RemoveRemotePlayer(SFSUser user)
+        {
+            ModHelper.Console.WriteLine("Removed: " + user);
+            Destroy(RemoteObjects.Players[user.Id]);
+            Destroy(RemoteObjects.Ships[user.Id]);
+            RemoteObjects.Players.Remove(user.Id);
+            RemoteObjects.Ships.Remove(user.Id);
+        }
+        private void SpawnRemoteShip(SFSUser user)
+        {
+            GameObject remoteShip = Instantiate(RemoteObjects.CloneStorage["Ship"]);
+            RemoveCollisionFromObjectRecursively(remoteShip.transform);
+            remoteShip.SetActive(true);
+            RemoteObjects.Ships.Add(user.Id, remoteShip);
             SyncShipInstant();
         }
         private void RemoveCollisionFromObjectRecursively(Transform transform)
         {
             foreach (Transform child in transform)
             {
-                if (child.TryGetComponent<Collider>(out _) || child.TryGetComponent<Rigidbody>(out _) || child.TryGetComponent<OWRigidbody>(out _))
-                {
-                    Destroy(child.gameObject);
-                }
+                if (child.gameObject.name.ToLower().Contains("collision")) { gameObject.SetActive(false); }
+                //foreach (var component in child.GetComponents<Component>())
+                //{
+                //    if (component.GetType().IsAssignableFrom(typeof(Collider)))
+                //    {
+                //        Destroy(component);
+                //    }
+                //}
                 if (child.childCount > 0)
                 {
                     RemoveCollisionFromObjectRecursively(child);
@@ -464,13 +470,13 @@ namespace ModTemplate
          */
         public void OnProximityListUpdate(BaseEvent evt)
         {
-
             var addedUsers = (List<User>)evt.Params["addedUsers"];
             var removedUsers = (List<User>)evt.Params["removedUsers"];
 
             // Handle all new Users
             foreach (User user in addedUsers)
             {
+                ModHelper.Console.WriteLine("Trying to spawn " + user);
                 SpawnRemotePlayer(
                     (SFSUser)user,
                     new Vector3((float)user.GetVariable("x").GetDoubleValue(), (float)user.GetVariable("y").GetDoubleValue(), (float)user.GetVariable("z").GetDoubleValue()),
@@ -497,30 +503,35 @@ namespace ModTemplate
             SFSUser user = (SFSUser)evt.Params["user"];
             if (user == sfs.MySelf) return;
 
-            if (!remotePlayers.ContainsKey(user.Id) ||
-                remotePlayers[user.Id] == null)
+            if (!RemoteObjects.Players.ContainsKey(user.Id) ||
+                RemoteObjects.Players[user.Id] == null)
             {
-                ModHelper.Console.WriteLine("Ship trying to sync not found!");
+                ModHelper.Console.WriteLine("Player trying to sync not found!");
                 return;
             }
+            bool flag = false;
 
             if (changedVars.Contains("x"))
             {
-                remotePlayers[user.Id].GetComponent<SimpleRemoteInterpolation>().SetPosition(
+                ModHelper.Console.WriteLine("Recieved Pos!");
+                RemoteObjects.Players[user.Id].GetComponent<SimpleRemoteInterpolation>().SetPosition(
                     new Vector3((float)user.GetVariable("x").GetDoubleValue(), (float)user.GetVariable("y").GetDoubleValue(), (float)user.GetVariable("z").GetDoubleValue()),
                     true,
                     user.GetVariable("sec").GetIntValue()
                 );
+                flag = true;
             }
             if (changedVars.Contains("rotx"))
             {
-                remotePlayers[user.Id].GetComponent<SimpleRemoteInterpolation>().SetRotation(
+                ModHelper.Console.WriteLine("Recieved Rot!");
+                RemoteObjects.Players[user.Id].GetComponent<SimpleRemoteInterpolation>().SetRotation(
                     Quaternion.Euler(new Vector3((float)user.GetVariable("rotx").GetDoubleValue(), (float)user.GetVariable("roty").GetDoubleValue(), (float)user.GetVariable("rotz").GetDoubleValue())),
                     true,
                     user.GetVariable("sec").GetIntValue()
                 );
+                flag = true;
             }
-
+            ModHelper.Console.WriteLine("Recieved any usable data: " + flag);
         }
 
         private void LoadServerThings()
@@ -537,7 +548,6 @@ namespace ModTemplate
             sfs.AddEventListener(SFSEvent.PING_PONG, PingPongHandler);
 
             SFSSectorManager.RefreshSectors();
-
 
             StartCoroutine(GetClosestSectorToPlayer());
             StartCoroutine(SendPlayerData());
@@ -587,12 +597,11 @@ namespace ModTemplate
             //ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
 
         }
-
         private IEnumerator ReloadAllRemoteUsers(float delay)
         {
             yield return new WaitForSeconds(delay);
             List<int> userIDs = new List<int>();
-            foreach (var userID in remotePlayers.Keys)
+            foreach (var userID in RemoteObjects.Players.Keys)
             {
                 userIDs.Add(userID);
             }
@@ -607,7 +616,6 @@ namespace ModTemplate
         {
             StartCoroutine(SendLeftGameMessage());
         }
-
         private IEnumerator SendJoinedGameMessage()
         {
             yield return new WaitForSeconds(3f);
@@ -615,7 +623,6 @@ namespace ModTemplate
             data.PutNull("jg"); //JoinedGame
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
         }
-
         private IEnumerator SendLeftGameMessage()
         {
             yield return new WaitForSeconds(3f);
@@ -627,7 +634,6 @@ namespace ModTemplate
         {
             if (pingText != null) { pingText.text = (int)evt.Params["lagValue"] + "ms"; }
         }
-
         private void SortOutListeners()
         {
             playerCharacterController = FindObjectOfType<PlayerCharacterController>();
@@ -700,7 +706,6 @@ namespace ModTemplate
             //GlobalMessenger.AddListener("PlayerGrabbedByGhost", new Callback(this.OnGrabbedByGhost));
             //GlobalMessenger.AddListener("PlayerReleasedByGhost", new Callback(this.OnReleasedByGhost));
         }
-
         private void PlayerJump()
         {
             var data = new SFSObject();
@@ -789,7 +794,7 @@ namespace ModTemplate
             connectButton.Button.enabled = false;
             connectButton.Title = "CONNECTING...";
         }
-        
+
         private void SetButtonConnected()
         {
             if (connectButton == null) return;
@@ -817,7 +822,7 @@ namespace ModTemplate
 
             // Create SmartFox client instance
             sfs = new SmartFox();
-            
+
             // Add event listeners
             sfs.AddEventListener(SFSEvent.CONNECTION, OnConnection);
             sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
@@ -885,7 +890,7 @@ namespace ModTemplate
                 settings.SendAOIEntryPoint = false;
                 sfs.Send(new CreateRoomRequest(settings, true));
             }
-            
+
             SetButtonConnected();
         }
 
@@ -908,17 +913,14 @@ namespace ModTemplate
             if (responseParams == null) { return; }
 
             if (!responseParams.ContainsKey("userId")) { return; }
-            if (remotePlayers == null) { return; }
-            GameObject remotePlayer = null;
-            try
+            if (RemoteObjects.Players == null || !RemoteObjects.Players.ContainsKey(responseParams.GetInt("userId")))
             {
-                remotePlayer = remotePlayers[responseParams.GetInt("userId")];
-            }
-            catch (Exception)
-            {
-                ModHelper.Console.WriteLine("No remote player found!", MessageType.Error);
+                ModHelper.Console.WriteLine("Remote player not found!", MessageType.Warning);
                 return;
             }
+
+            GameObject remotePlayer = RemoteObjects.Players[responseParams.GetInt("userId")];
+
             if (remotePlayer == null) { return; }
 
             switch (cmd)
@@ -1004,13 +1006,13 @@ namespace ModTemplate
                 case "SyncShipData":
                     #region SyncShipData
 
-                    if (!remoteShips.ContainsKey(responseParams.GetInt("userId")) ||
-                        remoteShips[responseParams.GetInt("userId")] == null)
+                    if (!RemoteObjects.Ships.ContainsKey(responseParams.GetInt("userId")) ||
+                        RemoteObjects.Ships[responseParams.GetInt("userId")] == null)
                     {
                         ModHelper.Console.WriteLine("Ship trying to sync not found!");
                         return;
                     }
-                    GameObject remoteShip = remoteShips[responseParams.GetInt("userId")];
+                    GameObject remoteShip = RemoteObjects.Ships[responseParams.GetInt("userId")];
 
                     if (responseParams.ContainsKey("x"))
                     {

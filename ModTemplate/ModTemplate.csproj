@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ModTemplate</RootNamespace>
-    <AssemblyName>OuterWildsMMO</AssemblyName>
+    <AssemblyName>OuterWildsOnline</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -480,6 +480,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatHandler.cs" />
+    <Compile Include="RemoteObjects.cs" />
     <Compile Include="SyncClasses\PlayerAnimationSync.cs" />
     <Compile Include="ConnectionController.cs" />
     <Compile Include="gizmos-master\Runtime\Constants.cs" />
@@ -498,6 +499,7 @@
     <Compile Include="RemotePlayerHUDMarker.cs" />
     <Compile Include="SFSSectorManager.cs" />
     <Compile Include="SimpleRemoteInterpolation.cs" />
+    <Compile Include="SyncClasses\SyncObjectViaGhost.cs" />
     <Compile Include="SyncClasses\ThrusterFlameControllerSync.cs" />
     <Compile Include="SyncClasses\ThrusterWashControllerSync.cs" />
   </ItemGroup>
