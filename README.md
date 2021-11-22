@@ -7,9 +7,6 @@ In the future I plan to sync certain things, such as rafts. Things to have fun w
 
 Once the mod is downloaded, press the CONNECT TO SERVER button and you should load into the multiplayer game.
 
-Known bugs during connection process:
-- Pressing connect multiple times will result in failure, in case of this restart the game and press connect once.
-
 Any questions? Feel free to ping me on the Outer Wilds Discord - @Vesper
 
 Thanks for reading and I hope you have fun!
