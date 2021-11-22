@@ -121,10 +121,12 @@ namespace ModTemplate
 
                 if (Locator.GetPlayerTransform() != null && closestSectorToPlayer != null)
                 {
-                    if (lastPlayerPos.ApproxEquals(Locator.GetPlayerTransform().position, 0.01f)) { return; }
-
-                    lastPlayerPos = Locator.GetPlayerTransform().position;
                     Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetPlayerTransform().position);
+
+                    if (lastPlayerPos.ApproxEquals(pos, 0.01f)) { return; }
+
+                    lastPlayerPos = pos;
+
                     List<UserVariable> userVariables = new List<UserVariable>();
                     userVariables.Add(new SFSUserVariable("x", (double)pos.x));
                     userVariables.Add(new SFSUserVariable("y", (double)pos.y));

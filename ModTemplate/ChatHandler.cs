@@ -345,7 +345,7 @@ namespace ModTemplate
             User sender = (User)evt.Params["sender"];
             string[] message = ((string)evt.Params["message"]).Split('ʣ');
             ChatMode chatmode = (ChatMode)Enum.Parse(typeof(ChatMode), message[0]);
-            if(chatmode != ChatMode.NA) { return; }
+            if(chatmode == ChatMode.NA) { return; }
             chatBoxes[chatMode].text += "\n" + sender.Name + ": " + message[1];
             if (PlayerState.AtFlightConsole())
             {
