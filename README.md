@@ -12,6 +12,3 @@ Any questions? Feel free to ping me on the Outer Wilds Discord - @Vesper
 Thanks for reading and I hope you have fun!
 
 ### Gallery:
-![image](https://user-images.githubusercontent.com/59376295/142863057-0bfa9208-50a0-4d45-82db-a6eb5a2ad0b0.png)
-![image](https://user-images.githubusercontent.com/59376295/142862708-f2d6a565-e18f-4c9e-8963-99e57ce05864.png)
-![image](https://user-images.githubusercontent.com/59376295/142862758-1606ec68-fc56-4485-aee3-69387ea2b2b8.png)
