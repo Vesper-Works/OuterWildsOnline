@@ -3,6 +3,6 @@
   <PropertyGroup>
     <ProjectView>ProjectFiles</ProjectView>
     <OwmlDir>C:\Users\Vesper\AppData\Roaming\OuterWildsModManager\OWML</OwmlDir>
-    <ModUniqueName>Vesper.OuterWildsMMO</ModUniqueName>
+    <ModUniqueName>Vesper.OuterWildsOnline</ModUniqueName>
   </PropertyGroup>
 </Project>
