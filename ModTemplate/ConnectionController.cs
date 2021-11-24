@@ -381,7 +381,7 @@ namespace OuterWildsOnline
             GameObject remoteProbe = new GameObject("Remote Probe");
 
             remoteProbe.AddComponent<SimpleRemoteInterpolation>();
-            remoteProbe.AddComponent<SyncClasses.ProbeToSync>().Init();
+           
 
             Instantiate(Locator.GetProbe().transform.Find("CameraPivot/Geometry/Props_HEA_Probe_ANIM/Props_HEA_Probe"), remoteProbe.transform);
             remoteProbe.SetActive(false);
@@ -437,9 +437,10 @@ namespace OuterWildsOnline
 
         private void SpawnRemoteObject(int userID, string objectType)
         {
-            ModHelper.Console.WriteLine("Spawned: " + objectType);
+            ModHelper.Console.WriteLine("Spawned: " + objectType + " for: " + userID + " as: " + sfs.MySelf.Id);
             GameObject remoteObject = Instantiate(RemoteObjects.CloneStorage[objectType]);
             remoteObject.SetActive(true);
+            remoteObject.AddComponent<SyncClasses.GhostObjectToSync>().Init(objectType, userID);  
             if (!RemoteObjects.ObjectTypes.ContainsKey(objectType))
             {
                 RemoteObjects.AddNewObjectType(objectType);
@@ -522,7 +523,6 @@ namespace OuterWildsOnline
                 }
                 else
                 {
-                    ModHelper.Console.WriteLine("Trying to spawn " + user);
                     SpawnRemotePlayer(
                         (SFSUser)user,
                         new Vector3((float)user.GetVariable("x").GetDoubleValue(), (float)user.GetVariable("y").GetDoubleValue(), (float)user.GetVariable("z").GetDoubleValue()),
@@ -970,7 +970,7 @@ namespace OuterWildsOnline
 
         private void OnLogin(BaseEvent evt)
         {
-            string roomName = "UnityMMODemo";
+            string roomName = "SolarSystem";
 
             // We either create the Game Room or join it if it exists already
             if (sfs.RoomManager.ContainsRoom(roomName))
@@ -985,6 +985,8 @@ namespace OuterWildsOnline
                 settings.Extension = new RoomExtension("OuterWildsMMO", "MainExtension");
                 settings.IsGame = true;
                 settings.SendAOIEntryPoint = false;
+                settings.UserMaxLimboSeconds = 120;
+                settings.MaxVariables = 10000;
                 sfs.Send(new CreateRoomRequest(settings, true));
             }
 
@@ -1005,11 +1007,10 @@ namespace OuterWildsOnline
             if (evt.Params.Count == 0) { return; }
             if (!evt.Params.ContainsKey("params")) { return; }
 
+ 
             SFSObject responseParams = (SFSObject)evt.Params["params"];
 
             if (responseParams == null) { return; }
-
-            if (!responseParams.ContainsKey("userId") || responseParams.GetInt("userId").Equals(sfs.MySelf.Id)) { return; }
 
             RemotePlayerlessResponses(responseParams, cmd);
 
@@ -1215,35 +1216,6 @@ namespace OuterWildsOnline
                         SyncShipInstant();
                     }
                     #endregion
-                    break;
-
-                case "SyncObject":
-                    GameObject remoteObject = null;
-                    string objectName = responseParams.GetUtfString("objectName");
-                    try
-                    {
-                        remoteObject = RemoteObjects.ObjectTypes[objectName][responseParams.GetInt("userId")];
-                    }
-                    catch (Exception)
-                    {
-                        ConnectionController.ModHelperInstance.Console.WriteLine("No remote " + objectName + " found!", OWML.Common.MessageType.Warning);
-                        return;
-                    }
-                    if (remoteObject == null) { return; }
-                    if (responseParams.ContainsKey("x"))
-                    {
-                        remoteObject.GetComponent<SimpleRemoteInterpolation>().SetPosition(
-                        new Vector3(responseParams.GetFloat("x"), responseParams.GetFloat("y"), responseParams.GetFloat("z")),
-                        true,
-                        responseParams.GetInt("sec"));
-                    }
-                    if (responseParams.ContainsKey("rotx"))
-                    {
-                        remoteObject.GetComponent<SimpleRemoteInterpolation>().SetRotation(
-                        Quaternion.Euler(responseParams.GetFloat("rotx"), responseParams.GetFloat("roty"), responseParams.GetFloat("rotz")),
-                        true,
-                        responseParams.GetInt("sec"));
-                    }
                     break;
             }
         }

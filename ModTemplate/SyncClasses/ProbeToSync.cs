@@ -12,13 +12,23 @@ namespace OuterWildsOnline.SyncClasses
         {
             base.Init("Probe");
             GlobalMessenger<SurveyorProbe>.AddListener("LaunchProbe", new Callback<SurveyorProbe>(this.OnLaunchProbe));
+            GlobalMessenger<SurveyorProbe>.AddListener("RetrieveProbe", new Callback<SurveyorProbe>(this.OnAnyProbeRetrieved));
             return this;
         }
+
+        private void OnAnyProbeRetrieved(SurveyorProbe probe)
+        {
+            if (gameObject.GetComponent<SurveyorProbe>() == probe)
+            {
+                //gameObject.SetActive(true);
+            }
+        }
+
         private void OnLaunchProbe(SurveyorProbe probe)
         {
-           if(gameObject.GetComponent<SurveyorProbe>() == probe)
+            if (gameObject.GetComponent<SurveyorProbe>() == probe)
             {
-               
+                //gameObject.SetActive(true);
             }
         }
     }

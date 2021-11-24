@@ -23,9 +23,9 @@ namespace OuterWildsOnline.SyncClasses
         {
             this.objectName = objectName;
         }
-        protected virtual void FixedUpdate()
+        protected void FixedUpdate()
         {
-            if(objectName == null) { return; }
+            if (objectName == null) { return; }
             var data = new SFSObject();
 
             var pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(transform.position);
@@ -48,7 +48,6 @@ namespace OuterWildsOnline.SyncClasses
 
             data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
             data.PutUtfString("objectName", objectName);
-
             ConnectionController.Connection.Send(new ExtensionRequest("SyncObject", data, ConnectionController.Connection.LastJoinedRoom));
         }
 
