@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ModTemplate
+namespace OuterWildsOnline
 {
 	// Token: 0x0200000C RID: 12
 	[RequireComponent(typeof(Animator))]

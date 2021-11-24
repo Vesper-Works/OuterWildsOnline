@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ModTemplate
+namespace OuterWildsOnline
 {
     class ThrusterFlameControllerSync : MonoBehaviour
     {
@@ -13,11 +13,17 @@ namespace ModTemplate
         private void Awake()
         {
             this._thrusterRenderer = base.GetComponent<MeshRenderer>();
-            this._fluidDetector = base.gameObject.GetAttachedOWRigidbody(false).GetComponentInChildren<FluidDetector>();
-            this._rulesetDetector = base.gameObject.GetAttachedOWRigidbody(false).GetComponentInChildren<RulesetDetector>();
+      
             if (gameObject.GetAttachedOWRigidbody(false).gameObject.name.ToLower().Contains("ship"))
             {
+                this._fluidDetector = base.gameObject.GetAttachedOWRigidbody(false).GetComponent<FluidDetector>();
+                this._rulesetDetector = base.gameObject.GetAttachedOWRigidbody(false).GetComponent<RulesetDetector>();
                 _belowMaxThrustScalar = 0.8f;
+            }
+            else
+            {
+                this._fluidDetector = base.gameObject.GetAttachedOWRigidbody(false).GetComponentInChildren<FluidDetector>();
+                this._rulesetDetector = base.gameObject.GetAttachedOWRigidbody(false).GetComponentInChildren<RulesetDetector>();
             }
             _light = GetComponentInChildren<Light>();
             this._thrustersFiring = false;

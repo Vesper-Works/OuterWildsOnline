@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ModTemplate
+namespace OuterWildsOnline
 {
     class PlayerControllerSync : MonoBehaviour
     {

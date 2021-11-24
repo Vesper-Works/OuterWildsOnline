@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ModTemplate
+namespace OuterWildsOnline
 {
     static class SFSSectorManager
     {
@@ -22,6 +22,7 @@ namespace ModTemplate
         {
             if (UnityEngine.Object.FindObjectsOfType<Sector>().Length == 0) { ConnectionController.ModHelperInstance.Console.WriteLine("NoSectorsFound"); return; }
             Sector[] sectorsFound = UnityEngine.Object.FindObjectsOfType<Sector>();
+            sectorsFound.OrderBy(sector => sector.GetName());
             for (int i = 0; i < sectorsFound.Length; i++)
             {
                 Sectors[i] = sectorsFound[i];

@@ -7,8 +7,8 @@
     <ProjectGuid>{8A39F9E7-1A89-430C-9C3E-BDFB3B7E17DF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ModTemplate</RootNamespace>
-    <AssemblyName>OuterWildsOnline</AssemblyName>
+    <RootNamespace>OuterWildsOnline</RootNamespace>
+    <AssemblyName>OuterWildsMMO</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -480,7 +480,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatHandler.cs" />
-    <Compile Include="RemoteObjects.cs" />
+    <Compile Include="StaticClasses\RemoteObjects.cs" />
+    <Compile Include="SyncClasses\GhostObjectToSync.cs" />
     <Compile Include="SyncClasses\PlayerAnimationSync.cs" />
     <Compile Include="ConnectionController.cs" />
     <Compile Include="gizmos-master\Runtime\Constants.cs" />
@@ -497,8 +498,9 @@
     <Compile Include="SyncClasses\PlayerStateSync.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemotePlayerHUDMarker.cs" />
-    <Compile Include="SFSSectorManager.cs" />
+    <Compile Include="StaticClasses\SFSSectorManager.cs" />
     <Compile Include="SimpleRemoteInterpolation.cs" />
+    <Compile Include="SyncClasses\ProbeToSync.cs" />
     <Compile Include="SyncClasses\SyncObjectViaGhost.cs" />
     <Compile Include="SyncClasses\ThrusterFlameControllerSync.cs" />
     <Compile Include="SyncClasses\ThrusterWashControllerSync.cs" />
@@ -533,9 +535,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ModTemplate.csproj.user" />
     <Content Include="UnityExplorer.STANDALONE.Mono.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>rmdir /s /q "$(OwmlDir)\Mods\$(ModUniqueName)"

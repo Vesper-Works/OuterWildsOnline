@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Linq;
 
-namespace ModTemplate
+namespace OuterWildsOnline
 {
     public class SimpleRemoteInterpolation : MonoBehaviour
     {

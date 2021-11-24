@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ModTemplate
+namespace OuterWildsOnline
 {
     public static class RemoteObjects
     {

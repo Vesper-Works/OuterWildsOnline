@@ -13,7 +13,7 @@ using System.Collections;
 using Sfs2X.Core;
 using Sfs2X.Entities;
 
-namespace ModTemplate
+namespace OuterWildsOnline
 {
     enum ChatMode
     {
@@ -57,11 +57,16 @@ namespace ModTemplate
 
         private bool selected;
 
+        private ScreenPrompt exitChatPrompt;
+        private ScreenPrompt enterChatPrompt;
+
         public static ChatMode chatMode;
         private void Start()
         {
             shipAloneInSpace = new NotificationData(NotificationTarget.Ship, "Alone in space", 5f, true);
 
+            enterChatPrompt = new ScreenPrompt("ENTER to start chatting");
+            exitChatPrompt = new ScreenPrompt("ESC to start chatting");
 
             chatMode = ChatMode.TimberHearth;
 
@@ -129,12 +134,15 @@ namespace ModTemplate
             {
                 OWInput.ChangeInputMode(InputMode.KeyboardInput);
                 selected = true;
-
+                Locator.GetPromptManager().AddScreenPrompt(exitChatPrompt, true);
+                Locator.GetPromptManager().RemoveScreenPrompt(enterChatPrompt);
             }
             if (Keyboard.current.escapeKey.wasPressedThisFrame && selected)
             {
                 OWInput.ChangeInputMode(InputMode.Character);
                 selected = false;
+                Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, true);
+                Locator.GetPromptManager().RemoveScreenPrompt(exitChatPrompt);
             }
         }
 

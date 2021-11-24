@@ -8,25 +8,24 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace ModTemplate.SyncClasses
+namespace OuterWildsOnline.SyncClasses
 {
-    public class SyncObjectViaGhost : MonoBehaviour
+    public abstract class SyncObjectViaGhost : MonoBehaviour
     {
         private Vector3 lastPosition;
         private Vector3 lastRotation;
-        protected void Start()
+
+        private string objectName;
+
+        public string ObjectName { get => objectName; }
+
+        protected void Init(string objectName)
         {
-            ConnectionController.Connection.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
-
-
-
-            var data = new SFSObject();
-            data.PutNull("Spawn");
-            ConnectionController.Connection.Send(new ExtensionRequest("GeneralEvent", data));
+            this.objectName = objectName;
         }
-
-        protected virtual void Update()
+        protected virtual void FixedUpdate()
         {
+            if(objectName == null) { return; }
             var data = new SFSObject();
 
             var pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(transform.position);
@@ -48,51 +47,11 @@ namespace ModTemplate.SyncClasses
             }
 
             data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
-            data.PutNull(gameObject.name);
+            data.PutUtfString("objectName", objectName);
 
-            ConnectionController.Connection.Send(new ExtensionRequest("SyncObject", data));
+            ConnectionController.Connection.Send(new ExtensionRequest("SyncObject", data, ConnectionController.Connection.LastJoinedRoom));
         }
 
-        protected void OnExtensionResponse(BaseEvent evt)
-        {
-            string cmd = (string)evt.Params["cmd"];
 
-            if (evt.Params == null) { return; }
-            if (evt.Params.Count == 0) { return; }
-            if (!evt.Params.ContainsKey("params")) { return; }
-
-            SFSObject responseParams = (SFSObject)evt.Params["params"];
-
-            if (responseParams == null) { return; }
-
-            if (!responseParams.ContainsKey("userId")) { return; }
-
-            GameObject remoteObject = null;
-            try
-            {
-                remoteObject = RemoteObjects.ObjectTypes[gameObject.name][responseParams.GetInt("userId")];
-            }
-            catch (Exception)
-            {
-                ConnectionController.ModHelperInstance.Console.WriteLine("No remote player found!", OWML.Common.MessageType.Warning);
-                return;
-            }
-            if (remoteObject == null) { return; }
-
-            if (responseParams.ContainsKey("x"))
-            {
-                remoteObject.GetComponent<SimpleRemoteInterpolation>().SetPosition(
-                new Vector3(responseParams.GetFloat("x"), responseParams.GetFloat("y"), responseParams.GetFloat("z")),
-                true,
-                responseParams.GetInt("sec"));
-            }
-            if (responseParams.ContainsKey("rotx"))
-            {
-                remoteObject.GetComponent<SimpleRemoteInterpolation>().SetRotation(
-                Quaternion.Euler(responseParams.GetFloat("rotx"), responseParams.GetFloat("roty"), responseParams.GetFloat("rotz")),
-                true,
-                responseParams.GetInt("sec"));
-            }
-        }
     }
 }
