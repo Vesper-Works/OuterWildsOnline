@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Sfs2X.Entities.Data;
+using Sfs2X.Requests;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +22,9 @@ namespace OuterWildsOnline.SyncClasses
         {
             if (gameObject.GetComponent<SurveyorProbe>() == probe)
             {
-                //gameObject.SetActive(true);
+                var data = new SFSObject();                     
+                data.PutBool("enable", true);
+                ConnectionController.Connection.Send(new ExtensionRequest("SyncObject", data, ConnectionController.Connection.LastJoinedRoom));
             }
         }
 
@@ -28,7 +32,9 @@ namespace OuterWildsOnline.SyncClasses
         {
             if (gameObject.GetComponent<SurveyorProbe>() == probe)
             {
-                //gameObject.SetActive(true);
+                var data = new SFSObject();
+                data.PutBool("enable", false);
+                ConnectionController.Connection.Send(new ExtensionRequest("SyncObject", data, ConnectionController.Connection.LastJoinedRoom));
             }
         }
     }

@@ -53,6 +53,10 @@ namespace OuterWildsOnline.SyncClasses
                 true,
                 responseParams.GetInt("sec"));
             }
+            if (responseParams.ContainsKey("enable"))
+            {
+                gameObject.SetActive(responseParams.GetBool("enable"));
+            }
         }
     }
 }
