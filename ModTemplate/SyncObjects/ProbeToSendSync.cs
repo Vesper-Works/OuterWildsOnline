@@ -6,13 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OuterWildsOnline.SyncClasses
+namespace OuterWildsOnline.SyncObjects
 {
-    public class ProbeToSync : SyncObjectViaGhost
+    public class ProbeToSendSync : ObjectToSendSync
     {
-        public ProbeToSync Init()
+        public ProbeToSendSync Init()
         {
             base.Init("Probe");
+            interpolate = false;
             GlobalMessenger<SurveyorProbe>.AddListener("LaunchProbe", new Callback<SurveyorProbe>(this.OnLaunchProbe));
             GlobalMessenger<SurveyorProbe>.AddListener("RetrieveProbe", new Callback<SurveyorProbe>(this.OnAnyProbeRetrieved));
             return this;
@@ -23,8 +24,9 @@ namespace OuterWildsOnline.SyncClasses
             if (gameObject.GetComponent<SurveyorProbe>() == probe)
             {
                 var data = new SFSObject();                     
-                data.PutBool("enable", true);
-                ConnectionController.Connection.Send(new ExtensionRequest("SyncObject", data, ConnectionController.Connection.LastJoinedRoom));
+                data.PutBool("enable", false);
+                data.PutUtfString("objectName", base.ObjectName);
+                sfs.Send(new ExtensionRequest("SyncObject", data, ConnectionController.Connection.LastJoinedRoom));
             }
         }
 
@@ -33,8 +35,9 @@ namespace OuterWildsOnline.SyncClasses
             if (gameObject.GetComponent<SurveyorProbe>() == probe)
             {
                 var data = new SFSObject();
-                data.PutBool("enable", false);
-                ConnectionController.Connection.Send(new ExtensionRequest("SyncObject", data, ConnectionController.Connection.LastJoinedRoom));
+                data.PutBool("enable", true);
+                data.PutUtfString("objectName", base.ObjectName);
+                sfs.Send(new ExtensionRequest("SyncObject", data, ConnectionController.Connection.LastJoinedRoom));
             }
         }
     }

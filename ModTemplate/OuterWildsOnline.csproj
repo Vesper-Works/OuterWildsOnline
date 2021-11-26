@@ -481,7 +481,7 @@
   <ItemGroup>
     <Compile Include="ChatHandler.cs" />
     <Compile Include="StaticClasses\RemoteObjects.cs" />
-    <Compile Include="SyncClasses\GhostObjectToSync.cs" />
+    <Compile Include="SyncObjects\ObjectToRecieveSync.cs" />
     <Compile Include="SyncClasses\PlayerAnimationSync.cs" />
     <Compile Include="ConnectionController.cs" />
     <Compile Include="gizmos-master\Runtime\Constants.cs" />
@@ -500,8 +500,9 @@
     <Compile Include="RemotePlayerHUDMarker.cs" />
     <Compile Include="StaticClasses\SFSSectorManager.cs" />
     <Compile Include="SimpleRemoteInterpolation.cs" />
-    <Compile Include="SyncClasses\ProbeToSync.cs" />
-    <Compile Include="SyncClasses\SyncObjectViaGhost.cs" />
+    <Compile Include="SyncObjects\ProbeToSendSync.cs" />
+    <Compile Include="SyncObjects\ObjectToSendSync.cs" />
+    <Compile Include="SyncObjects\ShipToSendSync.cs" />
     <Compile Include="SyncClasses\ThrusterFlameControllerSync.cs" />
     <Compile Include="SyncClasses\ThrusterWashControllerSync.cs" />
   </ItemGroup>

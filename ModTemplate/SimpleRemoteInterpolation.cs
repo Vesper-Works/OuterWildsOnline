@@ -10,6 +10,7 @@ namespace OuterWildsOnline
         private Quaternion desiredRot;
 
         private float dampingFactor = 5f;
+        private bool interpolateOn;
 
         void Start()
         {
@@ -21,6 +22,7 @@ namespace OuterWildsOnline
         {
             if (transform.parent != SFSSectorManager.Sectors[sectorID].transform)
             { transform.SetParent(SFSSectorManager.Sectors[sectorID].transform); }
+            interpolateOn = interpolate;
 
             if (interpolate)
             {
@@ -35,6 +37,7 @@ namespace OuterWildsOnline
         {
             if (transform.parent != SFSSectorManager.Sectors[sectorID].transform)
             { transform.SetParent(SFSSectorManager.Sectors[sectorID].transform); }
+            interpolateOn = interpolate;
 
             if (interpolate)
             {
@@ -48,6 +51,7 @@ namespace OuterWildsOnline
 
         void Update()
         {
+            if (!interpolateOn) { return; }
             this.transform.localPosition = Vector3.Lerp(transform.localPosition, desiredPos, Time.deltaTime * dampingFactor);
             this.transform.localRotation = Quaternion.Slerp(transform.localRotation, desiredRot, Time.deltaTime * dampingFactor);
         }

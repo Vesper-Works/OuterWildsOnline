@@ -13,7 +13,6 @@ namespace OuterWildsOnline
       
         public static Dictionary<string, GameObject> CloneStorage = new Dictionary<string, GameObject>();
         public static Dictionary<int, GameObject> Players { get => ObjectTypes["Player"]; }
-        public static Dictionary<int, GameObject> Ships { get => ObjectTypes["Ship"]; }
         public static void AddNewObjectType(string objectTypeName)
         {
             ObjectTypes[objectTypeName] = new Dictionary<int, GameObject>();

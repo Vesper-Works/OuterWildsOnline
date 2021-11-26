@@ -1,31 +1,30 @@
-﻿using Sfs2X.Core;
+﻿using Sfs2X;
 using Sfs2X.Entities.Data;
 using Sfs2X.Requests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
-namespace OuterWildsOnline.SyncClasses
+namespace OuterWildsOnline.SyncObjects
 {
-    public abstract class SyncObjectViaGhost : MonoBehaviour
+    public class ObjectToSendSync : MonoBehaviour
     {
         private Vector3 lastPosition;
         private Vector3 lastRotation;
 
         private string objectName;
 
+        protected bool interpolate = true;
+
+        protected SmartFox sfs { get => ConnectionController.Connection; }
         public string ObjectName { get => objectName; }
 
-        protected void Init(string objectName)
+        public ObjectToSendSync Init(string objectName)
         {
             this.objectName = objectName;
+            return this;
         }
         protected void FixedUpdate()
         {
-            if (objectName == null) { return; }
+            if (objectName == null || SFSSectorManager.ClosestSectorToPlayer == null ||Vector3.Distance(Locator.GetPlayerTransform().position, transform.position) > 1000f) { return; }
             var data = new SFSObject();
 
             var pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(transform.position);
@@ -45,12 +44,10 @@ namespace OuterWildsOnline.SyncClasses
                 data.PutFloat("roty", rot.y);
                 data.PutFloat("rotz", rot.z);
             }
-
+            data.PutBool("interp", interpolate);
             data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
             data.PutUtfString("objectName", objectName);
-            ConnectionController.Connection.Send(new ExtensionRequest("SyncObject", data, ConnectionController.Connection.LastJoinedRoom));
+            sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
-
-
     }
 }

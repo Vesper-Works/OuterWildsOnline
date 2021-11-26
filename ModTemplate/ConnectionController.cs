@@ -13,6 +13,7 @@ using Sfs2X.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace OuterWildsOnline
@@ -165,62 +166,62 @@ namespace OuterWildsOnline
             }
         }
 
-        private IEnumerator SendShipData()
-        {
-            yield return new WaitForSeconds(2f);
-            SyncShipInstant();
+        //private IEnumerator SendShipData()
+        //{
+        //    yield return new WaitForSeconds(2f);
+        //    SyncShipInstant();
 
-            while (true)
-            {
-                var data = new SFSObject();
-                var pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
-                if (!lastShipPos.ApproxEquals(pos, 0.01f))
-                {
-                    lastShipPos = pos;
-                    data.PutFloat("x", pos.x);
-                    data.PutFloat("y", pos.y);
-                    data.PutFloat("z", pos.z);
-                }
+        //    while (true)
+        //    {
+        //        var data = new SFSObject();
+        //        var pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
+        //        if (!lastShipPos.ApproxEquals(pos, 0.01f))
+        //        {
+        //            lastShipPos = pos;
+        //            data.PutFloat("x", pos.x);
+        //            data.PutFloat("y", pos.y);
+        //            data.PutFloat("z", pos.z);
+        //        }
 
-                var rot = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
-                if (!lastShipRot.ApproxEquals(rot, 0.01f))
-                {
-                    lastShipRot = rot;
-                    data.PutFloat("rotx", rot.x);
-                    data.PutFloat("roty", rot.y);
-                    data.PutFloat("rotz", rot.z);
-                }
+        //        var rot = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
+        //        if (!lastShipRot.ApproxEquals(rot, 0.01f))
+        //        {
+        //            lastShipRot = rot;
+        //            data.PutFloat("rotx", rot.x);
+        //            data.PutFloat("roty", rot.y);
+        //            data.PutFloat("rotz", rot.z);
+        //        }
 
-                data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
+        //        data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
 
-                if (shipThrusterModel.IsTranslationalThrusterFiring())
-                {
-                    data.PutFloat("tmla", shipThrusterModel.GetLocalAcceleration().y);
-                }
+        //        if (shipThrusterModel.IsTranslationalThrusterFiring())
+        //        {
+        //            data.PutFloat("tmla", shipThrusterModel.GetLocalAcceleration().y);
+        //        }
 
-                sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
-                yield return new WaitForFixedUpdate();
-            }
-        }
-        private void SyncShipInstant()
-        {
-            var data = new SFSObject();
+        //        sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
+        //        yield return new WaitForFixedUpdate();
+        //    }
+        //}
+        //private void SyncShipInstant()
+        //{
+        //    var data = new SFSObject();
 
-            Vector3 pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
-            lastShipPos = pos;
-            data.PutFloat("x", pos.x);
-            data.PutFloat("y", pos.y);
-            data.PutFloat("z", pos.z);
+        //    Vector3 pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
+        //    lastShipPos = pos;
+        //    data.PutFloat("x", pos.x);
+        //    data.PutFloat("y", pos.y);
+        //    data.PutFloat("z", pos.z);
 
-            Vector3 rot = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
-            lastShipRot = rot;
-            data.PutFloat("rotx", rot.x);
-            data.PutFloat("roty", rot.y);
-            data.PutFloat("rotz", rot.z);
+        //    Vector3 rot = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
+        //    lastShipRot = rot;
+        //    data.PutFloat("rotx", rot.x);
+        //    data.PutFloat("roty", rot.y);
+        //    data.PutFloat("rotz", rot.z);
 
-            data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
-            sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
-        }
+        //    data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
+        //    sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
+        //}
 
         private IEnumerator GetClosestSectorToPlayer()
         {
@@ -294,7 +295,7 @@ namespace OuterWildsOnline
             //Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(true);
             //ReplaceThrusterFlameControllerRecursively(thrusters.transform);
             //thrusters.SetActive(true);
-            remotePlayer.AddComponent<PlayerStateSync>();
+             remotePlayer.AddComponent<PlayerStateSync>();
 
             //remotePlayer.AddComponent<LockOnReticule>().Init();
             remotePlayer.SetActive(false);
@@ -315,30 +316,27 @@ namespace OuterWildsOnline
             remoteVFXObjects.transform.SetParent(remotePlayerShip.transform);
 
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Effects_Cabin/ThrusterWash/ThrusterWash_Ship"), remoteVFXObjects.transform);
-            //Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/ThrusterWash_Supplies"), remoteVFXObjects.transform);
 
 
-            //PLEASE SOMEONE FIX I CAN'T DO IT - ERRORS WON'T GO AWAY! (Code works but produces errors).
+            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").SetActive(false);
+            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").SetActive(false);
 
-            //SetActiveRecursively(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").transform, false);
-            //SetActiveRecursively(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").transform, false);
+            ModHelper.Console.WriteLine("Here1");
 
-            //ModHelper.Console.WriteLine("Here1");
+            Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
+            Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters"), remoteVFXObjects.transform);
+            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").SetActive(false);
+            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").SetActive(false);
 
-            //Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
-            //Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);       
-            //SetActiveRecursively(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").transform, true);
-            //SetActiveRecursively(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").transform, true);
+            ModHelper.Console.WriteLine("Here2");
 
-            //ModHelper.Console.WriteLine("Here2");
+            ReplaceThrusterFlameControllerRecursively(remoteVFXObjects.transform);
 
-            //ReplaceThrusterFlameControllerRecursively(remoteVFXObjects.transform);
+            ModHelper.Console.WriteLine("Here3");
 
-            //ModHelper.Console.WriteLine("Here3");
+            remoteVFXObjects.SetActive(true);
 
-            //SetActiveRecursively(remoteVFXObjects.transform, true);
-
-            //ModHelper.Console.WriteLine("Here4");
+            ModHelper.Console.WriteLine("Here4");
 
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
@@ -375,16 +373,23 @@ namespace OuterWildsOnline
 
             remotePlayerShip.SetActive(false);
             RemoteObjects.CloneStorage.Add("Ship", remotePlayerShip);
+            ModHelper.Console.WriteLine("Ship added to clone bay");
         }
         private void CreateProbeRemoteCopy()
         {
             GameObject remoteProbe = new GameObject("Remote Probe");
-
+ 
             remoteProbe.AddComponent<SimpleRemoteInterpolation>();
-           
+          
+            GameObject remoteProbeBody = new GameObject("Remote Probe Body");
+            remoteProbeBody.transform.SetParent(remoteProbe.transform);
 
-            Instantiate(Locator.GetProbe().transform.Find("CameraPivot/Geometry/Props_HEA_Probe_ANIM/Props_HEA_Probe"), remoteProbe.transform);
+            Instantiate(Locator.GetProbe().transform.Find("CameraPivot"), remoteProbeBody.transform);
+            Transform lantern = Instantiate(Locator.GetProbe().transform.Find("Lantern"), remoteProbeBody.transform);
+            Destroy(lantern.GetComponent<ProbeLantern>());
+            lantern.GetComponent<Light>().enabled = true;
             remoteProbe.SetActive(false);
+            remoteProbeBody.SetActive(false);
             RemoteObjects.CloneStorage.Add("Probe", remoteProbe);
             ModHelper.Console.WriteLine("Probe added to clone bay");
         }
@@ -417,34 +422,33 @@ namespace OuterWildsOnline
             remotePlayer.SetActive(true);
 
             RemoteObjects.Players.Add(user.Id, remotePlayer);
-            SpawnRemoteShip(user);
         }
         private void RemoveRemotePlayer(SFSUser user)
         {
             ModHelper.Console.WriteLine("Removed: " + user);
             Destroy(RemoteObjects.Players[user.Id]);
-            Destroy(RemoteObjects.Ships[user.Id]);
+            //Destroy(RemoteObjects.Ships[user.Id]);
             RemoteObjects.Players.Remove(user.Id);
-            RemoteObjects.Ships.Remove(user.Id);
+           //RemoteObjects.Ships.Remove(user.Id);
         }
-        private void SpawnRemoteShip(SFSUser user)
-        {
-            GameObject remoteShip = Instantiate(RemoteObjects.CloneStorage["Ship"]);
-            remoteShip.SetActive(true);
-            RemoteObjects.Ships.Add(user.Id, remoteShip);
-            SyncShipInstant();
-        }
+        //private void SpawnRemoteShip(SFSUser user)
+        //{
+        //    GameObject remoteShip = Instantiate(RemoteObjects.CloneStorage["Ship"]);
+        //    remoteShip.SetActive(true);
+        //    RemoteObjects.Ships.Add(user.Id, remoteShip);
+        //    SyncShipInstant();
+        //}
 
         private void SpawnRemoteObject(int userID, string objectType)
         {
-            ModHelper.Console.WriteLine("Spawned: " + objectType + " for: " + userID + " as: " + sfs.MySelf.Id);
             GameObject remoteObject = Instantiate(RemoteObjects.CloneStorage[objectType]);
+            remoteObject.AddComponent<SyncObjects.ObjectToRecieveSync>().Init(objectType, userID);
             remoteObject.SetActive(true);
-            remoteObject.AddComponent<SyncClasses.GhostObjectToSync>().Init(objectType, userID);  
             if (!RemoteObjects.ObjectTypes.ContainsKey(objectType))
             {
                 RemoteObjects.AddNewObjectType(objectType);
             }
+            ModHelper.Console.WriteLine(String.Format("Spawned: {0} as: {1} for: {2}", objectType, sfs.MySelf.Id, userID));
             RemoteObjects.ObjectTypes[objectType][userID] = remoteObject;
         }
         private void RemoveCollisionFromObjectRecursively(Transform transform)
@@ -598,10 +602,10 @@ namespace OuterWildsOnline
 
             StartCoroutine(GetClosestSectorToPlayer());
             StartCoroutine(SendPlayerData());
-            StartCoroutine(SendShipData());
+            //StartCoroutine(SendShipData());
             StartCoroutine(SendJoinedGameMessage());
-            StartCoroutine(CreateObjectClones(0.5f));
-            StartCoroutine(SetObjectsToSync(0.1f));
+            StartCoroutine(CreateObjectClones(0.7f));
+            StartCoroutine(SetObjectsToSync(0.5f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
             playerThrusterModel = FindObjectOfType<JetpackThrusterModel>();
             shipThrusterModel = FindObjectOfType<ShipThrusterModel>();
@@ -641,10 +645,9 @@ namespace OuterWildsOnline
             StopAllCoroutines();
             StartCoroutine(GetClosestSectorToPlayer());
             StartCoroutine(SendPlayerData());
-            StartCoroutine(SendShipData());
             StartCoroutine(SendJoinedGameMessage());
             StartCoroutine(ReloadAllRemoteUsers(0f));
-            StartCoroutine(SetObjectsToSync(0.1f));
+            StartCoroutine(SetObjectsToSync(2f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
             //ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
 
@@ -692,9 +695,11 @@ namespace OuterWildsOnline
         private IEnumerator SetObjectsToSync(float delay)
         {
             yield return new WaitForSeconds(delay);
-            List<SyncClasses.SyncObjectViaGhost> objectsToSync = new List<SyncClasses.SyncObjectViaGhost>();
-
-            objectsToSync.Add(Locator.GetProbe().gameObject.AddComponent<SyncClasses.ProbeToSync>().Init());
+            List<SyncObjects.ObjectToSendSync> objectsToSync = new List<SyncObjects.ObjectToSendSync>
+            {
+                Locator.GetProbe().gameObject.AddComponent<SyncObjects.ProbeToSendSync>().Init(),
+                Locator.GetShipBody().gameObject.AddComponent<SyncObjects.ObjectToSendSync>().Init("Ship")
+            };
             List<RoomVariable> roomVariables = new List<RoomVariable>();
 
             ISFSObject nameStorage = new SFSObject();
@@ -738,12 +743,8 @@ namespace OuterWildsOnline
             playerCharacterController.OnJump += PlayerJump;
             playerCharacterController.OnBecomeGrounded += PlayerGrounded;
             playerCharacterController.OnBecomeUngrounded += PlayerUngrounded;
-
             playerThrusterModel.OnStartTranslationalThrust += PlayerStartedTranslationalThrust;
             playerThrusterModel.OnStopTranslationalThrust += PlayerStoppedTranslationalThrust;
-
-            shipThrusterModel.OnStartTranslationalThrust += ShipStartedTranslationalThrust;
-            shipThrusterModel.OnStopTranslationalThrust += ShipStoppedTranslationalThrust;
 
             //GlobalMessenger.AddListener("EnterConversation", new Callback(this.OnEnterConversation));
             //GlobalMessenger.AddListener("ExitConversation", new Callback(this.OnExitConversation));
@@ -873,18 +874,7 @@ namespace OuterWildsOnline
             data.PutBool("tt", false);
             sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
         }
-        private void ShipStartedTranslationalThrust()
-        {
-            var data = new SFSObject();
-            data.PutBool("tt", true);
-            sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
-        }
-        private void ShipStoppedTranslationalThrust()
-        {
-            var data = new SFSObject();
-            data.PutBool("tt", false);
-            sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
-        }
+   
 
         private void SetButtonConnecting()
         {
@@ -1151,57 +1141,57 @@ namespace OuterWildsOnline
         {
             switch (cmd)
             {
-                case "SyncShipData":
-                    #region SyncShipData
+                //case "SyncShipData":
+                //    #region SyncShipData
 
-                    if (!RemoteObjects.Ships.ContainsKey(responseParams.GetInt("userId")) ||
-                        RemoteObjects.Ships[responseParams.GetInt("userId")] == null)
-                    {
-                       // ModHelper.Console.WriteLine("Ship trying to sync not found!");
-                        return;
-                    }
-                    GameObject remoteShip = RemoteObjects.Ships[responseParams.GetInt("userId")];
+                //    if (!RemoteObjects.Ships.ContainsKey(responseParams.GetInt("userId")) ||
+                //        RemoteObjects.Ships[responseParams.GetInt("userId")] == null)
+                //    {
+                //       // ModHelper.Console.WriteLine("Ship trying to sync not found!");
+                //        return;
+                //    }
+                //    GameObject remoteShip = RemoteObjects.Ships[responseParams.GetInt("userId")];
 
-                    if (responseParams.ContainsKey("x"))
-                    {
-                        remoteShip.GetComponent<SimpleRemoteInterpolation>().SetPosition(
-                        new Vector3(responseParams.GetFloat("x"), responseParams.GetFloat("y"), responseParams.GetFloat("z")),
-                        true,
-                        responseParams.GetInt("sec"));
-                    }
-                    if (responseParams.ContainsKey("rotx"))
-                    {
-                        remoteShip.GetComponent<SimpleRemoteInterpolation>().SetRotation(
-                        Quaternion.Euler(responseParams.GetFloat("rotx"), responseParams.GetFloat("roty"), responseParams.GetFloat("rotz")),
-                        true,
-                        responseParams.GetInt("sec"));
-                    }
+                //    if (responseParams.ContainsKey("x"))
+                //    {
+                //        remoteShip.GetComponent<SimpleRemoteInterpolation>().SetPosition(
+                //        new Vector3(responseParams.GetFloat("x"), responseParams.GetFloat("y"), responseParams.GetFloat("z")),
+                //        true,
+                //        responseParams.GetInt("sec"));
+                //    }
+                //    if (responseParams.ContainsKey("rotx"))
+                //    {
+                //        remoteShip.GetComponent<SimpleRemoteInterpolation>().SetRotation(
+                //        Quaternion.Euler(responseParams.GetFloat("rotx"), responseParams.GetFloat("roty"), responseParams.GetFloat("rotz")),
+                //        true,
+                //        responseParams.GetInt("sec"));
+                //    }
 
-                    if (responseParams.ContainsKey("tmla"))
-                    {
-                        remoteShip.GetComponent<ThrusterWashControllerSync>().ThrusterModelLocalYAcceleration = responseParams.GetFloat("tmla");
-                    }
-                    if (responseParams.ContainsKey("tt"))
-                    {
-                        if (responseParams.GetBool("tt") == true)
-                        {
-                            remoteShip.GetComponent<ThrusterWashControllerSync>().OnStartTranslationalThrust();
-                            foreach (var thrusterController in remoteShip.GetComponentsInChildren<ThrusterFlameControllerSync>())
-                            {
-                                thrusterController.OnStartTranslationalThrust();
-                            }
-                        }
-                        else
-                        {
-                            remoteShip.GetComponent<ThrusterWashControllerSync>().OnStopTranslationalThrust();
-                            foreach (var thrusterController in remoteShip.GetComponentsInChildren<ThrusterFlameControllerSync>())
-                            {
-                                thrusterController.OnStopTranslationalThrust();
-                            }
-                        }
-                    }
-                    #endregion
-                    break;
+                //    if (responseParams.ContainsKey("tmla"))
+                //    {
+                //        remoteShip.GetComponent<ThrusterWashControllerSync>().ThrusterModelLocalYAcceleration = responseParams.GetFloat("tmla");
+                //    }
+                //    if (responseParams.ContainsKey("tt"))
+                //    {
+                //        if (responseParams.GetBool("tt") == true)
+                //        {
+                //            remoteShip.GetComponent<ThrusterWashControllerSync>().OnStartTranslationalThrust();
+                //            foreach (var thrusterController in remoteShip.GetComponentsInChildren<ThrusterFlameControllerSync>())
+                //            {
+                //                thrusterController.OnStartTranslationalThrust();
+                //            }
+                //        }
+                //        else
+                //        {
+                //            remoteShip.GetComponent<ThrusterWashControllerSync>().OnStopTranslationalThrust();
+                //            foreach (var thrusterController in remoteShip.GetComponentsInChildren<ThrusterFlameControllerSync>())
+                //            {
+                //                thrusterController.OnStopTranslationalThrust();
+                //            }
+                //        }
+                //    }
+                //    #endregion
+                //    break;
 
                 case "GeneralEvent":
                     #region GeneralEvent
@@ -1213,7 +1203,7 @@ namespace OuterWildsOnline
                             data.PutBool("suit", true);
                             sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
                         }
-                        SyncShipInstant();
+                        //SyncShipInstant();
                     }
                     #endregion
                     break;

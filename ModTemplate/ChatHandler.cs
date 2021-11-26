@@ -66,7 +66,7 @@ namespace OuterWildsOnline
             shipAloneInSpace = new NotificationData(NotificationTarget.Ship, "Alone in space", 5f, true);
 
             enterChatPrompt = new ScreenPrompt("ENTER to start chatting");
-            exitChatPrompt = new ScreenPrompt("ESC to start chatting");
+            exitChatPrompt = new ScreenPrompt("ESC to stop chatting");
 
             chatMode = ChatMode.TimberHearth;
 
@@ -74,6 +74,9 @@ namespace OuterWildsOnline
 
             inputText = Instantiate(GameObject.Find("PlayerHUD/HelmetOnUI/UICanvas/SecondaryGroup/GForce/NumericalReadout/GravityText"), inputBox.transform);
             nameField = Instantiate(GameObject.Find("PlayerHUD/HelmetOnUI/UICanvas/SecondaryGroup/GForce/NumericalReadout/GravityText"), inputBox.transform);
+
+            GlobalMessenger.AddListener("SuitUp", new Callback(this.OnPutOnSuit));
+            GlobalMessenger.AddListener("RemoveSuit", new Callback(this.OnRemoveSuit));
 
             Invoke("LateStart", 2f);
 
@@ -85,9 +88,17 @@ namespace OuterWildsOnline
                 count++;
             }
             sfs.AddEventListener(Sfs2X.Core.SFSEvent.PUBLIC_MESSAGE, OnPublicMessage);
-
-
         }
+
+        private void OnPutOnSuit()
+        {
+            Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, PromptPosition.UpperRight, true);
+        }
+        private void OnRemoveSuit()
+        {
+            Locator.GetPromptManager().RemoveScreenPrompt(enterChatPrompt);
+        }
+
         private void Update()
         {
             if (OWInput.GetInputMode() != InputMode.Character && OWInput.GetInputMode() != InputMode.Roasting && OWInput.GetInputMode() != InputMode.KeyboardInput) { return; }
@@ -113,7 +124,7 @@ namespace OuterWildsOnline
                         {
                             inputFieldText.text += key.displayName.ToLower();
                             FormatText(inputFieldText);
-                        }               
+                        }
                     }
                 }
                 if (Keyboard.current.backspaceKey.wasPressedThisFrame)
@@ -134,14 +145,14 @@ namespace OuterWildsOnline
             {
                 OWInput.ChangeInputMode(InputMode.KeyboardInput);
                 selected = true;
-                Locator.GetPromptManager().AddScreenPrompt(exitChatPrompt, true);
+                Locator.GetPromptManager().AddScreenPrompt(exitChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(enterChatPrompt);
             }
             if (Keyboard.current.escapeKey.wasPressedThisFrame && selected)
             {
                 OWInput.ChangeInputMode(InputMode.Character);
                 selected = false;
-                Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, true);
+                Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(exitChatPrompt);
             }
         }
@@ -197,7 +208,7 @@ namespace OuterWildsOnline
                 {
                     ChatMode astroChatMode = GetChatModeFromAstroObjectName(astroObject.GetAstroObjectName().ToString());
                     if (PlayerState.InBrambleDimension() || PlayerState.InDreamWorld()) { break; }
-                    if (Mathf.Abs(Vector3.Distance(Locator.GetPlayerTransform().position, astroObject.transform.position)) < 600)
+                    if (Vector3.Distance(Locator.GetPlayerTransform().position, astroObject.transform.position) < 600)
                     {
                         if (allowedChatModes[astroChatMode] == false && astroChatMode != ChatMode.NA)
                         {
