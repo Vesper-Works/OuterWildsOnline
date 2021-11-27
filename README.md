@@ -9,4 +9,11 @@ Once the mod is downloaded, press the CONNECT TO SERVER button and you should lo
 
 Any questions? Feel free to ping me on the Outer Wilds Discord - @Vesper
 
+### Currently unsupported parts of the game:
+The Eye - Please don't go here, it's not supported right now and will break the game for others.
+<details> 
+  <summary>DLC </summary>
+   A1: JavaScript 
+</details>
+
 Thanks for reading and I hope you have fun!
