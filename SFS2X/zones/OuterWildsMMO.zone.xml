@@ -50,6 +50,33 @@
     <logFloodingAttempts>true</logFloodingAttempts>
     <banMessage>Too much flooding, you are banned</banMessage>
   </floodFilter>
+  <rooms>
+    <room>
+      <name>The Lobby</name>
+      <groupId>default</groupId>
+      <password></password>
+      <maxUsers>150</maxUsers>
+      <maxSpectators>0</maxSpectators>
+      <isDynamic>false</isDynamic>
+      <isGame>false</isGame>
+      <isHidden>false</isHidden>
+      <autoRemoveMode>DEFAULT</autoRemoveMode>
+      <permissions>
+        <flags>PUBLIC_MESSAGES</flags>
+        <maxRoomVariablesAllowed>10</maxRoomVariablesAllowed>
+      </permissions>
+      <events>USER_ENTER_EVENT,USER_EXIT_EVENT,USER_COUNT_CHANGE_EVENT,USER_VARIABLES_UPDATE_EVENT</events>
+      <badWordsFilter isActive="false"/>
+      <roomVariables/>
+      <extension>
+        <name></name>
+        <type>JAVA</type>
+        <file></file>
+        <propertiesFile></propertiesFile>
+        <reloadMode>AUTO</reloadMode>
+      </extension>
+    </room>
+  </rooms>
   <disabledSystemEvents/>
   <privilegeManager active="false">
     <profiles>
