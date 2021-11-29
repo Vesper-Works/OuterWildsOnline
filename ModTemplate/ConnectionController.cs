@@ -50,7 +50,7 @@ namespace OuterWildsOnline
         {
             Instance = this;
             ModHelperInstance = ModHelper;
-            //UnityExplorer.ExplorerStandalone.CreateInstance();
+            UnityExplorer.ExplorerStandalone.CreateInstance();
 
             Application.runInBackground = true;
             // Skip flash screen.
@@ -927,7 +927,11 @@ namespace OuterWildsOnline
 
             // Set connection parameters
             ConfigData cfg = new ConfigData();
+#if !DEBUG 
             cfg.Host = serverIP;
+#else 
+            cfg.Host = "127.0.0.1";
+#endif
             cfg.Port = 9933;
             cfg.Zone = "OuterWildsMMO";
 

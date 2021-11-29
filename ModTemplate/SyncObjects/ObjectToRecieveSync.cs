@@ -96,6 +96,12 @@ namespace OuterWildsOnline.SyncObjects
                 }
             }
             #endregion
+            #region NomaiHands
+            if (responseParams.ContainsKey("nx")) //Special nomai coords
+            {
+              //Use an overloaded SetPostition
+            }
+            #endregion
         }
     }
 }
