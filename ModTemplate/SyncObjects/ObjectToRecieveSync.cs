@@ -58,8 +58,7 @@ namespace OuterWildsOnline.SyncObjects
 
             #region Probe
             if (responseParams.ContainsKey("enable"))
-            {
-                ConnectionController.ModHelperInstance.Console.WriteLine(responseParams.GetBool("enable"));
+            {     
                 transform.GetChild(0).gameObject.SetActive(responseParams.GetBool("enable"));
             }
             #endregion
@@ -69,23 +68,30 @@ namespace OuterWildsOnline.SyncObjects
             {
                 gameObject.GetComponent<ThrusterWashControllerSync>().ThrusterModelLocalYAcceleration = responseParams.GetFloat("tmla");
             }
+            if (responseParams.ContainsKey("thr,0"))
+            {
+
+                ThrusterFlameControllerSync[] thrusters = GetComponentsInChildren<ThrusterFlameControllerSync>(true);
+
+                for (int i = 0; i < thrusters.Length; i++) //10 thrusters                 
+                {
+                    thrusters[i].OnTranslationalThrust(responseParams.GetBool("thr," + i));
+                }                      
+            }
             if (responseParams.ContainsKey("tt"))
             {
-                ConnectionController.ModHelperInstance.Console.WriteLine("Recieving thrusting!");
-                if (responseParams.GetBool("tt") == true)
+                if (responseParams.GetBool("tt"))
                 {
                     gameObject.GetComponent<ThrusterWashControllerSync>().OnStartTranslationalThrust();
-                    foreach (var thrusterController in gameObject.GetComponentsInChildren<ThrusterFlameControllerSync>())
-                    {
-                        thrusterController.OnStartTranslationalThrust();
-                    }
                 }
                 else
                 {
                     gameObject.GetComponent<ThrusterWashControllerSync>().OnStopTranslationalThrust();
-                    foreach (var thrusterController in gameObject.GetComponentsInChildren<ThrusterFlameControllerSync>())
+                    ThrusterFlameControllerSync[] thrusters = GetComponentsInChildren<ThrusterFlameControllerSync>(true);
+
+                    for (int i = 0; i < thrusters.Length; i++) //10 thrusters                 
                     {
-                        thrusterController.OnStopTranslationalThrust();
+                        thrusters[i].OnTranslationalThrust(false);
                     }
                 }
             }

@@ -13,7 +13,6 @@ using Sfs2X.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace OuterWildsOnline
@@ -51,7 +50,7 @@ namespace OuterWildsOnline
         {
             Instance = this;
             ModHelperInstance = ModHelper;
-            //UnityExplorer.ExplorerStandalone.CreateInstance();
+            UnityExplorer.ExplorerStandalone.CreateInstance();
 
             Application.runInBackground = true;
             // Skip flash screen.
@@ -94,6 +93,7 @@ namespace OuterWildsOnline
         }
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
+            if (!sfs.IsConnected) { return; }
             if ((newScene == OWScene.SolarSystem || newScene == OWScene.EyeOfTheUniverse) && !playerInGame)
             {
                 LoadServerThings();
@@ -141,7 +141,7 @@ namespace OuterWildsOnline
 
         private IEnumerator SendPlayerData()
         {
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSecondsRealtime(2f);
             while (true)
             {
                 var data = new SFSObject();
@@ -159,10 +159,23 @@ namespace OuterWildsOnline
                 if (playerThrusterModel.IsTranslationalThrusterFiring())
                 {
                     data.PutFloat("tmla", playerThrusterModel.GetLocalAcceleration().y);
+
+                    ThrusterFlameController[] thrusters = Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").GetComponentsInChildren<ThrusterFlameController>(true);
+                    for (int i = 0; i < thrusters.Length; i++) //10 thrusters
+                    {
+                        if (Vector3.Dot(playerThrusterModel.GetLocalAcceleration(), thrusters[i]._thrusterFilter) > 0)
+                        {
+                            data.PutBool("thr," + i, true);
+                        }
+                        else
+                        {
+                            data.PutBool("thr," + i, false);
+                        }
+                    }
                 }
 
                 sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSecondsRealtime(0.1f);
             }
         }
 
@@ -229,7 +242,7 @@ namespace OuterWildsOnline
             while (true)
             {
                 SFSSectorManager.FindClosestSectorToPlayer();
-                yield return new WaitForSeconds(0.4f);
+                yield return new WaitForSecondsRealtime(0.4f);
             }
         }
 
@@ -290,12 +303,12 @@ namespace OuterWildsOnline
 
             //PLEASE SOMEONE FIX I CAN'T DO IT - ERRORS WON'T GO AWAY! (Code works but produces errors).
 
-            //Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(false);
-            //GameObject thrusters = Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject, remoteVFXObjects.transform);
-            //Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(true);
-            //ReplaceThrusterFlameControllerRecursively(thrusters.transform);
-            //thrusters.SetActive(true);
-             remotePlayer.AddComponent<PlayerStateSync>();
+            Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(false);
+            GameObject thrusters = Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject, remoteVFXObjects.transform);
+            Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(true);
+            ReplaceThrusterFlameControllerRecursively(thrusters.transform);
+            thrusters.SetActive(true);
+            remotePlayer.AddComponent<PlayerStateSync>();
 
             //remotePlayer.AddComponent<LockOnReticule>().Init();
             remotePlayer.SetActive(false);
@@ -317,26 +330,15 @@ namespace OuterWildsOnline
 
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Effects_Cabin/ThrusterWash/ThrusterWash_Ship"), remoteVFXObjects.transform);
 
-
             GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").SetActive(false);
             GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").SetActive(false);
-
-            ModHelper.Console.WriteLine("Here1");
-
             Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
             Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters"), remoteVFXObjects.transform);
-            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").SetActive(false);
-            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").SetActive(false);
-
-            ModHelper.Console.WriteLine("Here2");
-
+            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").SetActive(true);
+            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").SetActive(true);
             ReplaceThrusterFlameControllerRecursively(remoteVFXObjects.transform);
 
-            ModHelper.Console.WriteLine("Here3");
-
-            remoteVFXObjects.SetActive(true);
-
-            ModHelper.Console.WriteLine("Here4");
+            SetActiveRecursively(remoteVFXObjects.transform, true);
 
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
             Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
@@ -378,9 +380,9 @@ namespace OuterWildsOnline
         private void CreateProbeRemoteCopy()
         {
             GameObject remoteProbe = new GameObject("Remote Probe");
- 
+
             remoteProbe.AddComponent<SimpleRemoteInterpolation>();
-          
+
             GameObject remoteProbeBody = new GameObject("Remote Probe Body");
             remoteProbeBody.transform.SetParent(remoteProbe.transform);
 
@@ -429,7 +431,7 @@ namespace OuterWildsOnline
             Destroy(RemoteObjects.Players[user.Id]);
             //Destroy(RemoteObjects.Ships[user.Id]);
             RemoteObjects.Players.Remove(user.Id);
-           //RemoteObjects.Ships.Remove(user.Id);
+            //RemoteObjects.Ships.Remove(user.Id);
         }
         //private void SpawnRemoteShip(SFSUser user)
         //{
@@ -463,9 +465,9 @@ namespace OuterWildsOnline
             }
         }
 
-        private void SetActiveRecursively(Transform transform, bool active)
+        public static void SetActiveRecursively(Transform transform, bool active)
         {
-            gameObject.SetActive(active);
+            transform.gameObject.SetActive(active);
             foreach (Transform child in transform)
             {
                 child.gameObject.SetActive(active);
@@ -519,7 +521,7 @@ namespace OuterWildsOnline
             foreach (User user in addedUsers)
             {
                 if (RemoteObjects.Players.ContainsKey(user.Id))
-                {                             
+                {
                     foreach (var syncedObject in RemoteObjects.ObjectTypes.Values)
                     {
                         syncedObject[user.Id].SetActive(true);
@@ -602,7 +604,6 @@ namespace OuterWildsOnline
 
             StartCoroutine(GetClosestSectorToPlayer());
             StartCoroutine(SendPlayerData());
-            //StartCoroutine(SendShipData());
             StartCoroutine(SendJoinedGameMessage());
             StartCoroutine(CreateObjectClones(0.7f));
             StartCoroutine(SetObjectsToSync(0.5f));
@@ -697,9 +698,14 @@ namespace OuterWildsOnline
             yield return new WaitForSeconds(delay);
             List<SyncObjects.ObjectToSendSync> objectsToSync = new List<SyncObjects.ObjectToSendSync>
             {
-                Locator.GetProbe().gameObject.AddComponent<SyncObjects.ProbeToSendSync>().Init(),
-                Locator.GetShipBody().gameObject.AddComponent<SyncObjects.ObjectToSendSync>().Init("Ship")
+                Locator.GetShipBody().gameObject.AddComponent<SyncObjects.ShipToSendSync>().Init(),
+                Resources.FindObjectsOfTypeAll<SurveyorProbe>()[1].gameObject.AddComponent<SyncObjects.ProbeToSendSync>().Init() //For some reason this syncs all the probes, no idea why!
             };
+            //foreach (var probe in Resources.FindObjectsOfTypeAll<SurveyorProbe>())
+            //{
+            //    ModHelper.Console.WriteLine(probe.gameObject.name);
+            //    objectsToSync.Add(probe.gameObject.AddComponent<SyncObjects.ProbeToSendSync>().Init());
+            //}
             List<RoomVariable> roomVariables = new List<RoomVariable>();
 
             ISFSObject nameStorage = new SFSObject();
@@ -874,7 +880,7 @@ namespace OuterWildsOnline
             data.PutBool("tt", false);
             sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
         }
-   
+
 
         private void SetButtonConnecting()
         {
@@ -997,7 +1003,7 @@ namespace OuterWildsOnline
             if (evt.Params.Count == 0) { return; }
             if (!evt.Params.ContainsKey("params")) { return; }
 
- 
+
             SFSObject responseParams = (SFSObject)evt.Params["params"];
 
             if (responseParams == null) { return; }
@@ -1052,22 +1058,30 @@ namespace OuterWildsOnline
                             remotePlayer.GetComponent<PlayerStateSync>().OnBreakPlayerForceAlignment();
                         }
                     }
+                    if (responseParams.ContainsKey("thr,0"))
+                    {
+
+                        ThrusterFlameControllerSync[] thrusters = remotePlayer.GetComponentsInChildren<ThrusterFlameControllerSync>(true);
+
+                        for (int i = 0; i < thrusters.Length; i++) //10 thrusters                 
+                        {
+                            thrusters[i].OnTranslationalThrust(responseParams.GetBool("thr," + i));
+                        }
+                    }
                     if (responseParams.ContainsKey("tt"))
                     {
-                        if (responseParams.GetBool("tt") == true)
+                        if (responseParams.GetBool("tt"))
                         {
                             remotePlayer.GetComponentInChildren<ThrusterWashControllerSync>().OnStartTranslationalThrust();
-                            foreach (var thrusterController in remotePlayer.GetComponentsInChildren<ThrusterFlameControllerSync>())
-                            {
-                                thrusterController.OnStartTranslationalThrust();
-                            }
                         }
                         else
                         {
                             remotePlayer.GetComponentInChildren<ThrusterWashControllerSync>().OnStopTranslationalThrust();
-                            foreach (var thrusterController in remotePlayer.GetComponentsInChildren<ThrusterFlameControllerSync>())
+                            ThrusterFlameControllerSync[] thrusters = remotePlayer.GetComponentsInChildren<ThrusterFlameControllerSync>(true);
+
+                            for (int i = 0; i < thrusters.Length; i++) //10 thrusters                 
                             {
-                                thrusterController.OnStopTranslationalThrust();
+                                thrusters[i].OnTranslationalThrust(false);
                             }
                         }
                     }
@@ -1141,58 +1155,6 @@ namespace OuterWildsOnline
         {
             switch (cmd)
             {
-                //case "SyncShipData":
-                //    #region SyncShipData
-
-                //    if (!RemoteObjects.Ships.ContainsKey(responseParams.GetInt("userId")) ||
-                //        RemoteObjects.Ships[responseParams.GetInt("userId")] == null)
-                //    {
-                //       // ModHelper.Console.WriteLine("Ship trying to sync not found!");
-                //        return;
-                //    }
-                //    GameObject remoteShip = RemoteObjects.Ships[responseParams.GetInt("userId")];
-
-                //    if (responseParams.ContainsKey("x"))
-                //    {
-                //        remoteShip.GetComponent<SimpleRemoteInterpolation>().SetPosition(
-                //        new Vector3(responseParams.GetFloat("x"), responseParams.GetFloat("y"), responseParams.GetFloat("z")),
-                //        true,
-                //        responseParams.GetInt("sec"));
-                //    }
-                //    if (responseParams.ContainsKey("rotx"))
-                //    {
-                //        remoteShip.GetComponent<SimpleRemoteInterpolation>().SetRotation(
-                //        Quaternion.Euler(responseParams.GetFloat("rotx"), responseParams.GetFloat("roty"), responseParams.GetFloat("rotz")),
-                //        true,
-                //        responseParams.GetInt("sec"));
-                //    }
-
-                //    if (responseParams.ContainsKey("tmla"))
-                //    {
-                //        remoteShip.GetComponent<ThrusterWashControllerSync>().ThrusterModelLocalYAcceleration = responseParams.GetFloat("tmla");
-                //    }
-                //    if (responseParams.ContainsKey("tt"))
-                //    {
-                //        if (responseParams.GetBool("tt") == true)
-                //        {
-                //            remoteShip.GetComponent<ThrusterWashControllerSync>().OnStartTranslationalThrust();
-                //            foreach (var thrusterController in remoteShip.GetComponentsInChildren<ThrusterFlameControllerSync>())
-                //            {
-                //                thrusterController.OnStartTranslationalThrust();
-                //            }
-                //        }
-                //        else
-                //        {
-                //            remoteShip.GetComponent<ThrusterWashControllerSync>().OnStopTranslationalThrust();
-                //            foreach (var thrusterController in remoteShip.GetComponentsInChildren<ThrusterFlameControllerSync>())
-                //            {
-                //                thrusterController.OnStopTranslationalThrust();
-                //            }
-                //        }
-                //    }
-                //    #endregion
-                //    break;
-
                 case "GeneralEvent":
                     #region GeneralEvent
                     if (responseParams.ContainsKey("jg"))
@@ -1226,7 +1188,7 @@ namespace OuterWildsOnline
 
         private void OnRoomVarsUpdate(BaseEvent evt)
         {
-            if(RemoteObjects.CloneStorage.Count == 0) { return; }
+            if (RemoteObjects.CloneStorage.Count == 0) { return; }
             foreach (var variable in sfs.LastJoinedRoom.GetVariables())
             {
                 if (variable.Name.Contains("objects"))
@@ -1251,7 +1213,7 @@ namespace OuterWildsOnline
             {
                 ModHelper.Console.WriteLine(item.ToString());
             }
-         
+
         }
         private void Resume()
         {

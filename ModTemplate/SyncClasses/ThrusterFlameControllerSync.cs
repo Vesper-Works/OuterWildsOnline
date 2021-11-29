@@ -23,26 +23,28 @@ namespace OuterWildsOnline
 
 
         // Token: 0x06002575 RID: 9589 RVA: 0x0001D2B1 File Offset: 0x0001B4B1
-        public void OnStartTranslationalThrust()
+        public void OnTranslationalThrust(bool onOff)
         {
-            this._thrustersFiring = true;
-            StopAllCoroutines();
-            StartCoroutine(BuildUpThrust());
-        }
-
-        // Token: 0x06002576 RID: 9590 RVA: 0x0001D2C9 File Offset: 0x0001B4C9
-        public void OnStopTranslationalThrust()
-        {
-            this._thrustersFiring = false;
-            StopAllCoroutines();
-            StartCoroutine(DecreaseThrust());
+            if (onOff)
+            {
+                gameObject.SetActive(true);
+                this._thrustersFiring = true;
+                StopAllCoroutines();
+                StartCoroutine(BuildUpThrust());
+            }
+            else
+            {
+                this._thrustersFiring = false;
+                StopAllCoroutines();
+                StartCoroutine(DecreaseThrust());
+            }
         }
 
         private IEnumerator BuildUpThrust()
         {
             this._thrusterRenderer.enabled = true;
             this._light.enabled = true;
-            while (_thrustersFiring)
+            while (_thrustersFiring && _currentScale < 1)
             {
                 _currentScale += 0.02f;
                 base.transform.localScale = Vector3.one * this._currentScale;
