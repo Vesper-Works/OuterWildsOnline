@@ -16,8 +16,8 @@ using Sfs2X.Entities;
 namespace OuterWildsOnline
 {
     enum ChatMode
-    {
-        NA,
+    {   NA,
+        Universe,
         TimberHearth,
         BrittleHollow,
         GiantsDeep,
@@ -68,7 +68,7 @@ namespace OuterWildsOnline
             enterChatPrompt = new ScreenPrompt("ENTER to start chatting");
             exitChatPrompt = new ScreenPrompt("ESC to stop chatting");
 
-            chatMode = ChatMode.TimberHearth;
+            chatMode = ChatMode.Universe;
 
             inputBox = Instantiate(GameObject.Find("PlayerHUD/HelmetOnUI/UICanvas/SecondaryGroup/GForce/NumericalReadout/GravityText"), GameObject.Find("PlayerHUD/HelmetOnUI/UICanvas/SecondaryGroup/GForce/NumericalReadout").transform);
 
@@ -93,6 +93,8 @@ namespace OuterWildsOnline
         private void OnPutOnSuit()
         {
             Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, PromptPosition.UpperRight, true);
+            allowedChatModes[ChatMode.Universe] = true;
+
         }
         private void OnRemoveSuit()
         {
@@ -117,8 +119,21 @@ namespace OuterWildsOnline
                     {
                         if (Keyboard.current.shiftKey.isPressed)
                         {
-                            inputFieldText.text += key.displayName.ToUpper();
-                            FormatText(inputFieldText);
+                            if (Keyboard.current.digit1Key.wasPressedThisFrame)
+                            {
+                                inputFieldText.text += "!";
+                                FormatText(inputFieldText);
+                            }
+                            if (Keyboard.current.slashKey.wasPressedThisFrame)
+                            {
+                                inputFieldText.text += "?";
+                                FormatText(inputFieldText);
+                            }
+                            else
+                            {
+                                inputFieldText.text += key.displayName.ToUpper();
+                                FormatText(inputFieldText);
+                            }
                         }
                         else
                         {
@@ -130,6 +145,7 @@ namespace OuterWildsOnline
                 if (Keyboard.current.backspaceKey.wasPressedThisFrame)
                 {
                     inputFieldText.text = inputFieldText.text.Remove(inputFieldText.text.Length - 1);
+                    StartCoroutine(DeleteCharacters());
                 }
                 if (Keyboard.current.spaceKey.wasPressedThisFrame)
                 {
@@ -139,9 +155,9 @@ namespace OuterWildsOnline
                 {
                     UpdateOpenChat();
                 }
+        
             }
-
-            if (Keyboard.current.enterKey.wasPressedThisFrame && !selected)
+            if (Keyboard.current.enterKey.wasPressedThisFrame && !selected && chatMode != ChatMode.NA)
             {
                 OWInput.ChangeInputMode(InputMode.KeyboardInput);
                 selected = true;
@@ -194,11 +210,11 @@ namespace OuterWildsOnline
         {
             if (NoChatsAvailable) { return; }
             chatMode++;
-            if (((int)chatMode) == 16)
+            if (((int)chatMode) == 17)
             {
                 chatMode = 0;
             }
-            if (!allowedChatModes[chatMode]) { IterateChatMode(); }
+            if (!allowedChatModes[chatMode] || chatMode != ChatMode.Universe) { IterateChatMode(); }
         }
         private IEnumerator GetAllowedChatModes()
         {
@@ -350,6 +366,7 @@ namespace OuterWildsOnline
             User sender = (User)evt.Params["sender"];
             string[] message = ((string)evt.Params["message"]).Split('ʣ');
             ChatMode chatmode = (ChatMode)Enum.Parse(typeof(ChatMode), message[0]);
+            if(chatmode == ChatMode.NA) { return; }
             chatBoxes[chatMode].text += "\n" + sender.Name + ": " + message[1];
             if (PlayerState.AtFlightConsole())
             {

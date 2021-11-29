@@ -118,10 +118,12 @@ namespace OuterWildsOnline
 
                 if (Locator.GetPlayerTransform() != null && SFSSectorManager.ClosestSectorToPlayer != null)
                 {
-                    if (lastPlayerPos.ApproxEquals(Locator.GetPlayerTransform().position, 0.01f)) { return; }
+                    Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetPlayerTransform().position);
 
-                    lastPlayerPos = Locator.GetPlayerTransform().position;
-                    Vector3 pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(Locator.GetPlayerTransform().position);
+                    if (lastPlayerPos.ApproxEquals(pos, 0.01f)) { return; }
+
+                    lastPlayerPos = pos;
+
                     List<UserVariable> userVariables = new List<UserVariable>();
                     userVariables.Add(new SFSUserVariable("x", (double)pos.x));
                     userVariables.Add(new SFSUserVariable("y", (double)pos.y));
