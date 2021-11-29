@@ -52,6 +52,8 @@ public class MainExtension extends SFSExtension {
 		addRequestHandler("SyncPlayerData", PlayerDataSyncHandler.class);
 		addRequestHandler("SyncShipData", ShipDataSyncHandler.class);
 		addRequestHandler("GeneralEvent", GeneralEventHandler.class);
+		addRequestHandler("SyncObject", ObjectSyncHandler.class);
+
 
 	}
 
