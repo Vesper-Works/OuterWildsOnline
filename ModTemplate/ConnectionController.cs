@@ -50,7 +50,7 @@ namespace OuterWildsOnline
         {
             Instance = this;
             ModHelperInstance = ModHelper;
-            UnityExplorer.ExplorerStandalone.CreateInstance();
+            //UnityExplorer.ExplorerStandalone.CreateInstance();
 
             Application.runInBackground = true;
             // Skip flash screen.
