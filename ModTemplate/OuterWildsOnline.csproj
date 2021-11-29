@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OuterWildsOnline</RootNamespace>
-    <AssemblyName>OuterWildsMMO</AssemblyName>
+    <AssemblyName>OuterWildsOnline</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
