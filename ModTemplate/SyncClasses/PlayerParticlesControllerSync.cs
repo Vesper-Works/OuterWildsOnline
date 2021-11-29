@@ -120,7 +120,6 @@ namespace OuterWildsOnline
         // Token: 0x0600165C RID: 5724 RVA: 0x00089CC4 File Offset: 0x00087EC4
         private void OnImpact(ImpactData impact)
         {
-            ConnectionController.ModHelperInstance.Console.WriteLine("Impact!");
             if (impact.speed < this._impactParticleMinSpeed)
             {
                 return;

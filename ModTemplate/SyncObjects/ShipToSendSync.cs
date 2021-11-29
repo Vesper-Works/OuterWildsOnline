@@ -48,7 +48,6 @@ namespace OuterWildsOnline.SyncObjects
                     ThrusterFlameController[] thrusters = new ThrusterFlameController[thrusters1.Length + thrusters2.Length];
                     thrusters1.CopyTo(thrusters, 0);
                     thrusters2.CopyTo(thrusters, thrusters1.Length);
-                    ConnectionController.ModHelperInstance.Console.WriteLine(thrusters.Length.ToString());
                     for (int i = 0; i < thrusters.Length; i++) //10 thrusters
                     {
                         if (Vector3.Dot(shipThrusterModel.GetLocalAcceleration(), thrusters[i]._thrusterFilter) > 0)

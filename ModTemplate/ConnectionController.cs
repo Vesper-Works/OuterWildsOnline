@@ -450,7 +450,6 @@ namespace OuterWildsOnline
             {
                 RemoteObjects.AddNewObjectType(objectType);
             }
-            ModHelper.Console.WriteLine(String.Format("Spawned: {0} as: {1} for: {2}", objectType, sfs.MySelf.Id, userID));
             RemoteObjects.ObjectTypes[objectType][userID] = remoteObject;
         }
         private void RemoveCollisionFromObjectRecursively(Transform transform)
@@ -1208,10 +1207,6 @@ namespace OuterWildsOnline
                         SpawnRemoteObject(userID, objectNames[i]);
                     }
                 }
-            }
-            foreach (var item in RemoteObjects.ObjectTypes["Probe"].Values)
-            {
-                ModHelper.Console.WriteLine(item.ToString());
             }
 
         }
