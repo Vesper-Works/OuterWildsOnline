@@ -50,8 +50,9 @@ namespace OuterWildsOnline
         {
             Instance = this;
             ModHelperInstance = ModHelper;
-            UnityExplorer.ExplorerStandalone.CreateInstance();
-
+#if DEBUG
+            //UnityExplorer.ExplorerStandalone.CreateInstance();
+#endif
             Application.runInBackground = true;
             // Skip flash screen.
             var titleScreenAnimation = FindObjectOfType<TitleScreenAnimation>();
@@ -927,9 +928,9 @@ namespace OuterWildsOnline
 
             // Set connection parameters
             ConfigData cfg = new ConfigData();
-#if !DEBUG 
+#if !DEBUG
             cfg.Host = serverIP;
-#else 
+#else
             cfg.Host = "127.0.0.1";
 #endif
             cfg.Port = 9933;
@@ -1025,7 +1026,7 @@ namespace OuterWildsOnline
             switch (cmd)
             {
                 case "SyncPlayerData":
-                    #region SyncPlayerData
+#region SyncPlayerData
                     if (responseParams.ContainsKey("jcf"))
                     {
                         remotePlayer.GetComponent<PlayerControllerSync>().SetJumpCrouchFraction(responseParams.GetFloat("jcf"));
@@ -1106,11 +1107,11 @@ namespace OuterWildsOnline
                         remotePlayer.GetComponentInChildren<PlayerAnimationSync>().OnPlayerUngrounded();
                     }
 
-                    #endregion
+#endregion
                     break;
 
                 case "GeneralEvent":
-                    #region GeneralEvent
+#region GeneralEvent
                     if (responseParams.ContainsKey("jg"))
                     {
                         if (PlayerState.AtFlightConsole())
@@ -1150,7 +1151,7 @@ namespace OuterWildsOnline
                             NotificationManager.SharedInstance.PostNotification(data, false);
                         }
                     }
-                    #endregion
+#endregion
                     break;
             }
         }
@@ -1159,7 +1160,7 @@ namespace OuterWildsOnline
             switch (cmd)
             {
                 case "GeneralEvent":
-                    #region GeneralEvent
+#region GeneralEvent
                     if (responseParams.ContainsKey("jg"))
                     {
                         if (PlayerState.IsWearingSuit())
@@ -1170,7 +1171,7 @@ namespace OuterWildsOnline
                         }
                         //SyncShipInstant();
                     }
-                    #endregion
+#endregion
                     break;
             }
         }
