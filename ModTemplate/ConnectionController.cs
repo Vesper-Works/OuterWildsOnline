@@ -118,7 +118,7 @@ namespace OuterWildsOnline
 
                 if (Locator.GetPlayerTransform() != null && SFSSectorManager.ClosestSectorToPlayer != null)
                 {
-                    Vector3 pos = closestSectorToPlayer.transform.InverseTransformPoint(Locator.GetPlayerTransform().position);
+                    Vector3 pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(Locator.GetPlayerTransform().position);
 
                     if (lastPlayerPos.ApproxEquals(pos, 0.01f)) { return; }
 
