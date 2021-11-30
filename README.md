@@ -4,11 +4,14 @@
 
 Essentially everyone is playing through their own loop, and broadcasting their positions and chat to each other to simulate a multiplayer experience.
 
-In the future I plan to sync certain things, such as rafts. Things to have fun with together!
+In the future I plan to have almost all moveable things synced with ghost objects, and I will look into creating remote physics objects as well.
 
 Once the mod is downloaded, press the CONNECT TO SERVER button and you should load into the multiplayer game.
 
 Any questions? Feel free to ping me on the Outer Wilds Discord - @Vesper
+
+Want to contribute? Great! Check out the TODO project and have a go at creating something there, if you need any help or guidence, give me a ping in the modding channel!
+https://discord.gg/3q4c8raD
 
 ### Currently unsupported parts of the game:
 The Eye - Please don't go here, it's not supported right now and will break the game for others.
