@@ -4,7 +4,7 @@
 
 Essentially everyone is playing through their own loop, and broadcasting their positions and chat to each other to simulate a multiplayer experience.
 
-In the future I plan to sync certain things, such as rafts. Things to have fun with together!
+In the future I plan to have almost all moveable things synced with ghost objects, and I will look into creating remote physics objects as well.
 
 Once the mod is downloaded, press the CONNECT TO SERVER button and you should load into the multiplayer game.
 
