@@ -506,8 +506,14 @@ namespace OuterWildsOnline
             ChatMode recievedChatMode = (ChatMode)Enum.Parse(typeof(ChatMode), message[0]);
             helmetChatBoxes[recievedChatMode].text += "\n" + sender.Name + ": " + message[1];
             helmetlessChatBoxes[recievedChatMode].text += "\n" + sender.Name + ": " + message[1];
-            StopAllCoroutines();
-            StartCoroutine(FadeOutChatAfterDisuse());
+
+            if (!selected)
+            {
+                ChatFullOpacity();
+                StopAllCoroutines();
+                StartCoroutine(FadeOutChatAfterDisuse());
+            }
+
         }
     }
 }
