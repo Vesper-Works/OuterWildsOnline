@@ -547,8 +547,6 @@ md "$(OwmlDir)\Mods\$(ModUniqueName)"
 copy /y "$(TargetPath)" "$(OwmlDir)\Mods\$(ModUniqueName)"
 copy /y "$(ProjectDir)\default-config.json" "$(OwmlDir)\Mods\$(ModUniqueName)"
 copy /y "$(ProjectDir)\manifest.json" "$(OwmlDir)\Mods\$(ModUniqueName)"
-copy /y "$(ProjectDir)\SmartFox2X.dll" "$(OwmlDir)\Mods\$(ModUniqueName)"
-copy /y "$(ProjectDir)\UnityExplorer.STANDALONE.Mono.dll" "$(OwmlDir)\Mods\$(ModUniqueName)"
-</PostBuildEvent>
+copy /y "$(ProjectDir)\SmartFox2X.dll" "$(OwmlDir)\Mods\$(ModUniqueName)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

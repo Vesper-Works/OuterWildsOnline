@@ -50,9 +50,7 @@ namespace OuterWildsOnline
         {
             Instance = this;
             ModHelperInstance = ModHelper;
-#if DEBUG
-            //UnityExplorer.ExplorerStandalone.CreateInstance();
-#endif
+
             Application.runInBackground = true;
             // Skip flash screen.
             var titleScreenAnimation = FindObjectOfType<TitleScreenAnimation>();
@@ -69,9 +67,7 @@ namespace OuterWildsOnline
             titleAnimationController.SetValue("_optionsFadeDuration", 0.001f);
             titleAnimationController.SetValue("_optionsFadeSpacing", 0.001f);
 
-            RemoteObjects.AddNewObjectType("Player");
-            RemoteObjects.AddNewObjectType("Ship");
-
+     
             ModHelper.Menus.MainMenu.OnInit += DoMainMenuStuff;
 
             ModHelper.Events.Scenes.OnCompleteSceneChange += OnCompleteSceneChange;
@@ -95,13 +91,15 @@ namespace OuterWildsOnline
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
             if (!sfs.IsConnected) { return; }
-            if ((newScene == OWScene.SolarSystem || newScene == OWScene.EyeOfTheUniverse) && !playerInGame)
+            if ((newScene == OWScene.SolarSystem) && !playerInGame)
             {
+                RemoteObjects.Clear();
                 LoadServerThings();
                 playerInGame = true;
             }
-            else if ((newScene == OWScene.SolarSystem || newScene == OWScene.EyeOfTheUniverse) && playerInGame)
+            else if ((newScene == OWScene.SolarSystem) && playerInGame)
             {
+                RemoteObjects.Clear();
                 ReloadServerThings();
             }
         }
@@ -117,7 +115,7 @@ namespace OuterWildsOnline
 
                 //The SFSUserVariables are named after the abbreviation to keep network load low (apparently according to SFS docs)
 
-                if (Locator.GetPlayerTransform() != null && SFSSectorManager.ClosestSectorToPlayer != null)
+                if (Locator.GetPlayerBody() != null && SFSSectorManager.ClosestSectorToPlayer != null)
                 {
                     if (lastPlayerPos.ApproxEquals(Locator.GetPlayerTransform().position, 0.01f)) { return; }
 
@@ -179,64 +177,6 @@ namespace OuterWildsOnline
                 yield return new WaitForSecondsRealtime(0.1f);
             }
         }
-
-        //private IEnumerator SendShipData()
-        //{
-        //    yield return new WaitForSeconds(2f);
-        //    SyncShipInstant();
-
-        //    while (true)
-        //    {
-        //        var data = new SFSObject();
-        //        var pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
-        //        if (!lastShipPos.ApproxEquals(pos, 0.01f))
-        //        {
-        //            lastShipPos = pos;
-        //            data.PutFloat("x", pos.x);
-        //            data.PutFloat("y", pos.y);
-        //            data.PutFloat("z", pos.z);
-        //        }
-
-        //        var rot = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
-        //        if (!lastShipRot.ApproxEquals(rot, 0.01f))
-        //        {
-        //            lastShipRot = rot;
-        //            data.PutFloat("rotx", rot.x);
-        //            data.PutFloat("roty", rot.y);
-        //            data.PutFloat("rotz", rot.z);
-        //        }
-
-        //        data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
-
-        //        if (shipThrusterModel.IsTranslationalThrusterFiring())
-        //        {
-        //            data.PutFloat("tmla", shipThrusterModel.GetLocalAcceleration().y);
-        //        }
-
-        //        sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
-        //        yield return new WaitForFixedUpdate();
-        //    }
-        //}
-        //private void SyncShipInstant()
-        //{
-        //    var data = new SFSObject();
-
-        //    Vector3 pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(Locator.GetShipTransform().position);
-        //    lastShipPos = pos;
-        //    data.PutFloat("x", pos.x);
-        //    data.PutFloat("y", pos.y);
-        //    data.PutFloat("z", pos.z);
-
-        //    Vector3 rot = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformRotation(Locator.GetShipTransform().rotation).eulerAngles;
-        //    lastShipRot = rot;
-        //    data.PutFloat("rotx", rot.x);
-        //    data.PutFloat("roty", rot.y);
-        //    data.PutFloat("rotz", rot.z);
-
-        //    data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
-        //    sfs.Send(new ExtensionRequest("SyncShipData", data, sfs.LastJoinedRoom));
-        //}
-
         private IEnumerator GetClosestSectorToPlayer()
         {
             yield return new WaitForSeconds(2f);
@@ -309,6 +249,7 @@ namespace OuterWildsOnline
             Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(true);
             ReplaceThrusterFlameControllerRecursively(thrusters.transform);
             thrusters.SetActive(true);
+            thrusters.transform.localPosition += new Vector3(0, 0.2f, 0);
             remotePlayer.AddComponent<PlayerStateSync>();
 
             //remotePlayer.AddComponent<LockOnReticule>().Init();
@@ -411,6 +352,7 @@ namespace OuterWildsOnline
             ModHelper.Console.WriteLine("Spawned: " + user);
 
             GameObject remotePlayer = Instantiate(RemoteObjects.CloneStorage["Player"], position, rotation);
+            remotePlayer.name = user.Name;
 
             var obj = GameObject.FindWithTag("MapCamera");
             var markerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
@@ -426,21 +368,17 @@ namespace OuterWildsOnline
 
             RemoteObjects.Players.Add(user.Id, remotePlayer);
         }
-        private void RemoveRemotePlayer(SFSUser user)
+        private void RemoveRemotePlayer(int userID)
         {
-            ModHelper.Console.WriteLine("Removed: " + user);
-            Destroy(RemoteObjects.Players[user.Id]);
-            //Destroy(RemoteObjects.Ships[user.Id]);
-            RemoteObjects.Players.Remove(user.Id);
-            //RemoteObjects.Ships.Remove(user.Id);
+            ModHelper.Console.WriteLine("Removed: " + userID);
+
+            foreach (var remoteObject in RemoteObjects.ObjectTypes.Values)
+            {
+                Destroy(remoteObject[userID]);
+                remoteObject.Remove(userID);
+            }
+
         }
-        //private void SpawnRemoteShip(SFSUser user)
-        //{
-        //    GameObject remoteShip = Instantiate(RemoteObjects.CloneStorage["Ship"]);
-        //    remoteShip.SetActive(true);
-        //    RemoteObjects.Ships.Add(user.Id, remoteShip);
-        //    SyncShipInstant();
-        //}
 
         private void SpawnRemoteObject(int userID, string objectType)
         {
@@ -547,7 +485,6 @@ namespace OuterWildsOnline
                         syncedObject[user.Id].SetActive(false);
                     }
                 }
-                //RemoveRemotePlayer((SFSUser)user); When user leaves, we want to call this!
             }
         }
 
@@ -602,6 +539,9 @@ namespace OuterWildsOnline
 
             SFSSectorManager.RefreshSectors();
 
+            RemoteObjects.AddNewObjectType("Player");
+            RemoteObjects.AddNewObjectType("Ship");
+
             StartCoroutine(GetClosestSectorToPlayer());
             StartCoroutine(SendPlayerData());
             StartCoroutine(SendJoinedGameMessage());
@@ -615,7 +555,7 @@ namespace OuterWildsOnline
 
             gameObject.AddComponent<ChatHandler>();
 
-            //ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
+            ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
 
         }
         private void ReloadServerThings()
@@ -636,22 +576,41 @@ namespace OuterWildsOnline
 
             SFSSectorManager.RefreshSectors();
 
+            RemoteObjects.AddNewObjectType("Player");
+            RemoteObjects.AddNewObjectType("Ship");
+
             playerThrusterModel = FindObjectOfType<JetpackThrusterModel>();
             shipThrusterModel = FindObjectOfType<ShipThrusterModel>();
 
             SortOutListeners();
 
-            //gameObject.AddComponent<ChatHandler>();
+            gameObject.AddComponent<ChatHandler>();
 
             StopAllCoroutines();
             StartCoroutine(GetClosestSectorToPlayer());
             StartCoroutine(SendPlayerData());
             StartCoroutine(SendJoinedGameMessage());
-            StartCoroutine(ReloadAllRemoteUsers(0f));
-            StartCoroutine(SetObjectsToSync(2f));
+            //StartCoroutine(ReloadAllRemoteUsers(2f));
+            StartCoroutine(CreateObjectClones(0.7f));
+            StartCoroutine(SetObjectsToSync(0.5f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
-            //ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
 
+        }
+        private static void OnExitToMainMenuPatch()
+        {
+            Instance.playerInGame = false;
+            var data = new SFSObject();
+            data.PutNull("lg"); //LeftGame
+            Connection.Send(new ExtensionRequest("GeneralEvent", data, Connection.LastJoinedRoom));
+            Instance.StartCoroutine(Instance.Disconnect(0.1f));
+            Destroy(Instance.GetComponent<ChatHandler>());
+        }
+        public IEnumerator Disconnect(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            Connection.RemoveAllEventListeners();
+            Connection.Disconnect();
+            Instance.StopAllCoroutines();
         }
         private IEnumerator ReloadAllRemoteUsers(float delay)
         {
@@ -663,27 +622,15 @@ namespace OuterWildsOnline
             }
             foreach (var userID in userIDs)
             {
-
-                RemoveRemotePlayer((SFSUser)sfs.UserManager.GetUserById(userID));
+                RemoveRemotePlayer(userID);
                 SpawnRemotePlayer((SFSUser)sfs.UserManager.GetUserById(userID), Vector3.zero, Quaternion.identity);
             }
-        }
-        private void OnExitToMainMenuPatch()
-        {
-            StartCoroutine(SendLeftGameMessage());
         }
         private IEnumerator SendJoinedGameMessage()
         {
             yield return new WaitForSeconds(3f);
             var data = new SFSObject();
             data.PutNull("jg"); //JoinedGame
-            sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
-        }
-        private IEnumerator SendLeftGameMessage()
-        {
-            yield return new WaitForSeconds(3f);
-            var data = new SFSObject();
-            data.PutNull("lg"); //LeftGame
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
         }
         private IEnumerator CreateObjectClones(float delay)
@@ -984,7 +931,7 @@ namespace OuterWildsOnline
                 settings.MaxUsers = 100;
                 settings.Extension = new RoomExtension("OuterWildsMMO", "MainExtension");
                 settings.IsGame = true;
-                settings.SendAOIEntryPoint = false;
+                settings.SendAOIEntryPoint = true;
                 settings.UserMaxLimboSeconds = 120;
                 settings.MaxVariables = 10000;
                 sfs.Send(new CreateRoomRequest(settings, true));
@@ -1026,7 +973,7 @@ namespace OuterWildsOnline
             switch (cmd)
             {
                 case "SyncPlayerData":
-#region SyncPlayerData
+                    #region SyncPlayerData
                     if (responseParams.ContainsKey("jcf"))
                     {
                         remotePlayer.GetComponent<PlayerControllerSync>().SetJumpCrouchFraction(responseParams.GetFloat("jcf"));
@@ -1107,11 +1054,11 @@ namespace OuterWildsOnline
                         remotePlayer.GetComponentInChildren<PlayerAnimationSync>().OnPlayerUngrounded();
                     }
 
-#endregion
+                    #endregion
                     break;
 
                 case "GeneralEvent":
-#region GeneralEvent
+                    #region GeneralEvent
                     if (responseParams.ContainsKey("jg"))
                     {
                         if (PlayerState.AtFlightConsole())
@@ -1137,6 +1084,7 @@ namespace OuterWildsOnline
                             var data = new NotificationData(NotificationTarget.Player, "Hearthian left: " + remotePlayer.name, 4f, true);
                             NotificationManager.SharedInstance.PostNotification(data, false);
                         }
+                        RemoveRemotePlayer(responseParams.GetInt("userId"));
                     }
                     if (responseParams.ContainsKey("died"))
                     {
@@ -1151,7 +1099,7 @@ namespace OuterWildsOnline
                             NotificationManager.SharedInstance.PostNotification(data, false);
                         }
                     }
-#endregion
+                    #endregion
                     break;
             }
         }
@@ -1160,7 +1108,7 @@ namespace OuterWildsOnline
             switch (cmd)
             {
                 case "GeneralEvent":
-#region GeneralEvent
+                    #region GeneralEvent
                     if (responseParams.ContainsKey("jg"))
                     {
                         if (PlayerState.IsWearingSuit())
@@ -1171,7 +1119,7 @@ namespace OuterWildsOnline
                         }
                         //SyncShipInstant();
                     }
-#endregion
+                    #endregion
                     break;
             }
         }

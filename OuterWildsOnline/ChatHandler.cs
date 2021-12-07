@@ -92,7 +92,6 @@ namespace OuterWildsOnline
             helmetlessCanvas.transform.SetParent(GameObject.Find("PlayerHUD/HelmetOffUI").transform);
             helmetlessCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
             helmetlessCanvas.worldCamera = Locator.GetPlayerCamera().mainCamera;
-            helmetlessCanvas.tag = "UI";
             helmetlessCanvas.sortingOrder = 0;
             helmetlessCanvas.transform.localPosition = Vector3.forward;
             helmetlessCanvas.gameObject.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
@@ -147,6 +146,7 @@ namespace OuterWildsOnline
             helmetlessInputField.alignment = TextAnchor.LowerLeft;
             helmetlessInputField.text = "";
             helmetlessInputField.font = FindObjectOfType<DialogueBoxVer2>().GetComponentInChildren<Text>().font;
+            helmetlessInputField.fontSize = 10;
             helmetlessInputField.transform.localPosition = new Vector3(210f, -105f, 0);
 
 
@@ -157,6 +157,7 @@ namespace OuterWildsOnline
             helmetlessNameField.alignment = TextAnchor.LowerRight;
             helmetlessNameField.text = chatMode.ToString() + " (" + sfs.MySelf.Name + "):";
             helmetlessNameField.font = FindObjectOfType<DialogueBoxVer2>().GetComponentInChildren<Text>().font;
+            helmetlessNameField.fontSize = 10;
             helmetlessNameField.transform.localPosition = new Vector3(105f, -105f, 0);
 
             foreach (var chatBoxText in helmetChatBoxes.Values)
@@ -179,6 +180,7 @@ namespace OuterWildsOnline
                 chatBoxText.alignByGeometry = false;
                 chatBoxText.alignment = TextAnchor.LowerLeft;
                 chatBoxText.font = FindObjectOfType<DialogueBoxVer2>().GetComponentInChildren<Text>().font;
+                chatBoxText.fontSize = 10;
                 chatBoxText.text = "";
                 chatBoxText.gameObject.SetActive(false);
             }
@@ -329,7 +331,7 @@ namespace OuterWildsOnline
                 selected = true;
                 Locator.GetPromptManager().AddScreenPrompt(exitChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(enterChatPrompt);
-                StopAllCoroutines();
+                 StopCoroutine(FadeOutChatAfterDisuse());
                 ChatFullOpacity();
             }
             if (Keyboard.current.escapeKey.wasPressedThisFrame && selected)
@@ -339,7 +341,7 @@ namespace OuterWildsOnline
                 selected = false;
                 Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(exitChatPrompt);
-                StopAllCoroutines();
+                 StopCoroutine(FadeOutChatAfterDisuse());
                 StartCoroutine(FadeOutChatAfterDisuse());
             }
         }
@@ -390,9 +392,10 @@ namespace OuterWildsOnline
         }
         private IEnumerator GetAllowedChatModes()
         {
+            var astroObjects = FindObjectsOfType<AstroObject>();
             while (true)
             {
-                foreach (var astroObject in FindObjectsOfType<AstroObject>())
+                foreach (var astroObject in astroObjects)
                 {
                     ChatMode astroChatMode = GetChatModeFromAstroObjectName(astroObject.GetAstroObjectName().ToString());
                     if (PlayerState.InBrambleDimension() || PlayerState.InDreamWorld()) { break; }
@@ -510,7 +513,7 @@ namespace OuterWildsOnline
             if (!selected)
             {
                 ChatFullOpacity();
-                StopAllCoroutines();
+                StopCoroutine(FadeOutChatAfterDisuse());
                 StartCoroutine(FadeOutChatAfterDisuse());
             }
 
