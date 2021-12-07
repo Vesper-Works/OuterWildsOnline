@@ -18,11 +18,15 @@ namespace OuterWildsOnline
         private static Sector closestSectorToPlayer;
         private static int closestSectorToPlayerID;
 
+        private static OWRigidbody lastGround;
+
         public static void RefreshSectors()
         {
             if (UnityEngine.Object.FindObjectsOfType<Sector>().Length == 0) { ConnectionController.ModHelperInstance.Console.WriteLine("NoSectorsFound"); return; }
             Sector[] sectorsFound = UnityEngine.Object.FindObjectsOfType<Sector>();
             sectorsFound.OrderBy(sector => sector.GetName());
+            sectorsFound.OrderBy(sector => sector.GetName() == Sector.Name.DreamWorld || sector.GetName() == Sector.Name.Vessel || sector.GetName() == Sector.Name.VesselDimension);
+
             for (int i = 0; i < sectorsFound.Length; i++)
             {
                 Sectors[i] = sectorsFound[i];
@@ -33,11 +37,19 @@ namespace OuterWildsOnline
         {
             float closestDistance = float.MaxValue;
             float currentDistance;
+            RaycastHit hit;
 
             foreach (var sector in SFSSectorManager.Sectors)
             {
                 if (!Locator.GetPlayerSectorDetector().IsWithinSector(sector.Value.GetName()) || sector.Value.GetName() == Sector.Name.Ship) { continue; }
+                
                 currentDistance = Vector3.Distance(sector.Value.transform.position, Locator.GetPlayerTransform().position);
+
+                if (Locator.GetPlayerController()._lastGroundBody == sector.Value.GetOWRigidbody())
+                {
+                    currentDistance /= 2;
+                }
+
                 if (currentDistance < closestDistance)
                 {
                     closestDistance = currentDistance;
