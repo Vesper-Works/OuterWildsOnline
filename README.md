@@ -17,7 +17,7 @@ https://discord.gg/3q4c8raD
 The Eye - Please don't go here, it's not supported right now and will break the game for others.
 <details> 
   <summary>DLC (Spoilers)</summary>
-   Dreamworld does sync, but there is no chat, and you cannot see other players whilst outside of the render sphere.
+   Dreamworld does sync, but you cannot see other players whilst outside of the render sphere.
 </details>
 
 Thanks for reading and I hope you have fun!
