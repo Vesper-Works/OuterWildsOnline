@@ -11,7 +11,7 @@ Once the mod is downloaded, press the CONNECT TO SERVER button and you should lo
 Any questions? Feel free to ping me on the Outer Wilds Discord - @Vesper
 
 Want to contribute? Great! Check out the TODO project and have a go at creating something there, if you need any help or guidence, give me a ping in the modding channel!
-https://discord.gg/3q4c8raD
+https://discord.gg/vKvEgSN4qs
 
 ### Currently unsupported parts of the game:
 The Eye - Please don't go here, it's not supported right now and will break the game for others.
