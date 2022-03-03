@@ -133,12 +133,11 @@ namespace OuterWildsOnline
 
                     userVariables.Add(new SFSUserVariable("sec", SFSSectorManager.ClosestSectorToPlayerID));
 
-                    sfs.Send(new SetUserVariablesRequest(userVariables));
+                    sfs.Send(new SetUserVariablesRequest(userVariables)); //Send the client's pos and rot to other clients
                 }
             }
         }
-
-        private IEnumerator SendPlayerData()
+        private IEnumerator SendPlayerData() //Sends less-important client data to other players, such as the thrusters and crouching
         {
             yield return new WaitForSecondsRealtime(2f);
             while (true)
@@ -458,14 +457,14 @@ namespace OuterWildsOnline
             // Handle all new Users
             foreach (User user in addedUsers)
             {
-                if (RemoteObjects.Players.ContainsKey(user.Id))
+                if (RemoteObjects.Players.ContainsKey(user.Id)) //If the user is already in the game (went far away and came back), enable their remote objects
                 {
                     foreach (var syncedObject in RemoteObjects.ObjectTypes.Values)
                     {
                         syncedObject[user.Id].SetActive(true);
                     }
                 }
-                else
+                else 
                 {
                     SpawnRemotePlayer(
                         (SFSUser)user,
@@ -486,15 +485,14 @@ namespace OuterWildsOnline
                     }
                 }
             }
-        }
+        } 
 
         /**
          * When user variable is updated on any client within the AoI, then this event is received.
          * This is where most of the game logic for this example is contained.
          */
-        public void OnUserVariableUpdate(BaseEvent evt)
+        public void OnUserVariableUpdate(BaseEvent evt) //Sync nearby players
         {
-
             List<string> changedVars = (List<string>)evt.Params["changedVars"];
 
             SFSUser user = (SFSUser)evt.Params["user"];
