@@ -90,7 +90,7 @@ namespace OuterWildsOnline
         }
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
-            if (!sfs.IsConnected) { return; }
+            if (sfs == null || !sfs.IsConnected) { return; }
             if ((newScene == OWScene.SolarSystem) && !playerInGame)
             {
                 RemoteObjects.Clear();
@@ -106,8 +106,7 @@ namespace OuterWildsOnline
 
         private void FixedUpdate()
         {
-            if (sfs != null)
-            {
+            if (sfs == null) { return; }
                 sfs.ProcessEvents();
 
                 //On the server side the UserVariable event is captured and the coordinates are also passed to the MMOApi.SetUserPosition(...) method to update our position in the Room's map.
@@ -134,8 +133,7 @@ namespace OuterWildsOnline
                     userVariables.Add(new SFSUserVariable("sec", SFSSectorManager.ClosestSectorToPlayerID));
 
                     sfs.Send(new SetUserVariablesRequest(userVariables)); //Send the client's pos and rot to other clients
-                }
-            }
+                }           
         }
         private IEnumerator SendPlayerData() //Sends less-important client data to other players, such as the thrusters and crouching
         {
@@ -206,7 +204,6 @@ namespace OuterWildsOnline
             withSuit.Find("Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject.SetActive(true);
             withSuit.Find("Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject.SetActive(true);
         }
-
         private void CreatePlayerRemoteCopy()
         {
             GameObject remotePlayer = new GameObject("Remote Player");
@@ -581,7 +578,8 @@ namespace OuterWildsOnline
             shipThrusterModel = FindObjectOfType<ShipThrusterModel>();
 
             SortOutListeners();
-
+            
+            Destroy(gameObject.GetComponent<ChatHandler>());
             gameObject.AddComponent<ChatHandler>();
 
             StopAllCoroutines();
@@ -920,10 +918,12 @@ namespace OuterWildsOnline
             // We either create the Game Room or join it if it exists already
             if (sfs.RoomManager.ContainsRoom(roomName))
             {
+                ModHelper.Console.WriteLine("Room found, joining...");
                 sfs.Send(new JoinRoomRequest(roomName));
             }
             else
             {
+                ModHelper.Console.WriteLine("No room found, creating...");
                 MMORoomSettings settings = new MMORoomSettings(roomName);
                 settings.DefaultAOI = new Vec3D(1000f, 1000f, 1000f);
                 settings.MaxUsers = 100;
