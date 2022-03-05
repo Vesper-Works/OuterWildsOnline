@@ -2,7 +2,7 @@
 
 namespace OuterWildsOnline
 {
-    class PlayerControllerSync : MonoBehaviour
+    public class PlayerControllerSync : MonoBehaviour
     {
         private void Awake()
         {

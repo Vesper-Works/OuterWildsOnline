@@ -480,7 +480,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatHandler.cs" />
+    <Compile Include="StaticClasses\CreateRemoteCopies.cs" />
     <Compile Include="StaticClasses\RemoteObjects.cs" />
+    <Compile Include="StaticClasses\Utils.cs" />
+    <Compile Include="SyncObjects\GameObjectsToReceiveSync\NomaiHandsToReceiveSync.cs" />
+    <Compile Include="SyncObjects\GameObjectsToSendSync\PlayerToSendSync.cs" />
     <Compile Include="SyncObjects\ObjectToRecieveSync.cs" />
     <Compile Include="SyncClasses\PlayerAnimationSync.cs" />
     <Compile Include="ConnectionController.cs" />
@@ -500,11 +504,14 @@
     <Compile Include="RemotePlayerHUDMarker.cs" />
     <Compile Include="StaticClasses\SFSSectorManager.cs" />
     <Compile Include="SimpleRemoteInterpolation.cs" />
-    <Compile Include="SyncObjects\ProbeToSendSync.cs" />
+    <Compile Include="SyncObjects\GameObjectsToSendSync\ProbeToSendSync.cs" />
     <Compile Include="SyncObjects\ObjectToSendSync.cs" />
-    <Compile Include="SyncObjects\ShipToSendSync.cs" />
+    <Compile Include="SyncObjects\GameObjectsToSendSync\ShipToSendSync.cs" />
     <Compile Include="SyncClasses\ThrusterFlameControllerSync.cs" />
     <Compile Include="SyncClasses\ThrusterWashControllerSync.cs" />
+    <Compile Include="SyncObjects\GameObjectsToReceiveSync\PlayerToReceiveSync.cs" />
+    <Compile Include="SyncObjects\GameObjectsToReceiveSync\ProbeToReceiveSync.cs" />
+    <Compile Include="SyncObjects\GameObjectsToReceiveSync\ShipToReceiveSync.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default-config.json" />
