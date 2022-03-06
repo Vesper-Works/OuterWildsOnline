@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using OuterWildsOnline.SyncObjects;
+using OWML.Common;
 using OWML.Common.Menus;
 using OWML.ModHelper;
 using OWML.ModHelper.Events;
@@ -25,6 +26,7 @@ namespace OuterWildsOnline
         private SmartFox sfs;
 
         private bool playerInGame = false;
+        private bool usePlayerPosForSync = true;
 
         private UnityEngine.UI.Text pingText;
 
@@ -117,8 +119,45 @@ namespace OuterWildsOnline
             if (sfs != null)
             {
                 sfs.ProcessEvents();
-                ConnectionController.ModHelperInstance.Console.WriteLine("d");
+                UpdatePlayerCoords();
             }
+        }
+        public static void SetPlayerRepresentationObject(ObjectToSendSync playerRepresentationObject) 
+        {
+            Instance.playerRepresentationObject = playerRepresentationObject;
+        }
+        private Vector3 lastPlayerPosition = Vector3.zero;
+        private ObjectToSendSync playerRepresentationObject;
+        private void UpdatePlayerCoords() 
+        {
+            List<UserVariable> userVariables = new List<UserVariable>();
+            if (usePlayerPosForSync && playerRepresentationObject !=  null)
+            {
+                if (playerRepresentationObject.transform == null)
+                    return;
+
+                Vector3 currentPlayerPosition = playerRepresentationObject.transform.position;
+                if (lastPlayerPosition.ApproxEquals(currentPlayerPosition, 0.01f)) { return; }
+
+                lastPlayerPosition = currentPlayerPosition;
+                Vector3 pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(currentPlayerPosition);
+                userVariables.AddRange(new UserVariable[] {
+                
+                    new SFSUserVariable("x", (double)pos.x),
+                    new SFSUserVariable("y", (double)pos.y),
+                    new SFSUserVariable("z", (double)pos.z)
+                });
+                sfs.Send(new SetUserVariablesRequest(userVariables)); 
+                return;
+            }
+            userVariables.AddRange(new UserVariable[] {
+
+                    new SFSUserVariable("x", (double)lastPlayerPosition.x),
+                    new SFSUserVariable("y", (double)lastPlayerPosition.y),
+                    new SFSUserVariable("z", (double)lastPlayerPosition.z)
+                });
+            sfs.Send(new SetUserVariablesRequest(userVariables));
+
         }
         private IEnumerator GetClosestSectorToPlayer()
         {
@@ -161,7 +200,7 @@ namespace OuterWildsOnline
 
             RemoteObjects.Players.Add(user.Id, remotePlayer);
         }
-        private void RemoveRemotePlayer(int userID)
+        private void RemoveRemoteUser(int userID)
         {
             ModHelper.Console.WriteLine("Removed: " + userID);
 
@@ -172,12 +211,12 @@ namespace OuterWildsOnline
             }
         }
 
-        private void SpawnRemoteObject(int userID, string objectType)
+        private void SpawnRemoteObject(int userID, int objectId, string objectType)
         {
             ModHelper.Console.WriteLine($"({sfs.MySelf.Id}) Spawning {objectType} from user {userID}");
             GameObject remoteObject = Instantiate(RemoteObjects.CloneStorage[objectType]);
             var comp = remoteObject.GetComponent<SyncObjects.ObjectToRecieveSync>();
-            comp.Init(objectType, userID);
+            comp.Init(objectType, userID, objectId);
             remoteObject.SetActive(true);
             ModHelper.Console.WriteLine($"New Object is named {comp.name}");
             if (!RemoteObjects.ObjectTypes.ContainsKey(objectType))
@@ -185,17 +224,6 @@ namespace OuterWildsOnline
                 RemoteObjects.AddNewObjectType(objectType);
             }
             RemoteObjects.ObjectTypes[objectType][userID] = remoteObject;
-        }
-        private void RemoveCollisionFromObjectRecursively(Transform transform)
-        {
-            foreach (Transform child in transform)
-            {
-                if (child.gameObject.name.ToLower().Contains("collision")) { child.gameObject.SetActive(false); }
-                if (child.childCount > 0)
-                {
-                    RemoveCollisionFromObjectRecursively(child);
-                }
-            }
         }
 
         public static void SetActiveRecursively(Transform transform, bool active)
@@ -347,7 +375,7 @@ namespace OuterWildsOnline
             }
             foreach (var userID in userIDs)
             {
-                RemoveRemotePlayer(userID);
+                RemoveRemoteUser(userID);
                 //SpawnRemotePlayer((SFSUser)sfs.UserManager.GetUserById(userID), Vector3.zero, Quaternion.identity);
             }
         }
@@ -516,8 +544,9 @@ namespace OuterWildsOnline
             SetButtonConnected();
         }
 
-        private void JoinRoom(string roomToJoin) 
+        private void JoinRoom(string roomToJoin)
         {
+            ModHelper.Console.WriteLine($"Joining room {roomToJoin}");
             if (sfs.RoomManager.ContainsRoom(roomToJoin))
             {
                 sfs.Send(new JoinRoomRequest(roomToJoin));
@@ -558,7 +587,7 @@ namespace OuterWildsOnline
 
             if (responseParams == null) { return; }
 
-            RemotePlayerlessResponses(responseParams, cmd);
+            //RemotePlayerlessResponses(responseParams, cmd);
 
             if (RemoteObjects.Players == null || !RemoteObjects.Players.ContainsKey(responseParams.GetInt("userId")))
             {
@@ -598,7 +627,7 @@ namespace OuterWildsOnline
                             var data = new NotificationData(NotificationTarget.Player, "Hearthian left: " + remotePlayer.name, 4f, true);
                             NotificationManager.SharedInstance.PostNotification(data, false);
                         }
-                        RemoveRemotePlayer(responseParams.GetInt("userId"));
+                        RemoveRemoteUser(responseParams.GetInt("userId"));
                     }
                     if (responseParams.ContainsKey("died"))
                     {
@@ -617,26 +646,26 @@ namespace OuterWildsOnline
                     break;
             }
         }
-        private void RemotePlayerlessResponses(SFSObject responseParams, string cmd)
-        {
-            switch (cmd)
-            {
-                case "GeneralEvent":
-                    #region GeneralEvent
-                    if (responseParams.ContainsKey("jg"))
-                    {
-                        if (PlayerState.IsWearingSuit())
-                        {
-                            var data = new SFSObject();
-                            data.PutBool("suit", true);
-                            sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
-                        }
-                        //SyncShipInstant();
-                    }
-                    #endregion
-                    break;
-            }
-        }
+        //private void RemotePlayerlessResponses(SFSObject responseParams, string cmd)
+        //{
+        //    switch (cmd)
+        //    {
+        //        case "GeneralEvent":
+        //            #region GeneralEvent
+        //            if (responseParams.ContainsKey("jg"))
+        //            {
+        //                if (PlayerState.IsWearingSuit())
+        //                {
+        //                    var data = new SFSObject();
+        //                    data.PutBool("suit", true);
+        //                    sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
+        //                }
+        //                //SyncShipInstant();
+        //            }
+        //            #endregion
+        //            break;
+        //    }
+        //}
         private void OnRoomJoin(BaseEvent evt)
         {
             // Remove SFS2X listeners and re-enable interface before moving to the main game scene
@@ -652,6 +681,7 @@ namespace OuterWildsOnline
             ModHelper.Console.WriteLine("Room join failed: " + (string)evt.Params["errorMessage"]);
         }
 
+        //TODO trocar o sistema de clones unicos por um que use os ids de entidades
         private void OnRoomVarsUpdate(BaseEvent evt)
         {
             if (RemoteObjects.CloneStorage.Count == 0) { return; }

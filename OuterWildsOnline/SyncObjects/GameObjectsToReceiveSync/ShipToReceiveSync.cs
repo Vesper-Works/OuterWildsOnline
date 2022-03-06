@@ -7,6 +7,7 @@ namespace OuterWildsOnline.SyncObjects
     {
         protected override void OnExtensionResponse(SFSObject responseParams)
         {
+            base.OnExtensionResponse(responseParams);
             if (responseParams.ContainsKey("tmla"))
             {
                 gameObject.GetComponent<ThrusterWashControllerSync>().ThrusterModelLocalYAcceleration = responseParams.GetFloat("tmla");

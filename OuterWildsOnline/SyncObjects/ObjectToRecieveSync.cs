@@ -16,6 +16,7 @@ namespace OuterWildsOnline.SyncObjects
 
         private string _objectName;
         private int _userID;
+        private int _objectId;
         protected virtual void Start()
         {
             ConnectionController.ModHelperInstance.Console.WriteLine("Added OnExtensionResponse event to sfs");
@@ -27,10 +28,11 @@ namespace OuterWildsOnline.SyncObjects
             sfs.RemoveEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
         }
 
-        public virtual void Init(string objectName, int userID)
+        public virtual void Init(string objectName, int userID, int objectId)
         {
             _objectName = objectName;
             _userID = userID;
+            _objectId = objectId;
         }
 
         //Instead of overriding the delegate OnExtensionResponse we could create a method that only gets called when it is supposed to
@@ -58,7 +60,6 @@ namespace OuterWildsOnline.SyncObjects
         
         private void OnExtensionResponse(BaseEvent evt)
         {
-            ConnectionController.ModHelperInstance.Console.WriteLine("b");
             string cmd = (string)evt.Params["cmd"];
 
             if (cmd != "SyncObject") { return; }
@@ -67,9 +68,9 @@ namespace OuterWildsOnline.SyncObjects
 
             string objectName = responseParams.GetUtfString("objectName");
             int userID = responseParams.GetInt("userId");
-            ConnectionController.ModHelperInstance.Console.WriteLine("c");
-            if (objectName != _objectName || userID != _userID) { return; }
-            OnExtensionResponse(responseParams);
+            int objectId = responseParams.GetInt("entityId");
+            if (objectName == _objectName && userID == _userID && objectId == _objectId)
+                OnExtensionResponse(responseParams);
         }
     }
 }

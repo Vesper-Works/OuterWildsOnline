@@ -1,6 +1,7 @@
 ﻿using Sfs2X;
 using Sfs2X.Entities.Data;
 using Sfs2X.Requests;
+using System;
 using UnityEngine;
 
 namespace OuterWildsOnline.SyncObjects
@@ -11,16 +12,22 @@ namespace OuterWildsOnline.SyncObjects
         private Vector3 lastRotation;
 
         private string objectName;
+        private int objectId;
 
         protected bool interpolate = true;
 
         protected SmartFox sfs { get => ConnectionController.Connection; }
         public string ObjectName { get => objectName; }
+        public int ObjectId { get => objectId; }
 
         public ObjectToSendSync Init(string objectName)
         {
             this.objectName = objectName;
             return this;
+        }
+        protected virtual void Awake() //Generate on awake in case that this script is attached to a prefab of sorts
+        {
+            objectId = Guid.NewGuid().GetHashCode();
         }
         protected void FixedUpdate()
         {
@@ -47,6 +54,7 @@ namespace OuterWildsOnline.SyncObjects
             data.PutBool("interp", interpolate);
             data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
             data.PutUtfString("objectName", objectName);
+            data.PutInt("objectId", objectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
     }

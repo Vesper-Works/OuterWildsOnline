@@ -26,6 +26,7 @@ namespace OuterWildsOnline.SyncObjects
                 var data = new SFSObject();                     
                 data.PutBool("enable", false);
                 data.PutUtfString("objectName", base.ObjectName);
+                data.PutInt("objectId", ObjectId);
                 sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
             }
         }
@@ -37,6 +38,7 @@ namespace OuterWildsOnline.SyncObjects
                 var data = new SFSObject();
                 data.PutBool("enable", true);
                 data.PutUtfString("objectName", base.ObjectName);
+                data.PutInt("objectId", ObjectId);
                 sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
             }
         }

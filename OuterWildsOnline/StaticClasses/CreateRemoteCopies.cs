@@ -177,7 +177,7 @@ namespace OuterWildsOnline
             GameObject.Destroy(lantern.GetComponent<ProbeLantern>());
             lantern.GetComponent<Light>().enabled = true;
 
-            remoteProbe.AddComponent<SyncObjects.ShipToReceiveSync>();
+            remoteProbe.AddComponent<SyncObjects.ProbeToReceiveSync>();
 
             remoteProbe.SetActive(false);
             remoteProbeBody.SetActive(false);

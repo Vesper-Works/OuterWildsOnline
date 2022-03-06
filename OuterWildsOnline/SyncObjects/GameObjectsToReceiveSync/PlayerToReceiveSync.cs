@@ -14,10 +14,10 @@ namespace OuterWildsOnline.SyncObjects
         ThrusterFlameControllerSync[] thrustersControllersSync;
         ThrusterWashControllerSync thrusterWashControllerSync;
 
-        public override void Init(string objectName, int userID)
+        public override void Init(string objectName, int userID, int entityID)
         {
             User objectOwner = sfs.UserManager.GetUserById(userID);
-            base.Init(objectName, userID);
+            base.Init(objectName, userID, entityID);
             ConnectionController.ModHelperInstance.Console.WriteLine($"User {objectOwner}");
             transform.name = userID.ToString();
 
@@ -44,7 +44,8 @@ namespace OuterWildsOnline.SyncObjects
         }
         protected override void OnExtensionResponse(SFSObject responseParams)
         {
-            ConnectionController.ModHelperInstance.Console.WriteLine("a");
+            base.OnExtensionResponse(responseParams);
+
             if (responseParams.ContainsKey("jcf"))
             {
                 playerControllerSync.SetJumpCrouchFraction(responseParams.GetFloat("jcf"));

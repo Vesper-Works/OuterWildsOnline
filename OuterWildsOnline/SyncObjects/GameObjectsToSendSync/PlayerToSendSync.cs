@@ -36,6 +36,7 @@ namespace OuterWildsOnline.SyncObjects
         public void Start() 
         {
             StartCoroutine(SendPlayerData());
+            ConnectionController.SetPlayerRepresentationObject(this);
         }
 
         protected void OnDestroy() 
@@ -86,6 +87,7 @@ namespace OuterWildsOnline.SyncObjects
                     }
                 }
                 data.PutUtfString("objectName", ObjectName);
+                data.PutInt("objectId", ObjectId);
                 sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
                 yield return new WaitForSecondsRealtime(0.1f);
             }
@@ -96,6 +98,7 @@ namespace OuterWildsOnline.SyncObjects
             var data = new SFSObject();
             data.PutNull("jump");
             data.PutUtfString("objectName", ObjectName);
+            data.PutInt("objectId", ObjectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
         private void PlayerGrounded()
@@ -103,6 +106,7 @@ namespace OuterWildsOnline.SyncObjects
             var data = new SFSObject();
             data.PutNull("g");//Grounded
             data.PutUtfString("objectName", ObjectName);
+            data.PutInt("objectId", ObjectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
         private void PlayerUngrounded()
@@ -110,6 +114,7 @@ namespace OuterWildsOnline.SyncObjects
             var data = new SFSObject();
             data.PutNull("ug");//Ungrounded
             data.PutUtfString("objectName", ObjectName);
+            data.PutInt("objectId", ObjectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
         private void PlayerSuitUp()
@@ -132,6 +137,7 @@ namespace OuterWildsOnline.SyncObjects
             var data = new SFSObject();
             data.PutBool("suit", true);
             data.PutUtfString("objectName", ObjectName);
+            data.PutInt("objectId", ObjectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
         private void PlayerRemoveSuit()
@@ -139,6 +145,7 @@ namespace OuterWildsOnline.SyncObjects
             var data = new SFSObject();
             data.PutBool("suit", false);
             data.PutUtfString("objectName", ObjectName);
+            data.PutInt("objectId", ObjectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
         private void PlayerInitPlayerForceAlignment()
@@ -146,6 +153,7 @@ namespace OuterWildsOnline.SyncObjects
             var data = new SFSObject();
             data.PutBool("pfa", true);
             data.PutUtfString("objectName", ObjectName);
+            data.PutInt("objectId", ObjectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
         private void PlayerBreakPlayerForceAlignment()
@@ -153,6 +161,7 @@ namespace OuterWildsOnline.SyncObjects
             var data = new SFSObject();
             data.PutBool("pfa", false);
             data.PutUtfString("objectName", ObjectName);
+            data.PutInt("objectId", ObjectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
         private void PlayerStartedTranslationalThrust()
@@ -160,6 +169,7 @@ namespace OuterWildsOnline.SyncObjects
             var data = new SFSObject();
             data.PutBool("tt", true);
             data.PutUtfString("objectName", ObjectName);
+            data.PutInt("objectId", ObjectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
         private void PlayerStoppedTranslationalThrust()
@@ -167,6 +177,7 @@ namespace OuterWildsOnline.SyncObjects
             var data = new SFSObject();
             data.PutBool("tt", false);
             data.PutUtfString("objectName", ObjectName);
+            data.PutInt("objectId", ObjectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
 
