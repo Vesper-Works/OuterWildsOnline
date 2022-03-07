@@ -1,11 +1,7 @@
 ﻿using Sfs2X;
 using Sfs2X.Core;
 using Sfs2X.Entities.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using UnityEngine;
 
 namespace OuterWildsOnline.SyncObjects
@@ -17,6 +13,10 @@ namespace OuterWildsOnline.SyncObjects
         private string _objectName;
         private int _userID;
         private int _objectId;
+
+        public string ObjectName { get => _objectName; }
+        public int UserId { get => _userID; }
+        public int ObjectId { get => _objectId; }
         protected virtual void Start()
         {
             ConnectionController.ModHelperInstance.Console.WriteLine("Added OnExtensionResponse event to sfs");

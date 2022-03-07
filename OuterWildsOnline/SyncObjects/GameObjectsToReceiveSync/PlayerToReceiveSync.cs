@@ -29,7 +29,7 @@ namespace OuterWildsOnline.SyncObjects
             canvasMarker.SetColor(Color.white);
             canvasMarker.SetVisibility(true);
 
-            gameObject.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(userID.ToString());
+            gameObject.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(objectOwner.Name);
         }
         protected override void Start()
         {

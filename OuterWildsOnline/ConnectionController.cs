@@ -33,7 +33,6 @@ namespace OuterWildsOnline
         private IModButton connectButton;
 
         private string serverIP;
-        private string roomToJoin = GetRoomNameFromScene(OWScene.SolarSystem);
         private static string GetRoomNameFromScene(OWScene scene) 
         {
             switch (scene) 
@@ -85,6 +84,7 @@ namespace OuterWildsOnline
         {
             var data = new SFSObject();
             data.PutInt("died", (int)deathType); //JoinedGame
+            data.PutInt("died", (int)deathType); //JoinedGame
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
         }
 
@@ -97,21 +97,39 @@ namespace OuterWildsOnline
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
             if (!sfs.IsConnected) { return; }
-            //JoinRoom(roomToJoin);
-            //Entrar aqui na nova sala se tiver que mudar
-            string currentRoomScene = GetRoomNameFromScene(newScene);
 
-            if (newScene == OWScene.SolarSystem && !playerInGame)
+            string currentSceneRoom = GetRoomNameFromScene(newScene);
+            if (EnterOrCheckIfInValidSceneRoom(currentSceneRoom) && !playerInGame)
             {
-                RemoteObjects.Clear();
-                LoadServerThings();
-                playerInGame = true;
+                //I think the remote objects aren't set to not destroy on load, so we don't need to make sure they are destroyed
+                RemoteObjects.Clear(false);
+                if (!playerInGame) 
+                {
+                    LoadServerThings();
+                    playerInGame = true;
+                }
+                else
+                {
+                    ReloadServerThings();
+                }
             }
-            else if (newScene == OWScene.SolarSystem && playerInGame)
+        }
+
+        private bool EnterOrCheckIfInValidSceneRoom(string currentSceneRoom)
+        {
+            if (string.IsNullOrEmpty(currentSceneRoom))
+                return false;
+
+            if (sfs.LastJoinedRoom != null)
             {
-                RemoteObjects.Clear();
-                ReloadServerThings();
+                if (sfs.LastJoinedRoom.Name == currentSceneRoom)
+                    return true; //No need to rejoin the same room
+                else
+                    LeaveCurrentRoom(); //Leave if the rooms are different
             }
+
+            JoinRoom(currentSceneRoom);
+            return true;
         }
 
         private void FixedUpdate()
@@ -169,79 +187,59 @@ namespace OuterWildsOnline
             }
         }
 
-        private void SpawnRemotePlayer(SFSUser user, Vector3 position, Quaternion rotation)
-        {
-            //if (!RemoteObjects.CloneStorage.ContainsKey("Player"))
-            //{
-            //    CreatePlayerRemoteCopy();
-            //    CreateShipRemoteCopy();
-            //}
-            if (RemoteObjects.Players.ContainsKey(user.Id))
-            {
-                ModHelper.Console.WriteLine("Player " + user + " is already spawned!"); return;
-            }
+        //private void SpawnRemotePlayer(SFSUser user, Vector3 position, Quaternion rotation)
+        //{
+        //    //if (!RemoteObjects.CloneStorage.ContainsKey("Player"))
+        //    //{
+        //    //    CreatePlayerRemoteCopy();
+        //    //    CreateShipRemoteCopy();
+        //    //}
+        //    if (RemoteObjects.Players.ContainsKey(user.Id))
+        //    {
+        //        ModHelper.Console.WriteLine("Player " + user + " is already spawned!"); return;
+        //    }
 
-            ModHelper.Console.WriteLine("Spawned: " + user);
+        //    ModHelper.Console.WriteLine("Spawned: " + user);
 
-            GameObject remotePlayer = Instantiate(RemoteObjects.CloneStorage["Player"], position, rotation);
-            remotePlayer.name = user.Name;
+        //    GameObject remotePlayer = Instantiate(RemoteObjects.CloneStorage["Player"], position, rotation);
+        //    remotePlayer.name = user.Name;
 
-            var obj = GameObject.FindWithTag("MapCamera");
-            var markerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
-            var canvasMarker = markerManager.InstantiateNewMarker(true);
-            markerManager.RegisterMarker(canvasMarker, remotePlayer.GetComponent<OWRigidbody>());
-            canvasMarker.SetLabel(user.Name.ToUpper());
-            canvasMarker.SetColor(Color.white);
-            canvasMarker.SetVisibility(true);
+        //    var obj = GameObject.FindWithTag("MapCamera");
+        //    var markerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
+        //    var canvasMarker = markerManager.InstantiateNewMarker(true);
+        //    markerManager.RegisterMarker(canvasMarker, remotePlayer.GetComponent<OWRigidbody>());
+        //    canvasMarker.SetLabel(user.Name.ToUpper());
+        //    canvasMarker.SetColor(Color.white);
+        //    canvasMarker.SetVisibility(true);
 
-            remotePlayer.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(user.Name);
+        //    remotePlayer.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(user.Name);
 
-            remotePlayer.SetActive(true);
+        //    remotePlayer.SetActive(true);
 
-            RemoteObjects.Players.Add(user.Id, remotePlayer);
-        }
+        //    RemoteObjects.Players.Add(user.Id, remotePlayer);
+        //}
         private void RemoveRemoteUser(int userID)
         {
             ModHelper.Console.WriteLine("Removed: " + userID);
-
-            foreach (var remoteObject in RemoteObjects.ObjectTypes.Values)
-            {
-                Destroy(remoteObject[userID]);
-                remoteObject.Remove(userID);
-            }
+            RemoteObjects.RemoveObjects(userID, true);
         }
 
         private void SpawnRemoteObject(int userID, int objectId, string objectType)
         {
             ModHelper.Console.WriteLine($"({sfs.MySelf.Id}) Spawning {objectType} from user {userID}");
             GameObject remoteObject = Instantiate(RemoteObjects.CloneStorage[objectType]);
-            var comp = remoteObject.GetComponent<SyncObjects.ObjectToRecieveSync>();
+            var comp = remoteObject.GetComponent<ObjectToRecieveSync>();
             comp.Init(objectType, userID, objectId);
             remoteObject.SetActive(true);
-            ModHelper.Console.WriteLine($"New Object is named {comp.name}");
-            if (!RemoteObjects.ObjectTypes.ContainsKey(objectType))
+            if (RemoteObjects.AddNewObject(comp))
+                ModHelper.Console.WriteLine($"New Object is named {comp.ObjectName} ({comp.ObjectId})");
+            else
             {
-                RemoteObjects.AddNewObjectType(objectType);
+                ModHelper.Console.WriteLine($"There is no user with this id ({comp.UserId}) or a object with the same name ({comp.ObjectName}) and id ({comp.ObjectId})");
+                //TODO destruir aqui essa 'duplicata'
             }
-            RemoteObjects.ObjectTypes[objectType][userID] = remoteObject;
         }
 
-        public static void SetActiveRecursively(Transform transform, bool active)
-        {
-            transform.gameObject.SetActive(active);
-            foreach (Transform child in transform)
-            {
-                child.gameObject.SetActive(active);
-                foreach (var component in child.GetComponents<MonoBehaviour>())
-                {
-                    component.enabled = active;
-                }
-                if (child.childCount > 0)
-                {
-                    SetActiveRecursively(child, active);
-                }
-            }
-        }
 
         //----------------------------------------------------------
         // SmartFoxServer event listeners
@@ -259,32 +257,19 @@ namespace OuterWildsOnline
             // Handle all new Users
             foreach (User user in addedUsers)
             {
-                if (RemoteObjects.Players.ContainsKey(user.Id)) //If the user is already in the game (went far away and came back), enable their remote objects
+                //If the user is already in the game (went far away and came back), enable their remote objects
+                foreach (var syncedObject in RemoteObjects.GetUserObjectList(user.Id))
                 {
-                    foreach (var syncedObject in RemoteObjects.ObjectTypes.Values)
-                    {
-                        syncedObject[user.Id].SetActive(true);
-                    }
+                    syncedObject.gameObject.SetActive(true);
                 }
-                //else
-                //{
-                //    SpawnRemotePlayer(
-                //        (SFSUser)user,
-                //        new Vector3((float)user.GetVariable("x").GetDoubleValue(), (float)user.GetVariable("y").GetDoubleValue(), (float)user.GetVariable("z").GetDoubleValue()),
-                //        Quaternion.Euler((float)user.GetVariable("rotx").GetDoubleValue(), (float)user.GetVariable("roty").GetDoubleValue(), (float)user.GetVariable("rotz").GetDoubleValue())
-                //    );
-                //}
             }
 
             // Handle removed users
             foreach (User user in removedUsers)
             {
-                if (RemoteObjects.Players.ContainsKey(user.Id))
+                foreach (var syncedObject in RemoteObjects.GetUserObjectList(user.Id))
                 {
-                    foreach (var syncedObject in RemoteObjects.ObjectTypes.Values)
-                    {
-                        syncedObject[user.Id].SetActive(false);
-                    }
+                    syncedObject.gameObject.SetActive(false);
                 }
             }
         }
@@ -302,10 +287,6 @@ namespace OuterWildsOnline
             sfs.AddEventListener(SFSEvent.ROOM_VARIABLES_UPDATE, OnRoomVarsUpdate);
 
             SFSSectorManager.RefreshSectors();
-
-            RemoteObjects.AddNewObjectType("Player");
-            RemoteObjects.AddNewObjectType("Ship");
-            RemoteObjects.AddNewObjectType("Probe");
 
             StartCoroutine(GetClosestSectorToPlayer());
             StartCoroutine(SendJoinedGameMessage());
@@ -333,10 +314,6 @@ namespace OuterWildsOnline
             sfs.AddEventListener(SFSEvent.ROOM_VARIABLES_UPDATE, OnRoomVarsUpdate);
 
             SFSSectorManager.RefreshSectors();
-
-            RemoteObjects.AddNewObjectType("Player");
-            RemoteObjects.AddNewObjectType("Ship");
-            RemoteObjects.AddNewObjectType("Probe");
 
             gameObject.AddComponent<ChatHandler>();
 
@@ -368,16 +345,7 @@ namespace OuterWildsOnline
         private IEnumerator ReloadAllRemoteUsers(float delay)
         {
             yield return new WaitForSeconds(delay);
-            List<int> userIDs = new List<int>();
-            foreach (var userID in RemoteObjects.Players.Keys)
-            {
-                userIDs.Add(userID);
-            }
-            foreach (var userID in userIDs)
-            {
-                RemoveRemoteUser(userID);
-                //SpawnRemotePlayer((SFSUser)sfs.UserManager.GetUserById(userID), Vector3.zero, Quaternion.identity);
-            }
+            RemoteObjects.RemoveAllObjects(true);
         }
         private IEnumerator SendJoinedGameMessage()
         {
@@ -426,6 +394,9 @@ namespace OuterWildsOnline
         }
         private IEnumerator InstantiateNewSyncObjects(float delay)
         {
+            //TODO pensar em maneira de armazenar esses dados de ids e objectNames
+            //Poderia fazer a maneira "facil" e colocar tudo na string, mas seria deselegante
+            //Qualquer coisa faço isso mesmo
             yield return new WaitForSeconds(delay);
             foreach (var variable in sfs.LastJoinedRoom.GetVariables())
             {
@@ -540,7 +511,6 @@ namespace OuterWildsOnline
         private void OnLogin(BaseEvent evt)
         {
             // We either create the Game Room or join it if it exists already
-            JoinRoom(roomToJoin);
             SetButtonConnected();
         }
 
@@ -566,6 +536,11 @@ namespace OuterWildsOnline
                 sfs.Send(new CreateRoomRequest(settings, true));
             }
         }
+        private void LeaveCurrentRoom()
+        {
+            ModHelper.Console.WriteLine($"Leaving room {sfs.LastJoinedRoom.Name}");
+            sfs.Send(new LeaveRoomRequest(sfs.LastJoinedRoom));
+        }
 
         private void OnLoginError(BaseEvent evt)
         {
@@ -578,74 +553,60 @@ namespace OuterWildsOnline
         {
             string cmd = (string)evt.Params["cmd"];
 
-            if (evt.Params == null) { return; }
-            if (evt.Params.Count == 0) { return; }
-            if (!evt.Params.ContainsKey("params")) { return; }
-
+            if (cmd != "GeneralEvent") { return; }
 
             SFSObject responseParams = (SFSObject)evt.Params["params"];
 
             if (responseParams == null) { return; }
+            int userID = responseParams.GetInt("userId");
 
-            //RemotePlayerlessResponses(responseParams, cmd);
-
-            if (RemoteObjects.Players == null || !RemoteObjects.Players.ContainsKey(responseParams.GetInt("userId")))
-            {
-                //ModHelper.Console.WriteLine("Remote player not found!", MessageType.Warning);
-                return;
-            }
-            RemotePlayerResponses(RemoteObjects.Players[responseParams.GetInt("userId")], responseParams, cmd);
+            //if (UsersData.GetUserName(userID,out string userName))
+                GeneralEventResponses(userID, responseParams, cmd);
         }
-        private void RemotePlayerResponses(GameObject remotePlayer, SFSObject responseParams, string cmd)
+        private void GeneralEventResponses(int userId, SFSObject responseParams, string cmd)
         {
-            switch (cmd)
+            if (responseParams.ContainsKey("jg"))
             {
-                case "GeneralEvent":
-                    #region GeneralEvent
-                    if (responseParams.ContainsKey("jg"))
-                    {
-                        if (PlayerState.AtFlightConsole())
-                        {
-                            var data = new NotificationData(NotificationTarget.Ship, "Hearthian joined: " + remotePlayer.name, 4f, true);
-                            NotificationManager.SharedInstance.PostNotification(data, false);
-                        }
-                        else
-                        {
-                            var data = new NotificationData(NotificationTarget.Player, "Hearthian joined: " + remotePlayer.name, 4f, true);
-                            NotificationManager.SharedInstance.PostNotification(data, false);
-                        }
-                    }
-                    if (responseParams.ContainsKey("lg"))
-                    {
-                        if (PlayerState.AtFlightConsole())
-                        {
-                            var data = new NotificationData(NotificationTarget.Ship, "Hearthian left: " + remotePlayer.name, 4f, true);
-                            NotificationManager.SharedInstance.PostNotification(data, false);
-                        }
-                        else
-                        {
-                            var data = new NotificationData(NotificationTarget.Player, "Hearthian left: " + remotePlayer.name, 4f, true);
-                            NotificationManager.SharedInstance.PostNotification(data, false);
-                        }
-                        RemoveRemoteUser(responseParams.GetInt("userId"));
-                    }
-                    if (responseParams.ContainsKey("died"))
-                    {
-                        if (PlayerState.AtFlightConsole())
-                        {
-                            var data = new NotificationData(NotificationTarget.Ship, remotePlayer.name + " has died:\n" + Enum.GetName(typeof(DeathType), responseParams.GetInt("died")), 4f, true);
-                            NotificationManager.SharedInstance.PostNotification(data, false);
-                        }
-                        else
-                        {
-                            var data = new NotificationData(NotificationTarget.Ship, remotePlayer.name + " has died:\n" + Enum.GetName(typeof(DeathType), responseParams.GetInt("died")), 4f, true);
-                            NotificationManager.SharedInstance.PostNotification(data, false);
-                        }
-                    }
-                    #endregion
-                    break;
+                string text = "Hearthian joined: " + sfs.UserManager.GetUserById(userId).Name;
+                float displayTime = 4f;
+                NotificationData data;
+
+                if (PlayerState.AtFlightConsole())
+                    data = new NotificationData(NotificationTarget.Ship, text, displayTime, true);
+                else
+                    data = new NotificationData(NotificationTarget.Player, text, displayTime, true);
+
+                NotificationManager.SharedInstance.PostNotification(data, false);
+            }
+            else if (responseParams.ContainsKey("lg"))
+            {
+                string text = "Hearthian left: " + sfs.UserManager.GetUserById(userId).Name;
+                float displayTime = 4f;
+                NotificationData data;
+
+                if (PlayerState.AtFlightConsole())
+                    data = new NotificationData(NotificationTarget.Ship, text, displayTime, true);
+                else
+                    data = new NotificationData(NotificationTarget.Player, text, displayTime, true);
+
+                NotificationManager.SharedInstance.PostNotification(data, false);
+                RemoveRemoteUser(responseParams.GetInt("userId"));
+            }
+            else if(responseParams.ContainsKey("died"))
+            {
+                string text = sfs.UserManager.GetUserById(userId) + " has died:\n" + Enum.GetName(typeof(DeathType), responseParams.GetInt("died"));
+                float displayTime = 4f;
+                NotificationData data;
+
+                if (PlayerState.AtFlightConsole())
+                    data = new NotificationData(NotificationTarget.Ship, text, displayTime, true);
+                else
+                    data = new NotificationData(NotificationTarget.Player, text, displayTime, true);
+
+                NotificationManager.SharedInstance.PostNotification(data, false);
             }
         }
+        //TODO implementar isso como um dado statico para objetos syncados no geral (esses valores estarão no user variables)
         //private void RemotePlayerlessResponses(SFSObject responseParams, string cmd)
         //{
         //    switch (cmd)
@@ -692,11 +653,17 @@ namespace OuterWildsOnline
                     int userID = int.Parse(variable.Name.Split(',')[1]);
                     if (sfs.MySelf.Id == userID) { continue; }
 
+                    //Lista de SFSObjects contendo informaçoes como:
+                    //objectName
+                    //objectId
+                    //static object status (variaveis que não mudam muito, e que são necessarias na criação do objeto (ex: se o player esta ou não com a roupa, ou com um item equipado e etc))
+                    
+                    string[] objectNames = variable.GetSFSObjectValue().GetUtfStringArray("objectNames");
                     string[] objectNames = variable.GetSFSObjectValue().GetUtfStringArray("objectNames");
 
                     for (int i = 0; i < objectNames.Length; i++)
                     {
-                        if (!RemoteObjects.CloneStorage.ContainsKey(objectNames[i]))
+                        if (!RemoteObjectsAndData.CloneStorage.ContainsKey(objectNames[i]))
                         {
                             ModHelper.Console.WriteLine("Clone not spawned yet for: " + objectNames[i]);
                             continue;
