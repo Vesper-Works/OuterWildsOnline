@@ -8,6 +8,7 @@ namespace OuterWildsOnline.SyncObjects
 {
     public class ObjectToSendSync : MonoBehaviour
     {
+        
         private Vector3 lastPosition;
         private Vector3 lastRotation;
 
@@ -20,18 +21,24 @@ namespace OuterWildsOnline.SyncObjects
         public string ObjectName { get => objectName; }
         public int ObjectId { get => objectId; }
 
-        public ObjectToSendSync Init(string objectName)
+        public ObjectToSyncStaticData ObjectStaticData { get; protected set; }
+
+        protected void SetObjectName(string objectName)
         {
             this.objectName = objectName;
-            return this;
         }
         protected virtual void Awake() //Generate on awake in case that this script is attached to a prefab of sorts
         {
             objectId = Guid.NewGuid().GetHashCode();
+            ObjectStaticData = new ObjectToSyncStaticData(objectName, objectId);
+        }
+        protected virtual void Start() 
+        {
+            ConnectionController.Instance.AddObjectToSync(this);
         }
         protected void FixedUpdate()
         {
-            if (objectName == null || SFSSectorManager.ClosestSectorToPlayer == null ||Vector3.Distance(Locator.GetPlayerTransform().position, transform.position) > 1000f) { return; }
+            if (objectName == null || SFSSectorManager.ClosestSectorToPlayer == null || Vector3.Distance(Locator.GetPlayerTransform().position, transform.position) > 1000f) { return; }
             var data = new SFSObject();
 
             var pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(transform.position);
@@ -56,6 +63,11 @@ namespace OuterWildsOnline.SyncObjects
             data.PutUtfString("objectName", objectName);
             data.PutInt("objectId", objectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
+        }
+        protected virtual void OnDestroy()
+        {
+            if(RemoteObjects.GetObject(sfs.MySelf.Id,ObjectName,ObjectId,out _))
+                ConnectionController.Instance.RemoveObjectToSync(this);
         }
     }
 }

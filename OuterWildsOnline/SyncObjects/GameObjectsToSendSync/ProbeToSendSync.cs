@@ -1,22 +1,18 @@
 ﻿using Sfs2X.Entities.Data;
 using Sfs2X.Requests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OuterWildsOnline.SyncObjects
 {
     public class ProbeToSendSync : ObjectToSendSync
     {
-        public ProbeToSendSync Init()
+        protected override void Awake()
         {
-            base.Init("Probe");
             interpolate = false;
             GlobalMessenger<SurveyorProbe>.AddListener("LaunchProbe", new Callback<SurveyorProbe>(this.OnLaunchProbe));
             GlobalMessenger<SurveyorProbe>.AddListener("RetrieveProbe", new Callback<SurveyorProbe>(this.OnAnyProbeRetrieved));
-            return this;
+
+            SetObjectName("Probe");
+            base.Awake();
         }
 
         private void OnAnyProbeRetrieved(SurveyorProbe probe)

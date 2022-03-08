@@ -8,15 +8,20 @@ namespace OuterWildsOnline.SyncObjects
     public class ShipToSendSync : ObjectToSendSync
     {
         private ShipThrusterModel shipThrusterModel;
-        public ShipToSendSync Init()
+        protected override void Awake()
         {
             shipThrusterModel = gameObject.GetComponent<ShipThrusterModel>();
             shipThrusterModel.OnStartTranslationalThrust += ShipStartedTranslationalThrust;
             shipThrusterModel.OnStopTranslationalThrust += ShipStoppedTranslationalThrust;
+
+            SetObjectName("Ship");
+            base.Awake();
+        }
+        protected override void Start() 
+        {
+            base.Start();
             StartCoroutine(SyncShipVisuals());
             StartCoroutine(SyncShipTransformOccasionally());
-            Init("Ship");
-            return this;
         }
         private void ShipStartedTranslationalThrust()
         {

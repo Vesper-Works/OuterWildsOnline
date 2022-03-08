@@ -512,6 +512,8 @@
     <Compile Include="SyncObjects\GameObjectsToReceiveSync\PlayerToReceiveSync.cs" />
     <Compile Include="SyncObjects\GameObjectsToReceiveSync\ProbeToReceiveSync.cs" />
     <Compile Include="SyncObjects\GameObjectsToReceiveSync\ShipToReceiveSync.cs" />
+    <Compile Include="SyncObjects\ObjectToSyncStaticData.cs" />
+    <Compile Include="SyncObjects\GameObjectsToSyncStaticData\PlayerToSyncStaticData.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default-config.json" />

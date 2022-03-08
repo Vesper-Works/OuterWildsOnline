@@ -17,6 +17,13 @@ namespace OuterWildsOnline.SyncObjects
         public string ObjectName { get => _objectName; }
         public int UserId { get => _userID; }
         public int ObjectId { get => _objectId; }
+
+        protected ObjectToSyncStaticData ObjectStaticData;
+
+        public virtual void UpdateObjectStaticData(ObjectToSyncStaticData objectStaticData) 
+        {
+            ObjectStaticData = objectStaticData;
+        }
         protected virtual void Start()
         {
             ConnectionController.ModHelperInstance.Console.WriteLine("Added OnExtensionResponse event to sfs");

@@ -5,7 +5,6 @@ namespace OuterWildsOnline.SyncObjects
 {
     public class ProbeToReceiveSync : ObjectToRecieveSync
     {
-        //TODO trocar onde se usava apenas ObjectToRecieveSync para usar essas classes mais especializadas
         protected override void OnExtensionResponse(SFSObject responseParams)
         {
             base.OnExtensionResponse(responseParams);

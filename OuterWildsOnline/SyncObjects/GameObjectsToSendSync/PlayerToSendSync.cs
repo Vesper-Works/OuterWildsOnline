@@ -16,7 +16,7 @@ namespace OuterWildsOnline.SyncObjects
 
         private PlayerCharacterController playerCharacterController;
         private JetpackThrusterModel jetpackThrusterModel;
-        public PlayerToSendSync Init()
+        protected override void Awake()
         {
             playerCharacterController = FindObjectOfType<PlayerCharacterController>();
             jetpackThrusterModel = FindObjectOfType<JetpackThrusterModel>();
@@ -30,16 +30,22 @@ namespace OuterWildsOnline.SyncObjects
 
             sfs.AddEventListener(SFSEvent.PING_PONG, PingPongHandler);
             SortOutListeners();
-            Init("Player");
-            return this;
+
+            SetObjectName("Player");
+            base.Awake();
+            ObjectStaticData = new PlayerToSyncStaticData(ObjectName, ObjectId);
+
+            //TODO fazer com que esse tipo de informação seja guardada dessa maneira estatica
+            ((PlayerToSyncStaticData)ObjectStaticData).isWearingSuit = PlayerState.IsWearingSuit();
         }
-        public void Start() 
+        protected override void Start() 
         {
+            base.Start();
             StartCoroutine(SendPlayerData());
             ConnectionController.SetPlayerRepresentationObject(this);
         }
 
-        protected void OnDestroy() 
+        protected override void OnDestroy() 
         {
             playerCharacterController.OnJump -= PlayerJump;
             playerCharacterController.OnBecomeGrounded -= PlayerGrounded;
@@ -50,6 +56,8 @@ namespace OuterWildsOnline.SyncObjects
 
             sfs.RemoveEventListener(SFSEvent.PING_PONG, PingPongHandler);
             RemoveFromListeners();
+
+            base.OnDestroy();
         }
 
         private IEnumerator SendPlayerData() //Sends less-important client data to other players, such as the thrusters and crouching
