@@ -39,11 +39,11 @@ namespace OuterWildsOnline
 
         private IModButton connectButton;
 
-        private string serverIP;
+        private string serverAddress;
         private static ConnectionController Instance { get; set; }
         public override void Configure(IModConfig config)
         {
-            serverIP = config.GetSettingsValue<string>("serverIP");
+            serverAddress = config.GetSettingsValue<string>("serverAddress");
         }
 
         private void Start()
@@ -375,7 +375,6 @@ namespace OuterWildsOnline
             }
 
         }
-
         private void SpawnRemoteObject(int userID, string objectType)
         {
             GameObject remoteObject = Instantiate(RemoteObjects.CloneStorage[objectType]);
@@ -398,7 +397,6 @@ namespace OuterWildsOnline
                 }
             }
         }
-
         public static void SetActiveRecursively(Transform transform, bool active)
         {
             transform.gameObject.SetActive(active);
@@ -415,7 +413,6 @@ namespace OuterWildsOnline
                 }
             }
         }
-
         private void ReplaceThrusterFlameControllerRecursively(Transform transform)
         {
             ThrusterFlameController thrusterFlameController;
@@ -586,7 +583,7 @@ namespace OuterWildsOnline
             StartCoroutine(GetClosestSectorToPlayer());
             StartCoroutine(SendPlayerData());
             StartCoroutine(SendJoinedGameMessage());
-            //StartCoroutine(ReloadAllRemoteUsers(2f));
+            StartCoroutine(ReloadAllRemoteUsers(2f));
             StartCoroutine(CreateObjectClones(0.7f));
             StartCoroutine(SetObjectsToSync(0.5f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
@@ -872,7 +869,7 @@ namespace OuterWildsOnline
             // Set connection parameters
             ConfigData cfg = new ConfigData();
 #if !DEBUG
-            cfg.Host = serverIP;
+            cfg.Host = serverAddress;
 #else
             cfg.Host = "127.0.0.1";
 #endif
@@ -1168,6 +1165,13 @@ namespace OuterWildsOnline
             if (resume == null) { resume = FindObjectOfType<TitleScreenManager>().GetValue<SubmitActionLoadScene>("_newGameAction"); }
             resume.Invoke("ConfirmSubmit");
 
+        }
+
+        private void OnApplicationQuit()
+        {
+            Connection.RemoveAllEventListeners();
+            Connection.Disconnect();
+            Instance.StopAllCoroutines();
         }
 
     }
