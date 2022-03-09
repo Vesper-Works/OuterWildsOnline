@@ -34,7 +34,7 @@ namespace OuterWildsOnline
 
         private IModButton connectButton;
 
-        private string serverIP;
+        private string serverAddress;
         private static string GetRoomNameFromScene(OWScene scene) 
         {
             switch (scene) 
@@ -50,7 +50,7 @@ namespace OuterWildsOnline
         public static ConnectionController Instance { get; private set; }
         public override void Configure(IModConfig config)
         {
-            serverIP = config.GetSettingsValue<string>("serverIP");
+            serverAddress = config.GetSettingsValue<string>("serverAddress");
         }
 
         private void Start()
@@ -94,6 +94,7 @@ namespace OuterWildsOnline
         {
             connectButton = ModHelper.Menus.MainMenu.NewExpeditionButton.Duplicate("");
             connectButton.OnClick += StartUpConnection;
+
             if(sfs == null) 
             {
                 SetButtonConnect();
@@ -103,7 +104,6 @@ namespace OuterWildsOnline
                 SetButtonConnected();
             else
                 SetButtonConnect();
-
         }
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
@@ -148,7 +148,6 @@ namespace OuterWildsOnline
             JoinRoom(currentSceneRoom);
             return true;
         }
-
         private void FixedUpdate()
         {
             if (sfs != null)
@@ -157,6 +156,7 @@ namespace OuterWildsOnline
                 UpdatePlayerCoords();
             }
         }
+        
         public static void SetPlayerRepresentationObject(ObjectToSendSync playerRepresentationObject) 
         {
             Instance.playerRepresentationObject = playerRepresentationObject;
@@ -203,7 +203,7 @@ namespace OuterWildsOnline
                 yield return new WaitForSecondsRealtime(0.4f);
             }
         }
-
+        
         private void RemoveRemoteUser(int userID)
         {
             ModHelper.Console.WriteLine("Removed: " + userID);
@@ -220,6 +220,7 @@ namespace OuterWildsOnline
                 ModHelper.Console.WriteLine($"We don't have a prefab for the object with name {objName}");
                 return;
             }
+            
             GameObject remoteObject = Instantiate(RemoteObjects.CloneStorage[objName]);
             var comp = remoteObject.GetComponent<ObjectToRecieveSync>();
             comp.Init(objName, userID, objId);
@@ -228,7 +229,7 @@ namespace OuterWildsOnline
             {
                 ModHelper.Console.WriteLine($"New Object is named {comp.ObjectName} ({comp.ObjectId}) from {userID}");
                 comp.UpdateObjectData(data);
-            }
+            }            
             else //If we can't add a newly spawned one this means that this is, somehow, a duplicate, so destroy the latest duplicate
             {
                 ModHelper.Console.WriteLine($"There is no user with this id ({comp.UserId}) or a object with the same name ({comp.ObjectName}) and id ({comp.ObjectId})");
@@ -316,7 +317,7 @@ namespace OuterWildsOnline
             StopAllCoroutines();
             StartCoroutine(GetClosestSectorToPlayer(2f));
             StartCoroutine(SendJoinedGameMessage());
-            //StartCoroutine(ReloadAllRemoteUsers(2f));
+            StartCoroutine(ReloadAllRemoteUsers(2f));
             StartCoroutine(CreateObjectClones(0.7f));
             StartCoroutine(SetObjectsToSync(0.5f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
@@ -525,7 +526,7 @@ namespace OuterWildsOnline
             // Set connection parameters
             ConfigData cfg = new ConfigData();
 #if !DEBUG
-            cfg.Host = serverIP;
+            cfg.Host = serverAddress;
 #else
             cfg.Host = "127.0.0.1";
 #endif
@@ -692,6 +693,13 @@ namespace OuterWildsOnline
             var resume = FindObjectOfType<TitleScreenManager>().GetValue<SubmitActionLoadScene>("_resumeGameAction");
             if (resume == null) { resume = FindObjectOfType<TitleScreenManager>().GetValue<SubmitActionLoadScene>("_newGameAction"); }
             resume.Invoke("ConfirmSubmit");
+        }
+
+        private void OnApplicationQuit()
+        {
+            Connection.RemoveAllEventListeners();
+            Connection.Disconnect();
+            Instance.StopAllCoroutines();
         }
 
     }

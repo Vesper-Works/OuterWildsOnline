@@ -331,7 +331,7 @@ namespace OuterWildsOnline
                 selected = true;
                 Locator.GetPromptManager().AddScreenPrompt(exitChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(enterChatPrompt);
-                 StopCoroutine(FadeOutChatAfterDisuse());
+                StopCoroutine(FadeOutChatAfterDisuse());
                 ChatFullOpacity();
             }
             if (Keyboard.current.escapeKey.wasPressedThisFrame && selected)
@@ -341,7 +341,7 @@ namespace OuterWildsOnline
                 selected = false;
                 Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(exitChatPrompt);
-                 StopCoroutine(FadeOutChatAfterDisuse());
+                StopCoroutine(FadeOutChatAfterDisuse());
                 StartCoroutine(FadeOutChatAfterDisuse());
             }
         }
@@ -509,14 +509,9 @@ namespace OuterWildsOnline
             ChatMode recievedChatMode = (ChatMode)Enum.Parse(typeof(ChatMode), message[0]);
             helmetChatBoxes[recievedChatMode].text += "\n" + sender.Name + ": " + message[1];
             helmetlessChatBoxes[recievedChatMode].text += "\n" + sender.Name + ": " + message[1];
-
-            if (!selected)
-            {
-                ChatFullOpacity();
-                StopCoroutine(FadeOutChatAfterDisuse());
-                StartCoroutine(FadeOutChatAfterDisuse());
-            }
-
+            ChatFullOpacity();
+            StopCoroutine(FadeOutChatAfterDisuse());
+            StartCoroutine(FadeOutChatAfterDisuse());
         }
     }
 }

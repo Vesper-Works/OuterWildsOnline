@@ -1,6 +1,6 @@
 {
   "enabled": true,
   "settings": {
-    "serverIP": "gameserver.hopto.org"
+    "serverAddress": "gameserver.hopto.org"
   }
 }
