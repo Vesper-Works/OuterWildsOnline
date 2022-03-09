@@ -86,7 +86,7 @@ namespace OuterWildsOnline
         {
             var data = new SFSObject();
             data.PutInt("died", (int)deathType); //JoinedGame
-            data.PutInt("died", (int)deathType); //JoinedGame
+            //data.PutInt("died", (int)deathType); //JoinedGame
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
         }
 
@@ -214,7 +214,7 @@ namespace OuterWildsOnline
         {
             string objName = data.GetUtfString("name");
             int objId = data.GetInt("id");
-            ModHelper.Console.WriteLine($"({sfs.MySelf.Id}) Spawning {objName} from user {userID}");
+            //ModHelper.Console.WriteLine($"({sfs.MySelf.Id}) Spawning {objName} from user {userID}");
             if (!RemoteObjects.CloneStorage.ContainsKey(objName)) 
             {
                 ModHelper.Console.WriteLine($"We don't have a prefab for the object with name {objName}");
@@ -371,7 +371,7 @@ namespace OuterWildsOnline
         #region ObjectAdditionRemovalAndUpdate
         public void AddObjectToSync(ObjectToSendSync @object)
         {
-            ModHelper.Console.WriteLine($"Adding to sync object ({@object.ObjectName} / {@object.ObjectId})");
+            //ModHelper.Console.WriteLine($"Adding to sync object ({@object.ObjectName} / {@object.ObjectId})");
             
             ISFSObject objectsList = RemoteObjects.LocalObjectsListFromMyself;
 
@@ -383,7 +383,8 @@ namespace OuterWildsOnline
         }
         public void AddObjectToSync(params ObjectToSendSync[] objects)
         {
-            ModHelper.Console.WriteLine($"Adding to sync multiple objects ({objects.Length})");
+            //ModHelper.Console.WriteLine($"Adding to sync multiple objects ({objects.Length})");
+
             ISFSObject objectsList = RemoteObjects.LocalObjectsListFromMyself;
 
             foreach (var obj in objects)
@@ -429,7 +430,6 @@ namespace OuterWildsOnline
         }
         private void CheckUserObjVariable(User user)
         {
-            ModHelper.Console.WriteLine($"Checking objs variable from {user.Name}");
             UserVariable variable = user.GetVariable("objs");
             if (variable != null)
             {
@@ -438,12 +438,10 @@ namespace OuterWildsOnline
                 ISFSObject objectsList = variable.GetSFSObjectValue();
                 foreach (var key in objectsList.GetKeys())
                 {
-                    ModHelper.Console.WriteLine($"Seeing object {key}");
                     ISFSObject data = objectsList.GetSFSObject(key);
                     //If there is already an object then just update its static variables
                     if (RemoteObjects.GetObject(user.Id, data.GetUtfString("name"), data.GetInt("id"), out ObjectToRecieveSync obj))
                     {
-                        ModHelper.Console.WriteLine($"Updating objectData");
                         obj.UpdateObjectData(data);
                         existingObjectsFromUser.Remove(obj); //If the object received an update this means that it is still an existing object
                     }
@@ -464,7 +462,6 @@ namespace OuterWildsOnline
         private IEnumerator InstantiateNewSyncObjects(float delay)
         {
             yield return new WaitForSeconds(delay);
-            ModHelper.Console.WriteLine($"Checking objs variable from all users");
             foreach (var user in sfs.LastJoinedRoom.UserList)
             {
                 if (!user.IsItMe)

@@ -26,12 +26,10 @@ namespace OuterWildsOnline.SyncObjects
         }
         protected virtual void Start()
         {
-            ConnectionController.ModHelperInstance.Console.WriteLine("Added OnExtensionResponse event to sfs");
             sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
         }
         protected virtual void OnDestroy()
         {
-            ConnectionController.ModHelperInstance.Console.WriteLine("Removed OnExtensionResponse event from sfs");
             sfs.RemoveEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
         }
 
