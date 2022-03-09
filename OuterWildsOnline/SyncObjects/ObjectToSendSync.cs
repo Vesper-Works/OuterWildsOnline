@@ -27,6 +27,10 @@ namespace OuterWildsOnline.SyncObjects
 
         public SFSObject ObjectData { get; protected set; }
 
+        public virtual void ConfigChanged(OWML.Common.IModConfig config)
+        {
+
+        }
         protected void SetObjectName(string objectName)
         {
             this.objectName = objectName;

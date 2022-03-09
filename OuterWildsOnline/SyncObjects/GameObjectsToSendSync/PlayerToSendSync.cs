@@ -1,4 +1,5 @@
-﻿using Sfs2X.Core;
+﻿using OWML.Common;
+using Sfs2X.Core;
 using Sfs2X.Entities.Data;
 using Sfs2X.Requests;
 using System.Collections;
@@ -35,15 +36,17 @@ namespace OuterWildsOnline.SyncObjects
             base.Awake();
 
             ObjectData.PutBool("suit", PlayerState.IsWearingSuit());
+            ObjectData.PutUtfString("colour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("playerColour"));
+            SetPlayerColour();
         }
-        protected override void Start() 
+        protected override void Start()
         {
             base.Start();
             StartCoroutine(SendPlayerData());
             ConnectionController.SetPlayerRepresentationObject(this);
         }
 
-        protected override void OnDestroy() 
+        protected override void OnDestroy()
         {
             playerCharacterController.OnJump -= PlayerJump;
             playerCharacterController.OnBecomeGrounded -= PlayerGrounded;
@@ -98,7 +101,37 @@ namespace OuterWildsOnline.SyncObjects
                 yield return new WaitForSecondsRealtime(0.1f);
             }
         }
+        public override void ConfigChanged(IModConfig config)
+        {
+            ObjectData.PutUtfString("colour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("playerColour"));
+            SetPlayerColour();
+            ConnectionController.Instance.UpdateObjectToSyncData(this);
+        }
+        private void SetPlayerColour()
+        {
+            try
+            {
+                string[] playerColourStr = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("playerColour").Split(',');
+                Color playerColour = new Color(int.Parse(playerColourStr[0]) / 255f, int.Parse(playerColourStr[1]) / 255f, int.Parse(playerColourStr[2]) / 255f);
+                UpdateColourRecursive(playerColour, transform);
 
+            }
+            catch (System.Exception)
+            {
+                ConnectionController.ModHelperInstance.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
+            }
+        }
+        private void UpdateColourRecursive(Color color, Transform child)
+        {
+            foreach (Transform possibleRenderer in child)
+            {
+                if (possibleRenderer.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
+                {
+                    meshRenderer.material.color = color;
+                }
+                UpdateColourRecursive(color, possibleRenderer);
+            }
+        }
         private void PlayerJump()
         {
             var data = new SFSObject();
