@@ -26,12 +26,12 @@ namespace OuterWildsOnline
             {
                 if (child.TryGetComponent(out ThrusterFlameController thrusterFlameController))
                 {
-                    GameObject.Destroy(thrusterFlameController);
+                    GameObject.DestroyImmediate(thrusterFlameController);
                     child.gameObject.AddComponent<ThrusterFlameControllerSync>();
                 }
                 if (child.TryGetComponent(out ThrusterParticlesBehavior thrusterParticlesBehavior))
                 {
-                    GameObject.Destroy(thrusterParticlesBehavior);
+                    GameObject.DestroyImmediate(thrusterParticlesBehavior);
                 }
                 if (child.childCount > 0)
                 {
@@ -97,7 +97,6 @@ namespace OuterWildsOnline
             GameObject.Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/ThrusterWash/ThrusterWash_Default"), thrusterWash.transform);
             thrusterWash.AddComponent<ThrusterWashControllerSync>();
 
-            //PLEASE SOMEONE FIX I CAN'T DO IT - ERRORS WON'T GO AWAY! (Code works but produces errors).
 
             Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(false);
             GameObject thrusters = GameObject.Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject, remoteVFXObjects.transform);
@@ -127,18 +126,26 @@ namespace OuterWildsOnline
             remoteVFXObjects.transform.parent = remotePlayerShip.transform;
 
             GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Effects_Cabin/ThrusterWash/ThrusterWash_Ship"), remoteVFXObjects.transform);
+            
+            string[] listOfObjectsToFind_Thrusters = new string[]
+            {
+                "Ship_Body/Module_Engine/Effects_Engine/Thrusters",
+                "Ship_Body/Module_Supplies/Effects_Supplies/Thrusters",
+            };
+            void DisableInstantiateAndReenable(Transform t)
+            {
+                t.gameObject.SetActive(false);
+                GameObject.Instantiate(t.gameObject, remoteVFXObjects.transform);
+                t.gameObject.SetActive(true);
+            }
 
-            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").SetActive(false);
-            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").SetActive(false);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters"), remoteVFXObjects.transform);
-            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").SetActive(true);
-            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").SetActive(true);
+            FindAndDoAction(null, DisableInstantiateAndReenable, true, listOfObjectsToFind_Thrusters);
+
             ReplaceThrusterFlameControllerRecursively(remoteVFXObjects.transform);
 
             Utils.SetActiveRecursively(remoteVFXObjects.transform, true);
 
-            string[] listOfObjectsToFind = new string[]
+            string[] listOfObjectsToFind_Model = new string[]
             {
                 "Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior",
                 "Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior",
@@ -176,7 +183,7 @@ namespace OuterWildsOnline
                 GameObject.Instantiate(t.gameObject, remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
             }
 
-            FindAndDoAction(null, InstantiateAndMove, true, listOfObjectsToFind);
+            FindAndDoAction(null, InstantiateAndMove, true, listOfObjectsToFind_Model);
 
             Utils.RemoveCollisionFromObjectRecursively(remotePlayerShip.transform);
             remotePlayerShip.AddComponent<ThrusterWashControllerSync>();
@@ -192,15 +199,37 @@ namespace OuterWildsOnline
         {
             GameObject remoteProbe = new GameObject("Remote Probe");
 
+            //TODO see if this is really needed
             remoteProbe.AddComponent<SimpleRemoteInterpolation>();
 
             GameObject remoteProbeBody = new GameObject("Remote Probe Body");
             remoteProbeBody.transform.parent = remoteProbe.transform;
 
-            GameObject.Instantiate(Locator.GetProbe().transform.Find("CameraPivot"), remoteProbeBody.transform);
-            Transform lantern = GameObject.Instantiate(Locator.GetProbe().transform.Find("Lantern"), remoteProbeBody.transform);
-            GameObject.Destroy(lantern.GetComponent<ProbeLantern>());
+            string[] listOfObjectsToFind = new string[]
+            {
+                "CameraPivot",
+                "Lantern",
+            };
+            void DisableInstantiateAndReenable(Transform t)
+            {
+                t.gameObject.SetActive(false);
+                GameObject.Instantiate(t.gameObject, remoteProbeBody.transform);
+                t.gameObject.SetActive(true);
+            }
+
+            FindAndDoAction(Locator.GetProbe().transform, DisableInstantiateAndReenable, true, listOfObjectsToFind);
+
+            Transform cameraPivot = remoteProbeBody.transform.GetChild(0);
+            Transform lantern = remoteProbeBody.transform.GetChild(1);
+            GameObject.DestroyImmediate(lantern.GetComponent<ProbeLantern>());
             lantern.GetComponent<Light>().enabled = true;
+
+            GameObject.DestroyImmediate(cameraPivot.GetComponentInChildren<ProbeSpotlight>());
+            GameObject.DestroyImmediate(cameraPivot.GetChild(0).GetComponentInChildren<ProbeAnimatorController>()); ///Geometry/Props_HEA_Probe_ANIM
+            GameObject.DestroyImmediate(cameraPivot.GetComponent<ProbeHorizonTracker>());
+
+            cameraPivot.gameObject.SetActive(true);
+            lantern.gameObject.SetActive(true);
 
             remoteProbe.AddComponent<SyncObjects.ProbeToReceiveSync>();
 

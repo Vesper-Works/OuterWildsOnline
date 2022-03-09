@@ -22,7 +22,7 @@ namespace OuterWildsOnline
 
         public static void RefreshSectors()
         {
-            if (UnityEngine.Object.FindObjectsOfType<Sector>().Length == 0) { ConnectionController.ModHelperInstance.Console.WriteLine("NoSectorsFound"); return; }
+            if (UnityEngine.Object.FindObjectsOfType<Sector>().Length == 0) { ConnectionController.ModHelperInstance.Console.WriteLine("No Sectors Found"); return; }
             Sector[] sectorsFound = UnityEngine.Object.FindObjectsOfType<Sector>();
             sectorsFound.OrderBy(sector => sector.GetName());
             sectorsFound.OrderBy(sector => sector.GetName() == Sector.Name.DreamWorld || sector.GetName() == Sector.Name.Vessel || sector.GetName() == Sector.Name.VesselDimension);
@@ -37,10 +37,12 @@ namespace OuterWildsOnline
         {
             float closestDistance = float.MaxValue;
             float currentDistance;
-            RaycastHit hit;
 
             foreach (var sector in SFSSectorManager.Sectors)
             {
+                if(sector.Value == null)
+                    continue;
+
                 if (!Locator.GetPlayerSectorDetector().IsWithinSector(sector.Value.GetName()) || sector.Value.GetName() == Sector.Name.Ship) { continue; }
                 
                 currentDistance = Vector3.Distance(sector.Value.transform.position, Locator.GetPlayerTransform().position);

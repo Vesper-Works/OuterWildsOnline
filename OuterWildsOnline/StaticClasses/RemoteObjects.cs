@@ -10,7 +10,6 @@ namespace OuterWildsOnline
     {
         private static Dictionary<int, ClientRemoteObjects> Objects = new Dictionary<int, ClientRemoteObjects>();
 
-
         public static Dictionary<string, GameObject> CloneStorage = new Dictionary<string, GameObject>();
         public static List<ObjectToRecieveSync> Players { get => GetNameObjectList("Player"); }
 
