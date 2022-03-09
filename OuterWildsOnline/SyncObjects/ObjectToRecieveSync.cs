@@ -1,45 +1,53 @@
 ﻿using Sfs2X;
 using Sfs2X.Core;
 using Sfs2X.Entities.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using UnityEngine;
 
 namespace OuterWildsOnline.SyncObjects
 {
     public class ObjectToRecieveSync : MonoBehaviour
     {
-        private SmartFox sfs { get => ConnectionController.Connection; }
+        protected SmartFox sfs { get => ConnectionController.Connection; }
 
         private string _objectName;
         private int _userID;
+        private int _objectId;
+
+        public string ObjectName { get => _objectName; }
+        public int UserId { get => _userID; }
+        public int ObjectId { get => _objectId; }
+
+        protected ISFSObject ObjectData;
+
+        public virtual void UpdateObjectData(ISFSObject objectData) 
+        {
+            ObjectData = objectData;
+        }
         protected virtual void Start()
         {
             sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
         }
-
-        public void Init(string objectName, int userID)
+        protected virtual void OnDestroy()
         {
-            this._objectName = objectName;
-            this._userID = userID;
+            sfs.RemoveEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
         }
 
-        protected virtual void OnExtensionResponse(BaseEvent evt)
+        public virtual void Init(string objectName, int userID, int objectId)
         {
-            string cmd = (string)evt.Params["cmd"];
+            _objectName = objectName;
+            _userID = userID;
+            _objectId = objectId;
 
-            if(cmd != "SyncObject") { return; }
+            ConnectionController.ModHelperInstance.Console.WriteLine($"On Init {objectName} / {userID} / {objectId}");
+        }
 
-            SFSObject responseParams = (SFSObject)evt.Params["params"];
-
-            string objectName = responseParams.GetUtfString("objectName");
-            int userID = responseParams.GetInt("userId");
-            if(objectName != _objectName || userID != _userID) { return; }
-
-            bool interpolate = responseParams.ContainsKey("interp") ? responseParams.GetBool("interp") : true;
+        //Instead of overriding the delegate OnExtensionResponse we could create a method that only gets called when it is supposed to
+        //And which returns a already treated responseParams to make using it easier
+        //Plus if the object doesn't need to sync the transform it can just ignore the base method
+        protected virtual void OnExtensionResponse(SFSObject responseParams)
+        {
+            bool interpolate = !responseParams.ContainsKey("interp") || responseParams.GetBool("interp");
 
             if (responseParams.ContainsKey("x"))
             {
@@ -55,53 +63,21 @@ namespace OuterWildsOnline.SyncObjects
                 interpolate,
                 responseParams.GetInt("sec"));
             }
+        }
+        
+        private void OnExtensionResponse(BaseEvent evt)
+        {
+            string cmd = (string)evt.Params["cmd"];
 
-            #region Probe
-            if (responseParams.ContainsKey("enable"))
-            {     
-                transform.GetChild(0).gameObject.SetActive(responseParams.GetBool("enable"));
-            }
-            #endregion
+            if (cmd != "SyncObject") { return; }
 
-            #region Ship
-            if (responseParams.ContainsKey("tmla"))
-            {
-                gameObject.GetComponent<ThrusterWashControllerSync>().ThrusterModelLocalYAcceleration = responseParams.GetFloat("tmla");
-            }
-            if (responseParams.ContainsKey("thr,0"))
-            {
+            SFSObject responseParams = (SFSObject)evt.Params["params"];
 
-                ThrusterFlameControllerSync[] thrusters = GetComponentsInChildren<ThrusterFlameControllerSync>(true);
-
-                for (int i = 0; i < thrusters.Length; i++) //10 thrusters                 
-                {
-                    thrusters[i].OnTranslationalThrust(responseParams.GetBool("thr," + i));
-                }                      
-            }
-            if (responseParams.ContainsKey("tt"))
-            {
-                if (responseParams.GetBool("tt"))
-                {
-                    gameObject.GetComponent<ThrusterWashControllerSync>().OnStartTranslationalThrust();
-                }
-                else
-                {
-                    gameObject.GetComponent<ThrusterWashControllerSync>().OnStopTranslationalThrust();
-                    ThrusterFlameControllerSync[] thrusters = GetComponentsInChildren<ThrusterFlameControllerSync>(true);
-
-                    for (int i = 0; i < thrusters.Length; i++) //10 thrusters                 
-                    {
-                        thrusters[i].OnTranslationalThrust(false);
-                    }
-                }
-            }
-            #endregion
-            #region NomaiHands
-            if (responseParams.ContainsKey("nx")) //Special nomai coords
-            {
-              //Use an overloaded SetPostition
-            }
-            #endregion
+            int userID = responseParams.GetInt("userId");
+            string objectName = responseParams.GetUtfString("objectName");
+            int objectId = responseParams.GetInt("objectId");
+            if (objectName == _objectName && userID == _userID && objectId == _objectId)
+                OnExtensionResponse(responseParams);
         }
     }
 }
