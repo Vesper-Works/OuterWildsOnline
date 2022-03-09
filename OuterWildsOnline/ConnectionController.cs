@@ -94,7 +94,16 @@ namespace OuterWildsOnline
         {
             connectButton = ModHelper.Menus.MainMenu.NewExpeditionButton.Duplicate("");
             connectButton.OnClick += StartUpConnection;
-            SetButtonConnect();
+            if(sfs == null) 
+            {
+                SetButtonConnect();
+                return;
+            }
+            if (sfs.IsConnected)
+                SetButtonConnected();
+            else
+                SetButtonConnect();
+
         }
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
@@ -105,6 +114,7 @@ namespace OuterWildsOnline
             {
                 //I think the remote objects aren't set to not destroy on load, so we don't need to make sure they are destroyed
                 RemoteObjects.Clear(false);
+                RemoveAllObjectsFromSync();
                 if (!playerInGame) 
                 {
                     LoadServerThings();
@@ -120,7 +130,12 @@ namespace OuterWildsOnline
         private bool EnterOrCheckIfInValidSceneRoom(string currentSceneRoom)
         {
             if (string.IsNullOrEmpty(currentSceneRoom))
+            {
+                if (sfs.LastJoinedRoom != null) //Leve the room if you enter a non synced scene (Main Menu Scene)
+                    LeaveCurrentRoom();
+
                 return false;
+            }
 
             if (sfs.LastJoinedRoom != null)
             {
@@ -195,22 +210,24 @@ namespace OuterWildsOnline
             RemoteObjects.RemoveObjects(userID, true);
         }
 
-        private void SpawnRemoteObject(int userID, ObjectToSyncStaticData data)
+        private void SpawnRemoteObject(int userID, ISFSObject data)
         {
-            ModHelper.Console.WriteLine($"({sfs.MySelf.Id}) Spawning {data.ObjectName} from user {userID}");
-            if (!RemoteObjects.CloneStorage.ContainsKey(data.ObjectName)) 
+            string objName = data.GetUtfString("name");
+            int objId = data.GetInt("id");
+            ModHelper.Console.WriteLine($"({sfs.MySelf.Id}) Spawning {objName} from user {userID}");
+            if (!RemoteObjects.CloneStorage.ContainsKey(objName)) 
             {
-                ModHelper.Console.WriteLine($"We don't have a prefab for the object with name {data.ObjectName}");
+                ModHelper.Console.WriteLine($"We don't have a prefab for the object with name {objName}");
                 return;
             }
-            GameObject remoteObject = Instantiate(RemoteObjects.CloneStorage[data.ObjectName]);
+            GameObject remoteObject = Instantiate(RemoteObjects.CloneStorage[objName]);
             var comp = remoteObject.GetComponent<ObjectToRecieveSync>();
-            comp.Init(data.ObjectName, userID, data.ObjectId);
+            comp.Init(objName, userID, objId);
             remoteObject.SetActive(true);
             if (RemoteObjects.AddNewObject(comp))
             {
-                ModHelper.Console.WriteLine($"New Object is named {comp.ObjectName} ({comp.ObjectId})");
-                comp.UpdateObjectStaticData(data);
+                ModHelper.Console.WriteLine($"New Object is named {comp.ObjectName} ({comp.ObjectId}) from {userID}");
+                comp.UpdateObjectData(data);
             }
             else //If we can't add a newly spawned one this means that this is, somehow, a duplicate, so destroy the latest duplicate
             {
@@ -355,17 +372,10 @@ namespace OuterWildsOnline
         public void AddObjectToSync(ObjectToSendSync @object)
         {
             ModHelper.Console.WriteLine($"Adding to sync object ({@object.ObjectName} / {@object.ObjectId})");
-            UserVariable variable = sfs.MySelf.GetVariable("objs");
-            //TODO ver o motivo da variavel objs não estar sendo ou enviada ou sincada
-            ISFSObject objectsList;
-            if (variable != null)
-                objectsList = variable.GetSFSObjectValue();
-            else
-                objectsList = new SFSObject();
+            
+            ISFSObject objectsList = RemoteObjects.LocalObjectsListFromMyself;
 
-            ModHelper.Console.WriteLine($"Is null? {objectsList == null}");
-
-            objectsList.PutClass(string.Join("-", @object.ObjectName, @object.ObjectId), @object.ObjectStaticData);
+            objectsList.PutSFSObject(string.Join("-", @object.ObjectName, @object.ObjectId), @object.ObjectData);
 
             SFSUserVariable sFSUserVariable = new SFSUserVariable("objs", objectsList);
             List<UserVariable> userVariables = new List<UserVariable>() { sFSUserVariable };
@@ -373,16 +383,11 @@ namespace OuterWildsOnline
         }
         public void AddObjectToSync(params ObjectToSendSync[] objects)
         {
-            UserVariable variable = sfs.MySelf.GetVariable("objs");
             ModHelper.Console.WriteLine($"Adding to sync multiple objects ({objects.Length})");
-            ISFSObject objectsList;
-            if (variable != null)
-                objectsList = variable.GetSFSObjectValue();
-            else
-                objectsList = new SFSObject();
+            ISFSObject objectsList = RemoteObjects.LocalObjectsListFromMyself;
 
-            foreach(var obj in objects)
-                objectsList.PutClass(string.Join("-", obj.ObjectName, obj.ObjectId), obj.ObjectStaticData);
+            foreach (var obj in objects)
+                objectsList.PutSFSObject(string.Join("-", obj.ObjectName, obj.ObjectId), obj.ObjectData);
 
             SFSUserVariable sFSUserVariable = new SFSUserVariable("objs", objectsList);
             List<UserVariable> userVariables = new List<UserVariable>() { sFSUserVariable };
@@ -390,10 +395,7 @@ namespace OuterWildsOnline
         }
         public void RemoveObjectToSync(ObjectToSendSync @object)
         {
-            UserVariable variable = sfs.MySelf.GetVariable("objs");
-            if (variable == null)
-                return;
-            ISFSObject objectsList = variable.GetSFSObjectValue();
+            ISFSObject objectsList = RemoteObjects.LocalObjectsListFromMyself;
             string objectKey = string.Join("-", @object.ObjectName, @object.ObjectId);
 
             if (objectsList.ContainsKey(objectKey))
@@ -407,26 +409,19 @@ namespace OuterWildsOnline
         }
         public void RemoveAllObjectsFromSync()
         {
-            UserVariable variable = sfs.MySelf.GetVariable("objs");
-            if (variable == null)
-                return;
+            RemoteObjects.LocalObjectsListFromMyself = new SFSObject();
             SFSUserVariable sFSUserVariable = new SFSUserVariable("objs", new SFSObject());
             List<UserVariable> userVariables = new List<UserVariable>() { sFSUserVariable };
             sfs.Send(new SetUserVariablesRequest(userVariables));
         }
         public void UpdateObjectToSyncData(ObjectToSendSync @object)
         {
-            UserVariable variable = sfs.MySelf.GetVariable("objs");
-            if (variable == null)
-                return;
-            
-            ISFSObject objectsList = variable.GetSFSObjectValue();
-
+            ISFSObject objectsList = RemoteObjects.LocalObjectsListFromMyself;
             string objectKey = string.Join("-", @object.ObjectName, @object.ObjectId);
 
             if (objectsList.ContainsKey(objectKey))
             {
-                objectsList.PutClass(string.Join("-", @object.ObjectName, @object.ObjectId), @object.ObjectStaticData);
+                objectsList.PutSFSObject(string.Join("-", @object.ObjectName, @object.ObjectId), @object.ObjectData);
                 SFSUserVariable sFSUserVariable = new SFSUserVariable("objs", objectsList);
                 List<UserVariable> userVariables = new List<UserVariable>() { sFSUserVariable };
                 sfs.Send(new SetUserVariablesRequest(userVariables));
@@ -438,27 +433,28 @@ namespace OuterWildsOnline
             UserVariable variable = user.GetVariable("objs");
             if (variable != null)
             {
-                ModHelper.Console.WriteLine("Obj variable isn't null!");
-                var objectsFromUser = RemoteObjects.GetUserObjectList(user.Id);
+                var existingObjectsFromUser = RemoteObjects.GetUserObjectList(user.Id);
 
                 ISFSObject objectsList = variable.GetSFSObjectValue();
                 foreach (var key in objectsList.GetKeys())
                 {
                     ModHelper.Console.WriteLine($"Seeing object {key}");
-                    ObjectToSyncStaticData data = (ObjectToSyncStaticData)objectsList.GetClass(key);
+                    ISFSObject data = objectsList.GetSFSObject(key);
                     //If there is already an object then just update its static variables
-                    if (RemoteObjects.GetObject(user.Id, data.ObjectName, data.ObjectId, out ObjectToRecieveSync obj))
+                    if (RemoteObjects.GetObject(user.Id, data.GetUtfString("name"), data.GetInt("id"), out ObjectToRecieveSync obj))
                     {
-                        obj.UpdateObjectStaticData(data);
-                        objectsFromUser.Remove(obj); //If the object received an update this means that it is still an existing object
+                        ModHelper.Console.WriteLine($"Updating objectData");
+                        obj.UpdateObjectData(data);
+                        existingObjectsFromUser.Remove(obj); //If the object received an update this means that it is still an existing object
                     }
                     //if not spawn a new one
                     else
                         SpawnRemoteObject(user.Id, data);
                 }
                 //If it is still in the objectsFromUser list then it isn no longer inside that user variables, which means it is no longer an existing object
-                foreach (var obj in objectsFromUser)
+                foreach (var obj in existingObjectsFromUser)
                 {
+                    ModHelper.Console.WriteLine($"The object {obj.ObjectName} ({obj.ObjectId}) from {obj.UserId} no longer exists");
                     RemoteObjects.RemoveObject(obj);
                     Destroy(obj.gameObject);
                 }
@@ -670,27 +666,6 @@ namespace OuterWildsOnline
                 NotificationManager.SharedInstance.PostNotification(data, false);
             }
         }
-        //TODO implementar isso como um dado statico para objetos syncados no geral (esses valores estarão no user variables)
-        //private void RemotePlayerlessResponses(SFSObject responseParams, string cmd)
-        //{
-        //    switch (cmd)
-        //    {
-        //        case "GeneralEvent":
-        //            #region GeneralEvent
-        //            if (responseParams.ContainsKey("jg"))
-        //            {
-        //                if (PlayerState.IsWearingSuit())
-        //                {
-        //                    var data = new SFSObject();
-        //                    data.PutBool("suit", true);
-        //                    sfs.Send(new ExtensionRequest("SyncPlayerData", data, sfs.LastJoinedRoom));
-        //                }
-        //                //SyncShipInstant();
-        //            }
-        //            #endregion
-        //            break;
-        //    }
-        //}
         private void OnRoomJoin(BaseEvent evt)
         {
             // Remove SFS2X listeners and re-enable interface before moving to the main game scene
@@ -711,7 +686,7 @@ namespace OuterWildsOnline
             User user = (User)evt.Params["user"];
             List<String> changedVars = (List<String>)evt.Params["changedVars"];
 
-            if (changedVars.Contains("objs"))
+            if (changedVars.Contains("objs") && !user.IsItMe)
                 CheckUserObjVariable(user);
         }
         private void Resume()

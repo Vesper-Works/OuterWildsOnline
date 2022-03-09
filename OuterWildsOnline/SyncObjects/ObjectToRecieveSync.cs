@@ -18,11 +18,11 @@ namespace OuterWildsOnline.SyncObjects
         public int UserId { get => _userID; }
         public int ObjectId { get => _objectId; }
 
-        protected ObjectToSyncStaticData ObjectStaticData;
+        protected ISFSObject ObjectData;
 
-        public virtual void UpdateObjectStaticData(ObjectToSyncStaticData objectStaticData) 
+        public virtual void UpdateObjectData(ISFSObject objectData) 
         {
-            ObjectStaticData = objectStaticData;
+            ObjectData = objectData;
         }
         protected virtual void Start()
         {
@@ -40,6 +40,8 @@ namespace OuterWildsOnline.SyncObjects
             _objectName = objectName;
             _userID = userID;
             _objectId = objectId;
+
+            ConnectionController.ModHelperInstance.Console.WriteLine($"On Init {objectName} / {userID} / {objectId}");
         }
 
         //Instead of overriding the delegate OnExtensionResponse we could create a method that only gets called when it is supposed to
@@ -73,9 +75,9 @@ namespace OuterWildsOnline.SyncObjects
 
             SFSObject responseParams = (SFSObject)evt.Params["params"];
 
-            string objectName = responseParams.GetUtfString("objectName");
             int userID = responseParams.GetInt("userId");
-            int objectId = responseParams.GetInt("entityId");
+            string objectName = responseParams.GetUtfString("objectName");
+            int objectId = responseParams.GetInt("objectId");
             if (objectName == _objectName && userID == _userID && objectId == _objectId)
                 OnExtensionResponse(responseParams);
         }

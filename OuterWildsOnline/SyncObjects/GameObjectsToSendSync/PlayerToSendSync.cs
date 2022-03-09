@@ -33,10 +33,8 @@ namespace OuterWildsOnline.SyncObjects
 
             SetObjectName("Player");
             base.Awake();
-            ObjectStaticData = new PlayerToSyncStaticData(ObjectName, ObjectId);
 
-            //TODO fazer com que esse tipo de informação seja guardada dessa maneira estatica
-            ((PlayerToSyncStaticData)ObjectStaticData).isWearingSuit = PlayerState.IsWearingSuit();
+            ObjectData.PutBool("suit", PlayerState.IsWearingSuit());
         }
         protected override void Start() 
         {
@@ -141,20 +139,13 @@ namespace OuterWildsOnline.SyncObjects
                 pingText = pingTextObject.GetComponent<UnityEngine.UI.Text>();
             }
 
-
-            var data = new SFSObject();
-            data.PutBool("suit", true);
-            data.PutUtfString("objectName", ObjectName);
-            data.PutInt("objectId", ObjectId);
-            sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
+            ObjectData.PutBool("suit", true);
+            ConnectionController.Instance.UpdateObjectToSyncData(this);
         }
         private void PlayerRemoveSuit()
         {
-            var data = new SFSObject();
-            data.PutBool("suit", false);
-            data.PutUtfString("objectName", ObjectName);
-            data.PutInt("objectId", ObjectId);
-            sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
+            ObjectData.PutBool("suit", false);
+            ConnectionController.Instance.UpdateObjectToSyncData(this);
         }
         private void PlayerInitPlayerForceAlignment()
         {

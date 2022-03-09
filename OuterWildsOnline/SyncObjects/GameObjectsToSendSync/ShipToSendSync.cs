@@ -21,7 +21,6 @@ namespace OuterWildsOnline.SyncObjects
         {
             base.Start();
             StartCoroutine(SyncShipVisuals());
-            StartCoroutine(SyncShipTransformOccasionally());
         }
         private void ShipStartedTranslationalThrust()
         {
@@ -67,35 +66,6 @@ namespace OuterWildsOnline.SyncObjects
                     sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
                 }
                 yield return new WaitForSecondsRealtime(0.1f);
-            }
-        }
-        private IEnumerator SyncShipTransformOccasionally()
-        {
-            while (true)
-            {
-                if (SFSSectorManager.ClosestSectorToPlayer == null)
-                {
-                    yield return new WaitForSecondsRealtime(0.5f);
-                    continue;
-                }
-
-                var data = new SFSObject();
-
-                var pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(transform.position);
-                data.PutFloat("x", pos.x);
-                data.PutFloat("y", pos.y);
-                data.PutFloat("z", pos.z);
-
-                var rot = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformRotation(transform.rotation).eulerAngles;
-                data.PutFloat("rotx", rot.x);
-                data.PutFloat("roty", rot.y);
-                data.PutFloat("rotz", rot.z);
-
-                data.PutBool("interp", true);
-                data.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
-                data.PutUtfString("objectName", ObjectName);
-                sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
-                yield return new WaitForSecondsRealtime(1f);
             }
         }
     }

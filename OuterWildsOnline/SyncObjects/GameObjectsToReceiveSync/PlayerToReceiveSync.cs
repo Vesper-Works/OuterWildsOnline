@@ -39,8 +39,30 @@ namespace OuterWildsOnline.SyncObjects
 
             thrustersControllersSync = GetComponentsInChildren<ThrusterFlameControllerSync>(true);
             thrusterWashControllerSync = GetComponentInChildren<ThrusterWashControllerSync>();
-
+            if (ObjectData.GetBool("suit"))
+            {
+                playerAnimationSync.OnPutOnSuit();
+                playerStateSync.OnSuitUp();
+            }
             base.Start();
+        }
+        public override void UpdateObjectData(ISFSObject objectData)
+        {
+            base.UpdateObjectData(objectData);
+
+            if (playerAnimationSync != null && playerStateSync != null)
+            {
+                if (objectData.GetBool("suit") == true)
+                {
+                    playerAnimationSync.OnPutOnSuit();
+                    playerStateSync.OnSuitUp();
+                }
+                else
+                {
+                    playerAnimationSync.OnRemoveSuit();
+                    playerStateSync.OnRemoveSuit();
+                }
+            }
         }
         protected override void OnExtensionResponse(SFSObject responseParams)
         {
@@ -57,19 +79,19 @@ namespace OuterWildsOnline.SyncObjects
                                 responseParams.GetFloat("rgvy"),
                                 responseParams.GetFloat("rgvz")));
             }
-            if (responseParams.ContainsKey("suit"))
-            {
-                if (responseParams.GetBool("suit") == true)
-                {
-                    playerAnimationSync.OnPutOnSuit();
-                    playerStateSync.OnSuitUp();
-                }
-                else
-                {
-                    playerAnimationSync.OnRemoveSuit();
-                    playerStateSync.OnRemoveSuit();
-                }
-            }
+            //if (responseParams.ContainsKey("suit"))
+            //{
+            //    if (responseParams.GetBool("suit") == true)
+            //    {
+            //        playerAnimationSync.OnPutOnSuit();
+            //        playerStateSync.OnSuitUp();
+            //    }
+            //    else
+            //    {
+            //        playerAnimationSync.OnRemoveSuit();
+            //        playerStateSync.OnRemoveSuit();
+            //    }
+            //}
             if (responseParams.ContainsKey("pfa"))
             {
                 if (responseParams.GetBool("pfa") == true)

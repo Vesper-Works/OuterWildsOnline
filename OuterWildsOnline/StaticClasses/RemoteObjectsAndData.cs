@@ -2,27 +2,10 @@
 using System.Linq;
 using UnityEngine;
 using OuterWildsOnline.SyncObjects;
+using Sfs2X.Entities.Data;
 
 namespace OuterWildsOnline
 {
-    //TODO ou remover ou entender porque sfs.UserManager.GetUserById não estava funcionando antes
-    public static class UsersData
-    {
-        private static Dictionary<int, string> UserNames = new Dictionary<int, string>(); public static bool AddUserName(int userID, string userName)
-        {
-            return UserNames.TryAdd(userID, userName);
-        }
-
-        public static bool RemoveUserName(int userID)
-        {
-            return UserNames.Remove(userID);
-        }
-
-        public static bool GetUserName(int userID, out string userName)
-        {
-            return UserNames.TryGetValue(userID, out userName);
-        }
-    }
     public static class RemoteObjects
     {
         private static Dictionary<int, ClientRemoteObjects> Objects = new Dictionary<int, ClientRemoteObjects>();
@@ -31,6 +14,7 @@ namespace OuterWildsOnline
         public static Dictionary<string, GameObject> CloneStorage = new Dictionary<string, GameObject>();
         public static List<ObjectToRecieveSync> Players { get => GetNameObjectList("Player"); }
 
+        public static ISFSObject LocalObjectsListFromMyself = new SFSObject();
 
         public static bool AddNewObject(ObjectToRecieveSync @object)
         {
