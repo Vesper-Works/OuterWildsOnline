@@ -10,7 +10,6 @@ namespace OuterWildsOnline
     {
         private static Dictionary<int, ClientRemoteObjects> Objects = new Dictionary<int, ClientRemoteObjects>();
 
-
         public static Dictionary<string, GameObject> CloneStorage = new Dictionary<string, GameObject>();
         public static List<ObjectToRecieveSync> Players { get => GetNameObjectList("Player"); }
 
@@ -110,7 +109,11 @@ namespace OuterWildsOnline
             if (!remoteClientObjects.ContainsKey(@object.ObjectName))
                 remoteClientObjects.Add(@object.ObjectName, new Dictionary<int, ObjectToRecieveSync>());
 
-            return remoteClientObjects[@object.ObjectName].TryAdd(@object.ObjectId, @object);
+            if(remoteClientObjects[@object.ObjectName].ContainsKey(@object.ObjectId))
+                return false;
+            
+            remoteClientObjects[@object.ObjectName].Add(@object.ObjectId, @object);
+            return true;
         }
 
         public bool RemoveObject(ObjectToRecieveSync @object)

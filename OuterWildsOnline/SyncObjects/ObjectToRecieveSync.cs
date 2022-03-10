@@ -39,7 +39,7 @@ namespace OuterWildsOnline.SyncObjects
             _userID = userID;
             _objectId = objectId;
 
-            ConnectionController.ModHelperInstance.Console.WriteLine($"On Init {objectName} / {userID} / {objectId}");
+            //ConnectionController.ModHelperInstance.Console.WriteLine($"On Init {objectName} / {userID} / {objectId}");
         }
 
         //Instead of overriding the delegate OnExtensionResponse we could create a method that only gets called when it is supposed to

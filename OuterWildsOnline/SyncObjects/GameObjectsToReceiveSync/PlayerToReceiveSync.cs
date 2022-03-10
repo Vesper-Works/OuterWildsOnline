@@ -18,7 +18,6 @@ namespace OuterWildsOnline.SyncObjects
         {
             User objectOwner = sfs.UserManager.GetUserById(userID);
             base.Init(objectName, userID, entityID);
-            ConnectionController.ModHelperInstance.Console.WriteLine($"User {objectOwner}");
             transform.name = userID.ToString();
 
             var obj = GameObject.FindWithTag("MapCamera");

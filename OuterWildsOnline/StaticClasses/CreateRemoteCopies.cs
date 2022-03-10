@@ -1,22 +1,37 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace OuterWildsOnline
 {
     //TODO consertar isso
     public static class CreateRemoteCopies
     {
+        private static void FindAndDoAction(Transform parentTransform, Action<Transform> action, bool ignoreIfNotFound, params string[] childNames) 
+        {
+            for (int i = 0; i < childNames.Length; i++)
+            {
+                Transform foundChild;
+                if (parentTransform != null)
+                    foundChild = parentTransform.Find(childNames[i]);
+                else
+                    foundChild = GameObject.Find(childNames[i]).transform;
+
+                if (foundChild != null || !ignoreIfNotFound)
+                    action(foundChild);
+            }
+        }
         private static void ReplaceThrusterFlameControllerRecursively(Transform transform)
         {
             foreach (Transform child in transform)
             {
                 if (child.TryGetComponent(out ThrusterFlameController thrusterFlameController))
                 {
-                    GameObject.Destroy(thrusterFlameController);
+                    GameObject.DestroyImmediate(thrusterFlameController);
                     child.gameObject.AddComponent<ThrusterFlameControllerSync>();
                 }
                 if (child.TryGetComponent(out ThrusterParticlesBehavior thrusterParticlesBehavior))
                 {
-                    GameObject.Destroy(thrusterParticlesBehavior);
+                    GameObject.DestroyImmediate(thrusterParticlesBehavior);
                 }
                 if (child.childCount > 0)
                 {
@@ -82,7 +97,6 @@ namespace OuterWildsOnline
             GameObject.Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/ThrusterWash/ThrusterWash_Default"), thrusterWash.transform);
             thrusterWash.AddComponent<ThrusterWashControllerSync>();
 
-            //PLEASE SOMEONE FIX I CAN'T DO IT - ERRORS WON'T GO AWAY! (Code works but produces errors).
 
             Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject.SetActive(false);
             GameObject thrusters = GameObject.Instantiate(Locator.GetPlayerTransform().Find("PlayerVFX/Thrusters").gameObject, remoteVFXObjects.transform);
@@ -112,46 +126,64 @@ namespace OuterWildsOnline
             remoteVFXObjects.transform.parent = remotePlayerShip.transform;
 
             GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Effects_Cabin/ThrusterWash/ThrusterWash_Ship"), remoteVFXObjects.transform);
+            
+            string[] listOfObjectsToFind_Thrusters = new string[]
+            {
+                "Ship_Body/Module_Engine/Effects_Engine/Thrusters",
+                "Ship_Body/Module_Supplies/Effects_Supplies/Thrusters",
+            };
+            void DisableInstantiateAndReenable(Transform t)
+            {
+                t.gameObject.SetActive(false);
+                GameObject.Instantiate(t.gameObject, remoteVFXObjects.transform);
+                t.gameObject.SetActive(true);
+            }
 
-            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").SetActive(false);
-            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").SetActive(false);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters"), remoteVFXObjects.transform);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters"), remoteVFXObjects.transform);
-            GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").SetActive(true);
-            GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").SetActive(true);
+            FindAndDoAction(null, DisableInstantiateAndReenable, true, listOfObjectsToFind_Thrusters);
+
             ReplaceThrusterFlameControllerRecursively(remoteVFXObjects.transform);
 
             Utils.SetActiveRecursively(remoteVFXObjects.transform, true);
 
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Geo_Cabin/Shadowcaster_Cabin"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            string[] listOfObjectsToFind_Model = new string[]
+            {
+                "Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Geometry/Cabin_Exterior",
+                "Ship_Body/Module_Cabin/Geo_Cabin/Cabin_Tech/Cabin_Tech_Exterior",
+                "Ship_Body/Module_Cabin/Geo_Cabin/Shadowcaster_Cabin",
 
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Tech/Cockpit_Tech_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/ShadowCaster_Cockpit"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+                "Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/Cockpit_Exterior",
+                "Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Tech/Cockpit_Tech_Exterior",
+                "Ship_Body/Module_Cockpit/Geo_Cockpit/Cockpit_Geometry/ShadowCaster_Cockpit",
 
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Engine/Geo_Engine/Engine_Geometry/Engine_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Engine/Geo_Engine/ShadowCaster_Engine"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+                "Ship_Body/Module_Engine/Geo_Engine/Engine_Geometry/Engine_Exterior",
+                "Ship_Body/Module_Engine/Geo_Engine/ShadowCaster_Engine",
 
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Geo_Supplies/Supplies_Geometry/Supplies_Exterior"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Supplies/Geo_Supplies/ShadowCaster_Supplies"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+                "Ship_Body/Module_Supplies/Geo_Supplies/Supplies_Geometry/Supplies_Exterior",
+                "Ship_Body/Module_Supplies/Geo_Supplies/ShadowCaster_Supplies",
 
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Front/LandingGear_Front_Tech"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+                "Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontFoot",
+                "Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/LandingGear_FrontLeg",
+                "Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontFoot",
+                "Ship_Body/Module_LandingGear/LandingGear_Front/Geo_LandingGear_Front/ShadowCaster_FrontLeg",
+                "Ship_Body/Module_LandingGear/LandingGear_Front/LandingGear_Front_Tech",
 
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+                "Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftFoot",
+                "Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/LandingGear_LeftLeg",
+                "Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftFoot",
+                "Ship_Body/Module_LandingGear/LandingGear_Left/Geo_LandingGear_Left/ShadowCaster_LeftLeg",
 
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/LandingGear_RightFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/LandingGear_RightLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightFoot"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
-            GameObject.Instantiate(GameObject.Find("Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightLeg"), remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+                "Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/LandingGear_RightFoot",
+                "Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/LandingGear_RightLeg",
+                "Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightFoot",
+                "Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightLeg"
+            };
+
+            void InstantiateAndMove(Transform t) 
+            {
+                GameObject.Instantiate(t.gameObject, remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
+            }
+
+            FindAndDoAction(null, InstantiateAndMove, true, listOfObjectsToFind_Model);
 
             Utils.RemoveCollisionFromObjectRecursively(remotePlayerShip.transform);
             remotePlayerShip.AddComponent<ThrusterWashControllerSync>();
@@ -167,15 +199,37 @@ namespace OuterWildsOnline
         {
             GameObject remoteProbe = new GameObject("Remote Probe");
 
+            //TODO see if this is really needed
             remoteProbe.AddComponent<SimpleRemoteInterpolation>();
 
             GameObject remoteProbeBody = new GameObject("Remote Probe Body");
             remoteProbeBody.transform.parent = remoteProbe.transform;
 
-            GameObject.Instantiate(Locator.GetProbe().transform.Find("CameraPivot"), remoteProbeBody.transform);
-            Transform lantern = GameObject.Instantiate(Locator.GetProbe().transform.Find("Lantern"), remoteProbeBody.transform);
-            GameObject.Destroy(lantern.GetComponent<ProbeLantern>());
+            string[] listOfObjectsToFind = new string[]
+            {
+                "CameraPivot",
+                "Lantern",
+            };
+            void DisableInstantiateAndReenable(Transform t)
+            {
+                t.gameObject.SetActive(false);
+                GameObject.Instantiate(t.gameObject, remoteProbeBody.transform);
+                t.gameObject.SetActive(true);
+            }
+
+            FindAndDoAction(Locator.GetProbe().transform, DisableInstantiateAndReenable, true, listOfObjectsToFind);
+
+            Transform cameraPivot = remoteProbeBody.transform.GetChild(0);
+            Transform lantern = remoteProbeBody.transform.GetChild(1);
+            GameObject.DestroyImmediate(lantern.GetComponent<ProbeLantern>());
             lantern.GetComponent<Light>().enabled = true;
+
+            GameObject.DestroyImmediate(cameraPivot.GetComponentInChildren<ProbeSpotlight>());
+            GameObject.DestroyImmediate(cameraPivot.GetChild(0).GetComponentInChildren<ProbeAnimatorController>()); ///Geometry/Props_HEA_Probe_ANIM
+            GameObject.DestroyImmediate(cameraPivot.GetComponent<ProbeHorizonTracker>());
+
+            cameraPivot.gameObject.SetActive(true);
+            lantern.gameObject.SetActive(true);
 
             remoteProbe.AddComponent<SyncObjects.ProbeToReceiveSync>();
 

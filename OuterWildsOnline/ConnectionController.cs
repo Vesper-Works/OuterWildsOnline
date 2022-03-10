@@ -1,4 +1,4 @@
-﻿using OuterWildsOnline.SyncObjects;
+using OuterWildsOnline.SyncObjects;
 using OWML.Common;
 using OWML.Common.Menus;
 using OWML.ModHelper;
@@ -29,8 +29,6 @@ namespace OuterWildsOnline
 
         private bool playerInGame = false;
         private bool usePlayerPosForSync = true;
-
-        private UnityEngine.UI.Text pingText;
 
         private IModButton connectButton;
 
@@ -160,7 +158,7 @@ namespace OuterWildsOnline
             if (sfs != null)
             {
                 sfs.ProcessEvents();
-                UpdatePlayerCoords();
+                UpdateUserCoords();
             }
         }
         
@@ -168,8 +166,7 @@ namespace OuterWildsOnline
         {
             Instance.playerRepresentationObject = playerRepresentationObject;
         }
-
-        private void UpdatePlayerCoords() 
+        private void UpdateUserCoords() 
         {
             List<UserVariable> userVariables = new List<UserVariable>();
             if (usePlayerPosForSync && playerRepresentationObject !=  null)
@@ -286,7 +283,6 @@ namespace OuterWildsOnline
             sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
             sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
             sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
-            sfs.AddEventListener(SFSEvent.PING_PONG, PingPongHandler);
             sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
 
             SFSSectorManager.RefreshSectors();
@@ -313,7 +309,6 @@ namespace OuterWildsOnline
             sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
             sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
             sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
-            sfs.AddEventListener(SFSEvent.PING_PONG, PingPongHandler);
             sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
 
             SFSSectorManager.RefreshSectors();
@@ -372,7 +367,8 @@ namespace OuterWildsOnline
             yield return new WaitForSeconds(delay);
             Locator.GetPlayerTransform().gameObject.AddComponent<PlayerToSendSync>();
             Locator.GetShipBody().gameObject.AddComponent<ShipToSendSync>();
-            Resources.FindObjectsOfTypeAll<SurveyorProbe>()[1].gameObject.AddComponent<ProbeToSendSync>();            
+            Locator.GetProbe().gameObject.AddComponent<ProbeToSendSync>();
+            //Resources.FindObjectsOfTypeAll<SurveyorProbe>()[1].gameObject.AddComponent<ProbeToSendSync>();            
         }
 
         #region ObjectAdditionRemovalAndUpdate
@@ -382,7 +378,13 @@ namespace OuterWildsOnline
             
             ISFSObject objectsList = RemoteObjects.LocalObjectsListFromMyself;
 
-            objectsList.PutSFSObject(string.Join("-", @object.ObjectName, @object.ObjectId), @object.ObjectData);
+            string objectKey = string.Join("-", @object.ObjectName, @object.ObjectId);
+            if (objectsList.ContainsKey(objectKey))
+            {
+                ModHelper.Console.WriteLine($"There is already a object with this key! ({objectKey})");
+                return;
+            }
+            objectsList.PutSFSObject(objectKey, @object.ObjectData);
 
             SFSUserVariable sFSUserVariable = new SFSUserVariable("objs", objectsList);
             List<UserVariable> userVariables = new List<UserVariable>() { sFSUserVariable };
@@ -395,7 +397,15 @@ namespace OuterWildsOnline
             ISFSObject objectsList = RemoteObjects.LocalObjectsListFromMyself;
 
             foreach (var obj in objects)
-                objectsList.PutSFSObject(string.Join("-", obj.ObjectName, obj.ObjectId), obj.ObjectData);
+            {
+                string objectKey = string.Join("-", obj.ObjectName, obj.ObjectId);
+                if (objectsList.ContainsKey(objectKey))
+                {
+                    ModHelper.Console.WriteLine($"There is already a object with this key! ({objectKey})");
+                    continue;
+                }
+                objectsList.PutSFSObject(objectKey, obj.ObjectData);
+            }
 
             SFSUserVariable sFSUserVariable = new SFSUserVariable("objs", objectsList);
             List<UserVariable> userVariables = new List<UserVariable>() { sFSUserVariable };
@@ -474,11 +484,6 @@ namespace OuterWildsOnline
                 if (!user.IsItMe)
                     CheckUserObjVariable(user);
             }
-        }
-
-        private void PingPongHandler(BaseEvent evt)
-        {
-            if (pingText != null) { pingText.text = (int)evt.Params["lagValue"] + "ms"; }
         }
 
         #region ConnectButtonEvents
