@@ -1,4 +1,4 @@
-﻿using OuterWildsOnline.SyncObjects;
+using OuterWildsOnline.SyncObjects;
 using OWML.Common;
 using OWML.Common.Menus;
 using OWML.ModHelper;
@@ -33,6 +33,9 @@ namespace OuterWildsOnline
         private IModButton connectButton;
 
         private string serverAddress;
+
+        private Vector3 lastPlayerPosition = Vector3.zero;
+        private ObjectToSendSync playerRepresentationObject;
         private static string GetRoomNameFromScene(OWScene scene) 
         {
             switch (scene) 
@@ -49,6 +52,10 @@ namespace OuterWildsOnline
         public override void Configure(IModConfig config)
         {
             serverAddress = config.GetSettingsValue<string>("serverAddress");
+            if (playerRepresentationObject != null)
+            {
+                playerRepresentationObject.ConfigChanged(config);
+            }
         }
 
         private void Start()
@@ -159,8 +166,6 @@ namespace OuterWildsOnline
         {
             Instance.playerRepresentationObject = playerRepresentationObject;
         }
-        private Vector3 lastPlayerPosition = Vector3.zero;
-        private ObjectToSendSync playerRepresentationObject;
         private void UpdateUserCoords() 
         {
             List<UserVariable> userVariables = new List<UserVariable>();
@@ -486,6 +491,7 @@ namespace OuterWildsOnline
         {
             if (connectButton == null) return;
             connectButton.Button.enabled = false;
+            ModHelper.Menus.MainMenu.NewExpeditionButton.Button.enabled = false;
             connectButton.Title = "CONNECTING...";
         }
 
@@ -493,6 +499,7 @@ namespace OuterWildsOnline
         {
             if (connectButton == null) return;
             connectButton.Button.enabled = false;
+            ModHelper.Menus.MainMenu.NewExpeditionButton.Button.enabled = false;
             connectButton.Title = "CONNECTED";
         }
 
@@ -500,6 +507,7 @@ namespace OuterWildsOnline
         {
             if (connectButton == null) return;
             connectButton.Button.enabled = true;
+            ModHelper.Menus.MainMenu.NewExpeditionButton.Button.enabled = true;
             connectButton.Title = "CONNECT TO SERVER";
         }
 
@@ -507,6 +515,7 @@ namespace OuterWildsOnline
         {
             if (connectButton == null) return;
             connectButton.Button.enabled = true;
+            ModHelper.Menus.MainMenu.NewExpeditionButton.Button.enabled = true;
             connectButton.Title = "FAILED. TRY AGAIN?";
         }
         #endregion

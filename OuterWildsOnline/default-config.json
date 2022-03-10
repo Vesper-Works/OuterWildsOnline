@@ -1,6 +1,7 @@
 {
   "enabled": true,
   "settings": {
-    "serverAddress": "gameserver.hopto.org"
+    "serverAddress": "gameserver.hopto.org",
+    "playerColour": "255,255,255"
   }
 }
