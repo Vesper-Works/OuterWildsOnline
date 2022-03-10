@@ -18,13 +18,13 @@ namespace OuterWildsOnline.SyncObjects
         {
             User objectOwner = sfs.UserManager.GetUserById(userID);
             base.Init(objectName, userID, entityID);
-            transform.name = userID.ToString();
+            transform.name = objectOwner.Name;
 
             var obj = GameObject.FindWithTag("MapCamera");
             var markerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
             var canvasMarker = markerManager.InstantiateNewMarker(true);
             markerManager.RegisterMarker(canvasMarker, GetComponent<OWRigidbody>());
-            canvasMarker.SetLabel(userID.ToString().ToUpper());
+            canvasMarker.SetLabel(objectOwner.Name.ToUpper());
             canvasMarker.SetColor(Color.white);
             canvasMarker.SetVisibility(true);
 

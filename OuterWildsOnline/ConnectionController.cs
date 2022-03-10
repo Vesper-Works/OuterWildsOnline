@@ -105,13 +105,18 @@ namespace OuterWildsOnline
         }
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
-            if (!sfs.IsConnected) { return; }
+            //I think the remote objects aren't set to not destroy on load, so we don't need to make sure they are destroyed
+            RemoteObjects.Clear(false);
+
+            if (sfs == null)
+                return;
+
+            if (!sfs.IsConnected)
+                return;
 
             string currentSceneRoom = GetRoomNameFromScene(newScene);
-            if (EnterOrCheckIfInValidSceneRoom(currentSceneRoom) && !playerInGame)
+            if (EnterOrCheckIfInValidSceneRoom(currentSceneRoom))
             {
-                //I think the remote objects aren't set to not destroy on load, so we don't need to make sure they are destroyed
-                RemoteObjects.Clear(false);
                 RemoveAllObjectsFromSync();
                 if (!playerInGame) 
                 {
@@ -150,8 +155,8 @@ namespace OuterWildsOnline
         {
             if (sfs != null)
             {
-                sfs.ProcessEvents();
                 UpdateUserCoords();
+                sfs.ProcessEvents();
             }
         }
         
@@ -164,6 +169,7 @@ namespace OuterWildsOnline
         private void UpdateUserCoords() 
         {
             List<UserVariable> userVariables = new List<UserVariable>();
+
             if (usePlayerPosForSync && playerRepresentationObject !=  null)
             {
                 if (playerRepresentationObject.transform == null)
@@ -173,15 +179,18 @@ namespace OuterWildsOnline
                 if (lastPlayerPosition.ApproxEquals(currentPlayerPosition, 0.01f)) { return; }
 
                 lastPlayerPosition = currentPlayerPosition;
-                Vector3 pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(currentPlayerPosition);
-                userVariables.AddRange(new UserVariable[] {
-                
+                if (SFSSectorManager.ClosestSectorToPlayer != null)
+                {
+                    Vector3 pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(currentPlayerPosition);
+                    userVariables.AddRange(new UserVariable[] {
+
                     new SFSUserVariable("x", (double)pos.x),
                     new SFSUserVariable("y", (double)pos.y),
                     new SFSUserVariable("z", (double)pos.z)
-                });
-                sfs.Send(new SetUserVariablesRequest(userVariables)); 
-                return;
+                    });
+                    sfs.Send(new SetUserVariablesRequest(userVariables));
+                    return;
+                }
             }
             userVariables.AddRange(new UserVariable[] {
 
@@ -255,7 +264,8 @@ namespace OuterWildsOnline
                 //If the user is already in the game (went far away and came back), enable their remote objects
                 foreach (var syncedObject in RemoteObjects.GetUserObjectList(user.Id))
                 {
-                    syncedObject.gameObject.SetActive(true);
+                    if(syncedObject != null)
+                        syncedObject.gameObject.SetActive(true);
                 }
             }
 
@@ -264,7 +274,8 @@ namespace OuterWildsOnline
             {
                 foreach (var syncedObject in RemoteObjects.GetUserObjectList(user.Id))
                 {
-                    syncedObject.gameObject.SetActive(false);
+                    if (syncedObject != null)
+                        syncedObject.gameObject.SetActive(false);
                 }
             }
         }
@@ -274,21 +285,23 @@ namespace OuterWildsOnline
 
             sfs.EnableLagMonitor(true, 2, 5);
 
-            // Register callback delegates
-            sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
-            sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
-            sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
-            sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
+            SetOnLoadSceneStuff();
 
-            SFSSectorManager.RefreshSectors();
+            //// Register callback delegates
+            //sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
+            //sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
+            //sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
+            //sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
 
-            StartCoroutine(SetObjectsToSync(0.5f));
-            StartCoroutine(InstantiateNewSyncObjects(1f));
-            StartCoroutine(GetClosestSectorToPlayer(0f));
-            StartCoroutine(SendJoinedGameMessage());
-            StartCoroutine(CreateObjectClones(0.7f));
+            //SFSSectorManager.RefreshSectors();
 
-            gameObject.AddComponent<ChatHandler>();
+            //StartCoroutine(SetObjectsToSync(0.5f));
+            //StartCoroutine(InstantiateNewSyncObjects(1f));
+            //StartCoroutine(GetClosestSectorToPlayer(0f));
+            //StartCoroutine(SendJoinedGameMessage());
+            //StartCoroutine(CreateObjectClones(0.7f));
+
+            //gameObject.AddComponent<ChatHandler>();
 
             ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
         }
@@ -298,6 +311,32 @@ namespace OuterWildsOnline
 
             sfs.EnableLagMonitor(true, 2, 5);
 
+            SetOnLoadSceneStuff();
+
+
+            //sfs.RemoveAllEventListeners();
+
+            //// Register callback delegates
+            //sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
+            //sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
+            //sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
+            //sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
+
+            //SFSSectorManager.RefreshSectors();
+
+            //gameObject.AddComponent<ChatHandler>();
+
+            //StopAllCoroutines();
+            //StartCoroutine(GetClosestSectorToPlayer(2f));
+            //StartCoroutine(SendJoinedGameMessage());
+            //StartCoroutine(ReloadAllRemoteUsers(2f));
+            //StartCoroutine(CreateObjectClones(0.7f));
+            //StartCoroutine(SetObjectsToSync(0.5f));
+            //StartCoroutine(InstantiateNewSyncObjects(1f));
+
+        }
+        private void SetOnLoadSceneStuff() 
+        {
             sfs.RemoveAllEventListeners();
 
             // Register callback delegates
@@ -313,11 +352,10 @@ namespace OuterWildsOnline
             StopAllCoroutines();
             StartCoroutine(GetClosestSectorToPlayer(2f));
             StartCoroutine(SendJoinedGameMessage());
-            StartCoroutine(ReloadAllRemoteUsers(2f));
+            //StartCoroutine(ReloadAllRemoteUsers(2f));
             StartCoroutine(CreateObjectClones(0.7f));
             StartCoroutine(SetObjectsToSync(0.5f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
-
         }
         private static void OnExitToMainMenuPatch()
         {
@@ -326,6 +364,7 @@ namespace OuterWildsOnline
             data.PutNull("lg"); //LeftGame
             Connection.Send(new ExtensionRequest("GeneralEvent", data, Connection.LastJoinedRoom));
             Instance.StartCoroutine(Instance.Disconnect(0.1f));
+            //TODO fazer com que ele não disconecte quando ir para o menu principal
             Destroy(Instance.GetComponent<ChatHandler>());
         }
         public IEnumerator Disconnect(float delay)
@@ -334,6 +373,9 @@ namespace OuterWildsOnline
             Connection.RemoveAllEventListeners();
             Connection.Disconnect();
             Instance.StopAllCoroutines();
+
+            if (Instance.connectButton != null)
+                Instance.SetButtonConnect();
         }
         private IEnumerator ReloadAllRemoteUsers(float delay)
         {
@@ -517,8 +559,6 @@ namespace OuterWildsOnline
 
             // Create SmartFox client instance
             sfs = new SmartFox();
-            //So that we can use special classes on SFSObjects
-            DefaultSFSDataSerializer.RunningAssembly = Assembly.GetExecutingAssembly();
 
             // Add event listeners
             sfs.AddEventListener(SFSEvent.CONNECTION, OnConnection);
@@ -629,9 +669,10 @@ namespace OuterWildsOnline
         }
         private void GeneralEventResponses(int userId, SFSObject responseParams, string cmd)
         {
+            User user = sfs.UserManager.GetUserById(userId);
             if (responseParams.ContainsKey("jg"))
             {
-                string text = "Hearthian joined: " + sfs.UserManager.GetUserById(userId).Name;
+                string text = "Hearthian joined: " + user.Name;
                 float displayTime = 4f;
                 NotificationData data;
 
@@ -644,7 +685,7 @@ namespace OuterWildsOnline
             }
             else if (responseParams.ContainsKey("lg"))
             {
-                string text = "Hearthian left: " + sfs.UserManager.GetUserById(userId).Name;
+                string text = "Hearthian left: " + user.Name;
                 float displayTime = 4f;
                 NotificationData data;
 
@@ -658,7 +699,7 @@ namespace OuterWildsOnline
             }
             else if(responseParams.ContainsKey("died"))
             {
-                string text = sfs.UserManager.GetUserById(userId) + " has died:\n" + Enum.GetName(typeof(DeathType), responseParams.GetInt("died"));
+                string text = user.Name + " has died:\n" + Enum.GetName(typeof(DeathType), responseParams.GetInt("died"));
                 float displayTime = 4f;
                 NotificationData data;
 
