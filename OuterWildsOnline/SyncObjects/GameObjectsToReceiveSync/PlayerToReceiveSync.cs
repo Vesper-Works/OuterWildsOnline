@@ -2,6 +2,8 @@
 using Sfs2X.Entities;
 using Sfs2X.Entities.Data;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 namespace OuterWildsOnline.SyncObjects
 {
@@ -27,11 +29,26 @@ namespace OuterWildsOnline.SyncObjects
             var markerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
             var canvasMarker = markerManager.InstantiateNewMarker(true);
             markerManager.RegisterMarker(canvasMarker, GetComponent<OWRigidbody>());
+
             canvasMarker.SetLabel(objectOwner.Name.ToUpper());
             canvasMarker.SetColor(Color.white);
             canvasMarker.SetVisibility(true);
 
-            gameObject.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(objectOwner.Name);
+            //SpriteRenderer nameTag = new GameObject("Player Name Tag").AddComponent<SpriteRenderer>();
+            //TextToTexture textToTexture = new TextToTexture(Font.CreateDynamicFontFromOSFont(Font.GetOSInstalledFontNames()[0], 1), 1, 1);
+
+            //nameTag.sprite = Sprite.Create(textToTexture.CreateTextToTexture(objectOwner.Name, 0, 0, 1, 1, 1), new Rect(0, 0, 500, 500), new Vector2(250, 0));
+            //nameTag.text = objectOwner.Name;
+            ////nameTag.fontSize = 222;
+            //nameTag.alignment = TextAlignmentOptions.Center;
+            //nameTag.font = TMP_FontAsset.CreateFontAsset(Resources.FindObjectsOfTypeAll<Font>()[0]);
+            //nameTag.transform.parent = transform;
+            //nameTag.transform.localPosition = Vector3.up * 1.3f;
+            //nameTag.transform.localRotation = Quaternion.Euler(0, 180, 0);
+            //nameTag.transform.localScale = new Vector3(0.008f, 0.008f, 0.008f);
+            ////  helmetlessInputField.font = FindObjectOfType<DialogueBoxVer2>().GetComponentInChildren<Text>().font;
+
+            gameObject.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(objectOwner.Name).InitCanvasMarker();
 
         }
         protected override void Start()

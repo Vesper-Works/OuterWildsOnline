@@ -69,6 +69,7 @@ namespace OuterWildsOnline
         private ScreenPrompt enterChatPrompt;
 
         private float chatOpacity = 1;
+        private InputMode lastInputMode;
 
         public static ChatMode chatMode;
         private void Start()
@@ -203,7 +204,7 @@ namespace OuterWildsOnline
             foreach (var item in helmetlessChatParent.GetComponentsInChildren<Text>())
             {
                 item.CrossFadeAlpha(0, duration, false);
-            }          
+            }
             foreach (var item in helmetInputBox.GetComponentsInChildren<Text>())
             {
                 item.CrossFadeAlpha(0, duration, false);
@@ -237,7 +238,7 @@ namespace OuterWildsOnline
             foreach (var item in helmetInputBox.GetComponentsInChildren<Text>())
             {
                 item.CrossFadeAlpha(0, 0, false);
-            }    
+            }
             foreach (var item in helmetChatBoxes.Values)
             {
                 item.CrossFadeAlpha(0, 0, false);
@@ -327,6 +328,7 @@ namespace OuterWildsOnline
             }
             if (Keyboard.current.enterKey.wasPressedThisFrame && !selected)
             {
+                lastInputMode = OWInput.GetInputMode();
                 OWInput.ChangeInputMode(InputMode.KeyboardInput);
                 selected = true;
                 Locator.GetPromptManager().AddScreenPrompt(exitChatPrompt, PromptPosition.UpperRight, true);
@@ -336,8 +338,8 @@ namespace OuterWildsOnline
             }
             if (Keyboard.current.escapeKey.wasPressedThisFrame && selected)
             {
-                OWInput.ChangeInputMode(PlayerState.AtFlightConsole() ? InputMode.ShipCockpit : InputMode.Character);
-
+                OWInput.ChangeInputMode(lastInputMode);
+                if (PlayerState.UsingShipComputer()) { OWInput.ChangeInputMode(InputMode.ShipComputer); }
                 selected = false;
                 Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(exitChatPrompt);
@@ -510,8 +512,12 @@ namespace OuterWildsOnline
             helmetChatBoxes[recievedChatMode].text += "\n" + sender.Name + ": " + message[1];
             helmetlessChatBoxes[recievedChatMode].text += "\n" + sender.Name + ": " + message[1];
             ChatFullOpacity();
-            StopCoroutine(FadeOutChatAfterDisuse());
-            StartCoroutine(FadeOutChatAfterDisuse());
+            if (!selected)
+            {
+                ChatFullOpacity();
+                StopCoroutine(FadeOutChatAfterDisuse());
+                StartCoroutine(FadeOutChatAfterDisuse());
+            }
         }
     }
 }

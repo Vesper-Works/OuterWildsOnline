@@ -10,11 +10,11 @@ namespace OuterWildsOnline.SyncObjects
     public class ObjectToSendSync : MonoBehaviour
     {
         
-        private Vector3 lastPosition;
-        private Vector3 lastRotation;
+        protected Vector3 lastPosition;
+        protected Vector3 lastRotation;
 
-        private string objectName;
-        private int objectId;
+        protected string objectName;
+        protected int objectId;
 
         protected bool interpolate = true;
 

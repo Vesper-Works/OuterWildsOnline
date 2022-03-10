@@ -299,7 +299,12 @@ namespace OuterWildsOnline
             //sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
             //sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
 
-            //SFSSectorManager.RefreshSectors();
+            StartCoroutine(SetObjectsToSync(0.7f));
+            StartCoroutine(InstantiateNewSyncObjects(1f));
+            StartCoroutine(GetClosestSectorToPlayer(0f));
+            StartCoroutine(SendJoinedGameMessage());
+            StartCoroutine(CreateObjectClones(0.5f));
+
 
             //StartCoroutine(SetObjectsToSync(0.5f));
             //StartCoroutine(InstantiateNewSyncObjects(1f));
@@ -404,6 +409,8 @@ namespace OuterWildsOnline
             ModHelper.Console.WriteLine("Ship added to clone bay");
             RemoteObjects.CloneStorage.Add("Probe", CreateRemoteCopies.CreateProbeRemoteCopy());
             ModHelper.Console.WriteLine("Probe added to clone bay");
+            RemoteObjects.CloneStorage.Add("RoastingStick", CreateRemoteCopies.CreateRoastingStickRemoteCopy());
+            ModHelper.Console.WriteLine("RoastingStick added to clone bay");
         }
         private IEnumerator SetObjectsToSync(float delay)
         {
@@ -411,7 +418,7 @@ namespace OuterWildsOnline
             Locator.GetPlayerTransform().gameObject.AddComponent<PlayerToSendSync>();
             Locator.GetShipBody().gameObject.AddComponent<ShipToSendSync>();
             Locator.GetProbe().gameObject.AddComponent<ProbeToSendSync>();
-            //Resources.FindObjectsOfTypeAll<SurveyorProbe>()[1].gameObject.AddComponent<ProbeToSendSync>();            
+            Locator.GetPlayerTransform().Find("RoastingSystem/Stick_Root").GetChild(0).gameObject.AddComponent<RoastingStickToSendSync>();      
         }
 
         #region ObjectAdditionRemovalAndUpdate
@@ -535,6 +542,7 @@ namespace OuterWildsOnline
             if (connectButton == null) return;
             connectButton.Button.enabled = false;
             ModHelper.Menus.MainMenu.NewExpeditionButton.Button.enabled = false;
+            ModHelper.Menus.MainMenu.ResumeExpeditionButton.Title = "ENTER MULTIPLAYER EXPEDITION";
             connectButton.Title = "CONNECTING...";
         }
 
@@ -543,6 +551,7 @@ namespace OuterWildsOnline
             if (connectButton == null) return;
             connectButton.Button.enabled = false;
             ModHelper.Menus.MainMenu.NewExpeditionButton.Button.enabled = false;
+            ModHelper.Menus.MainMenu.ResumeExpeditionButton.Title = "ENTER MULTIPLAYER EXPEDITION";
             connectButton.Title = "CONNECTED";
         }
 
@@ -551,6 +560,7 @@ namespace OuterWildsOnline
             if (connectButton == null) return;
             connectButton.Button.enabled = true;
             ModHelper.Menus.MainMenu.NewExpeditionButton.Button.enabled = true;
+            ModHelper.Menus.MainMenu.ResumeExpeditionButton.Title = "RESUME EXPEDITION";
             connectButton.Title = "CONNECT TO SERVER";
         }
 
@@ -559,6 +569,7 @@ namespace OuterWildsOnline
             if (connectButton == null) return;
             connectButton.Button.enabled = true;
             ModHelper.Menus.MainMenu.NewExpeditionButton.Button.enabled = true;
+            ModHelper.Menus.MainMenu.ResumeExpeditionButton.Title = "RESUME EXPEDITION";
             connectButton.Title = "FAILED. TRY AGAIN?";
         }
         #endregion

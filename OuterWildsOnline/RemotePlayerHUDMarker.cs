@@ -34,10 +34,11 @@ namespace OuterWildsOnline
         }
 
         // Token: 0x06000ADB RID: 2779 RVA: 0x0005D040 File Offset: 0x0005B240
-        public void InitCanvasMarker(string playerName)
+        public RemotePlayerHUDMarker InitCanvasMarker(string playerName)
         {
             _markerLabel = playerName;
             _needsInitializing = true;
+            return this;
         }
 
         public override void InitCanvasMarker()
@@ -48,7 +49,6 @@ namespace OuterWildsOnline
             _markerTarget.parent = transform;
 
             _markerTarget.localPosition = Vector3.zero;
-         
         }
 
         private void Update()
@@ -60,7 +60,7 @@ namespace OuterWildsOnline
 
             if (_canvasMarker != null)
             {
-                _canvasMarker.SetVisibility(PlayerState.IsWearingSuit());// && Vector3.Distance(Locator.GetPlayerCamera().transform.position, this._markerTarget.position) < 300);
+                //_canvasMarker.SetVisibility(true);// && Vector3.Distance(Locator.GetPlayerCamera().transform.position, this._markerTarget.position) < 300);
             }
             else
             {
@@ -71,6 +71,7 @@ namespace OuterWildsOnline
         {
             _needsInitializing = false;
             base.InitCanvasMarker();
+            _canvasMarker.SetVisibility(true);
         }
 
 
