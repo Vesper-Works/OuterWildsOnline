@@ -2,6 +2,7 @@
 using Sfs2X.Core;
 using Sfs2X.Entities.Data;
 using Sfs2X.Requests;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -17,11 +18,12 @@ namespace OuterWildsOnline.SyncObjects
 
         private PlayerCharacterController playerCharacterController;
         private JetpackThrusterModel jetpackThrusterModel;
+        private Transform playerCamera;
         protected override void Awake()
         {
             playerCharacterController = FindObjectOfType<PlayerCharacterController>();
             jetpackThrusterModel = FindObjectOfType<JetpackThrusterModel>();
-
+           
             playerCharacterController.OnJump += PlayerJump;
             playerCharacterController.OnBecomeGrounded += PlayerGrounded;
             playerCharacterController.OnBecomeUngrounded += PlayerUngrounded;
@@ -35,6 +37,7 @@ namespace OuterWildsOnline.SyncObjects
             SetObjectName("Player");
             base.Awake();
 
+            ObjectData.PutBool("light", PlayerState.IsFlashlightOn());
             ObjectData.PutBool("suit", PlayerState.IsWearingSuit());
             ObjectData.PutUtfString("colour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("playerColour"));
             SetPlayerColour();
@@ -42,6 +45,8 @@ namespace OuterWildsOnline.SyncObjects
         protected override void Start()
         {
             base.Start();
+            playerCamera = Locator.GetPlayerCamera().transform;
+
             StartCoroutine(SendPlayerData());
             ConnectionController.SetPlayerRepresentationObject(this);
         }
@@ -59,6 +64,17 @@ namespace OuterWildsOnline.SyncObjects
             RemoveFromListeners();
 
             base.OnDestroy();
+        }
+
+        protected override void OnSync(SFSObject syncData)
+        {
+            base.OnSync(syncData);
+
+            //Sync Head Rotation
+            Vector3 localRotation = playerCamera.localEulerAngles;
+            syncData.PutFloat("hrotx", localRotation.x);
+            syncData.PutFloat("hroty", localRotation.y);
+            syncData.PutFloat("hrotz", localRotation.z);
         }
 
         private IEnumerator SendPlayerData() //Sends less-important client data to other players, such as the thrusters and crouching
@@ -113,25 +129,16 @@ namespace OuterWildsOnline.SyncObjects
             {
                 string[] playerColourStr = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("playerColour").Split(',');
                 Color playerColour = new Color(int.Parse(playerColourStr[0]) / 255f, int.Parse(playerColourStr[1]) / 255f, int.Parse(playerColourStr[2]) / 255f);
-                UpdateColourRecursive(playerColour, transform);
+                Utils.UpdateColourRecursive(playerColour, transform);
 
             }
-            catch (System.Exception)
+            catch
             {
                 ConnectionController.ModHelperInstance.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
             }
         }
-        private void UpdateColourRecursive(Color color, Transform child)
-        {
-            foreach (Transform possibleRenderer in child)
-            {
-                if (possibleRenderer.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
-                {
-                    meshRenderer.material.color = color;
-                }
-                UpdateColourRecursive(color, possibleRenderer);
-            }
-        }
+        
+        #region PlayerEventsData
         private void PlayerJump()
         {
             var data = new SFSObject();
@@ -213,6 +220,19 @@ namespace OuterWildsOnline.SyncObjects
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
 
+
+        private void OnFlashlightOff()
+        {
+            ObjectData.PutBool("light", false);
+            ConnectionController.Instance.UpdateObjectToSyncData(this);
+        }
+
+        private void OnFlashlightOn()
+        {
+            ObjectData.PutBool("light", true);
+            ConnectionController.Instance.UpdateObjectToSyncData(this);
+        }
+        #endregion
         private void SortOutListeners()
         {
             #region UnusedListeners
@@ -220,9 +240,9 @@ namespace OuterWildsOnline.SyncObjects
             //GlobalMessenger.AddListener("ExitConversation", new Callback(this.OnExitConversation));
             //GlobalMessenger.AddListener("EnterDarkZone", new Callback(this.OnEnterDarkZone));
             //GlobalMessenger.AddListener("ExitDarkZone", new Callback(this.OnExitDarkZone));
-            //GlobalMessenger.AddListener("TurnOnFlashlight", new Callback(PlayerStateSync.OnFlashlightOn));
-            //GlobalMessenger.AddListener("TurnOffFlashlight", new Callback(PlayerStateSync.OnFlashlightOff));
             #endregion
+            GlobalMessenger.AddListener("TurnOnFlashlight", OnFlashlightOn);
+            GlobalMessenger.AddListener("TurnOffFlashlight", OnFlashlightOff);
             GlobalMessenger.AddListener("InitPlayerForceAlignment", PlayerInitPlayerForceAlignment);
             GlobalMessenger.AddListener("BreakPlayerForceAlignment", PlayerBreakPlayerForceAlignment);
 
@@ -281,6 +301,7 @@ namespace OuterWildsOnline.SyncObjects
             //GlobalMessenger.AddListener("PlayerReleasedByGhost", new Callback(this.OnReleasedByGhost));
             #endregion
         }
+
         private void RemoveFromListeners()
         {
             #region UnusedListeners
@@ -288,9 +309,9 @@ namespace OuterWildsOnline.SyncObjects
             //GlobalMessenger.RemoveListener("ExitConversation", new Callback(this.OnExitConversation));
             //GlobalMessenger.RemoveListener("EnterDarkZone", new Callback(this.OnEnterDarkZone));
             //GlobalMessenger.RemoveListener("ExitDarkZone", new Callback(this.OnExitDarkZone));
-            //GlobalMessenger.RemoveListener("TurnOnFlashlight", new Callback(PlayerStateSync.OnFlashlightOn));
-            //GlobalMessenger.RemoveListener("TurnOffFlashlight", new Callback(PlayerStateSync.OnFlashlightOff));
             #endregion
+            GlobalMessenger.RemoveListener("TurnOnFlashlight", OnFlashlightOn);
+            GlobalMessenger.RemoveListener("TurnOffFlashlight", (OnFlashlightOff));
             GlobalMessenger.RemoveListener("InitPlayerForceAlignment", PlayerInitPlayerForceAlignment);
             GlobalMessenger.RemoveListener("BreakPlayerForceAlignment", PlayerBreakPlayerForceAlignment);
 

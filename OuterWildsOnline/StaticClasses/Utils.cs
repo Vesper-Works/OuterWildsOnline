@@ -32,5 +32,17 @@ namespace OuterWildsOnline
                 }
             }
         }
+
+        public static void UpdateColourRecursive(Color color, Transform child)
+        {
+            foreach (Transform possibleRenderer in child)
+            {
+                if (possibleRenderer.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
+                {
+                    meshRenderer.material.color = color;
+                }
+                UpdateColourRecursive(color, possibleRenderer);
+            }
+        }
     }
 }
