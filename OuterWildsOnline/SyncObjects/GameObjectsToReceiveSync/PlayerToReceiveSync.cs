@@ -29,6 +29,7 @@ namespace OuterWildsOnline.SyncObjects
             canvasMarker.SetVisibility(true);
 
             gameObject.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(objectOwner.Name);
+
         }
         protected override void Start()
         {
@@ -43,7 +44,28 @@ namespace OuterWildsOnline.SyncObjects
                 playerAnimationSync.OnPutOnSuit();
                 playerStateSync.OnSuitUp();
             }
+            try
+            {
+                string[] playerColourStr = ObjectData.GetUtfString("colour").Split(',');
+                Color playerColour = new Color(int.Parse(playerColourStr[0]) / 255f, int.Parse(playerColourStr[1]) / 255f, int.Parse(playerColourStr[2]) / 255f);
+                UpdateColourRecursive(playerColour, transform);
+            }
+            catch (System.Exception)
+            {
+                ConnectionController.ModHelperInstance.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
+            }
             base.Start();
+        }
+        private void UpdateColourRecursive(Color color, Transform child)
+        {
+            foreach (Transform possibleRenderer in child)
+            {
+                if(possibleRenderer.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
+                {
+                    meshRenderer.material.color = color;
+                }
+                UpdateColourRecursive(color, possibleRenderer);
+            }
         }
         public override void UpdateObjectData(ISFSObject objectData)
         {
@@ -51,7 +73,7 @@ namespace OuterWildsOnline.SyncObjects
 
             if (playerAnimationSync != null && playerStateSync != null)
             {
-                if (objectData.GetBool("suit") == true)
+                if (objectData.GetBool("suit"))
                 {
                     playerAnimationSync.OnPutOnSuit();
                     playerStateSync.OnSuitUp();
@@ -61,6 +83,16 @@ namespace OuterWildsOnline.SyncObjects
                     playerAnimationSync.OnRemoveSuit();
                     playerStateSync.OnRemoveSuit();
                 }
+            }
+            try
+            {
+                string[] playerColourStr = ObjectData.GetUtfString("colour").Split(',');
+                Color playerColour = new Color(int.Parse(playerColourStr[0]) / 255f, int.Parse(playerColourStr[1]) / 255f, int.Parse(playerColourStr[2]) / 255f);
+                UpdateColourRecursive(playerColour, transform);
+            }
+            catch (System.Exception)
+            {
+                ConnectionController.ModHelperInstance.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
             }
         }
         protected override void OnExtensionResponse(SFSObject responseParams)
