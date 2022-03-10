@@ -299,12 +299,7 @@ namespace OuterWildsOnline
             //sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
             //sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
 
-            StartCoroutine(SetObjectsToSync(0.7f));
-            StartCoroutine(InstantiateNewSyncObjects(1f));
-            StartCoroutine(GetClosestSectorToPlayer(0f));
-            StartCoroutine(SendJoinedGameMessage());
-            StartCoroutine(CreateObjectClones(0.5f));
-
+            gameObject.AddComponent<ChatHandler>();
 
             //StartCoroutine(SetObjectsToSync(0.5f));
             //StartCoroutine(InstantiateNewSyncObjects(1f));
@@ -358,7 +353,7 @@ namespace OuterWildsOnline
 
             SFSSectorManager.RefreshSectors();
 
-            gameObject.AddComponent<ChatHandler>();
+     
 
             StopAllCoroutines();
             StartCoroutine(GetClosestSectorToPlayer(2f));
