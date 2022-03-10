@@ -106,6 +106,34 @@ namespace OuterWildsOnline
             thrusters.transform.localPosition += new Vector3(0, 0.2f, 0);
             remotePlayer.AddComponent<PlayerStateSync>();
 
+            //Camera sync
+            GameObject headDirection = new GameObject("HeadDirection");
+            Transform playerCamera = Locator.GetPlayerCamera().transform;
+            headDirection.AddComponent<PlayerHeadSync>();
+            headDirection.transform.parent = remotePlayer.transform;
+            headDirection.transform.localPosition = playerCamera.localPosition;
+            headDirection.transform.localRotation = playerCamera.localRotation;
+
+            //Flashlight Sync
+            Transform playerFlashLight = Locator.GetPlayerCamera().transform.Find("FlashlightRoot");
+
+            playerFlashLight.gameObject.SetActive(false);
+            GameObject flashLight = GameObject.Instantiate(playerFlashLight.gameObject, headDirection.transform);
+            GameObject.Destroy(flashLight.GetComponent<Flashlight>());
+            playerFlashLight.gameObject.SetActive(true);
+            flashLight.gameObject.SetActive(true);
+
+            PlayerFlashlightSync flashLightSync = flashLight.AddComponent<PlayerFlashlightSync>();
+
+            flashLightSync.root = flashLight.transform;
+            flashLightSync.basePivot = flashLight.transform.Find("Flashlight_BasePivot");
+            flashLightSync.wobblePivot = flashLightSync.basePivot.Find("Flashlight_WobblePivot");
+            flashLightSync.lights = flashLightSync.wobblePivot.GetComponentsInChildren<OWLight2>();
+
+            flashLight.transform.localPosition = playerFlashLight.localPosition;
+            flashLight.transform.localRotation = playerFlashLight.localRotation;
+
+
             remotePlayer.AddComponent<SyncObjects.PlayerToReceiveSync>();
 
             //remotePlayer.AddComponent<LockOnReticule>().Init();

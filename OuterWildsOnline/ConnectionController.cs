@@ -3,19 +3,20 @@ using OWML.Common;
 using OWML.Common.Menus;
 using OWML.ModHelper;
 using OWML.ModHelper.Events;
+
 using Sfs2X;
 using Sfs2X.Core;
 using Sfs2X.Entities;
 using Sfs2X.Entities.Data;
 using Sfs2X.Entities.Variables;
-using Sfs2X.Protocol.Serialization;
 using Sfs2X.Requests;
 using Sfs2X.Requests.MMO;
 using Sfs2X.Util;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
+
 using UnityEngine;
 
 namespace OuterWildsOnline

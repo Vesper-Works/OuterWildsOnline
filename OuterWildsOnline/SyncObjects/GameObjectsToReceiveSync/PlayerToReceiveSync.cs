@@ -14,6 +14,9 @@ namespace OuterWildsOnline.SyncObjects
         ThrusterFlameControllerSync[] thrustersControllersSync;
         ThrusterWashControllerSync thrusterWashControllerSync;
 
+        public Vector3 LocalHeadRotation { get; private set; } = Vector3.zero;
+        public bool IsFlashlightOn { get; private set; } = false;
+
         public override void Init(string objectName, int userID, int entityID)
         {
             User objectOwner = sfs.UserManager.GetUserById(userID);
@@ -44,11 +47,14 @@ namespace OuterWildsOnline.SyncObjects
                 playerAnimationSync.OnPutOnSuit();
                 playerStateSync.OnSuitUp();
             }
+
+            IsFlashlightOn = ObjectData.GetBool("light");
+
             try
             {
                 string[] playerColourStr = ObjectData.GetUtfString("colour").Split(',');
                 Color playerColour = new Color(int.Parse(playerColourStr[0]) / 255f, int.Parse(playerColourStr[1]) / 255f, int.Parse(playerColourStr[2]) / 255f);
-                UpdateColourRecursive(playerColour, transform);
+                Utils.UpdateColourRecursive(playerColour, transform);
             }
             catch (System.Exception)
             {
@@ -56,20 +62,12 @@ namespace OuterWildsOnline.SyncObjects
             }
             base.Start();
         }
-        private void UpdateColourRecursive(Color color, Transform child)
-        {
-            foreach (Transform possibleRenderer in child)
-            {
-                if(possibleRenderer.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
-                {
-                    meshRenderer.material.color = color;
-                }
-                UpdateColourRecursive(color, possibleRenderer);
-            }
-        }
+        
         public override void UpdateObjectData(ISFSObject objectData)
         {
             base.UpdateObjectData(objectData);
+
+            IsFlashlightOn = ObjectData.GetBool("light");
 
             if (playerAnimationSync != null && playerStateSync != null)
             {
@@ -88,7 +86,7 @@ namespace OuterWildsOnline.SyncObjects
             {
                 string[] playerColourStr = ObjectData.GetUtfString("colour").Split(',');
                 Color playerColour = new Color(int.Parse(playerColourStr[0]) / 255f, int.Parse(playerColourStr[1]) / 255f, int.Parse(playerColourStr[2]) / 255f);
-                UpdateColourRecursive(playerColour, transform);
+                Utils.UpdateColourRecursive(playerColour, transform);
             }
             catch (System.Exception)
             {
@@ -98,6 +96,19 @@ namespace OuterWildsOnline.SyncObjects
         protected override void OnExtensionResponse(SFSObject responseParams)
         {
             base.OnExtensionResponse(responseParams);
+
+            if (responseParams.ContainsKey("hrotx"))
+            {
+                LocalHeadRotation = new Vector3(responseParams.GetFloat("hrotx"),
+                                responseParams.GetFloat("hroty"),
+                                responseParams.GetFloat("hrotz"));
+            }
+
+            SyncEventsData(responseParams);
+        }
+
+        private void SyncEventsData(SFSObject responseParams) 
+        {
 
             if (responseParams.ContainsKey("jcf"))
             {
@@ -110,19 +121,7 @@ namespace OuterWildsOnline.SyncObjects
                                 responseParams.GetFloat("rgvy"),
                                 responseParams.GetFloat("rgvz")));
             }
-            //if (responseParams.ContainsKey("suit"))
-            //{
-            //    if (responseParams.GetBool("suit") == true)
-            //    {
-            //        playerAnimationSync.OnPutOnSuit();
-            //        playerStateSync.OnSuitUp();
-            //    }
-            //    else
-            //    {
-            //        playerAnimationSync.OnRemoveSuit();
-            //        playerStateSync.OnRemoveSuit();
-            //    }
-            //}
+
             if (responseParams.ContainsKey("pfa"))
             {
                 if (responseParams.GetBool("pfa") == true)

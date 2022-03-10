@@ -58,10 +58,11 @@ namespace OuterWildsOnline.SyncObjects
         }
         protected virtual IEnumerator ForceSync()
         {
-            while (true)
+            bool continueForceSync = true;
+            while (continueForceSync)
             {
                 if (forceSyncDeltaTime <= 0)
-                    break;
+                    continueForceSync = false;
 
                 yield return new WaitForSeconds(forceSyncDeltaTime);
 
