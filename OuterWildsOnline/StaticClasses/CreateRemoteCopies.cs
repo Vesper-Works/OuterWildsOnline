@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace OuterWildsOnline
 {
-    //TODO consertar isso
     public static class CreateRemoteCopies
     {
         private static void FindAndDoAction(Transform parentTransform, Action<Transform> action, bool ignoreIfNotFound, params string[] childNames) 
@@ -139,7 +138,6 @@ namespace OuterWildsOnline
             //remotePlayer.AddComponent<LockOnReticule>().Init();
             return remotePlayer;
         }
-        //TODO fazer com que não fique tão confuso com a quantidade de strings espalhadas
         public static GameObject CreateShipRemoteCopy()
         {
             GameObject remotePlayerShip = new GameObject("Remote Ship");
@@ -264,6 +262,22 @@ namespace OuterWildsOnline
             remoteProbe.SetActive(false);
             remoteProbeBody.SetActive(false);
             return remoteProbe;
+        }
+        //Raft_Body
+        //Disable:
+        //Detector_Raft
+        //LightSensorRoot
+        //Colliders
+        //PushInteractCollider
+        //RideVolume
+        //Sync:
+        //ChurnParticles (Particles)
+        //ImpactAudio (Audio)
+        //MovementAudio (Audio)
+        public static GameObject CreateRaftRemoteCopy() 
+        {
+
+            return null;
         }
     }
 }

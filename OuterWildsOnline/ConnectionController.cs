@@ -353,7 +353,7 @@ namespace OuterWildsOnline
 
             SFSSectorManager.RefreshSectors();
 
-            gameObject.AddComponent<ChatHandler>();
+            new GameObject("ChatHandler").AddComponent<ChatHandler>();
 
             StopAllCoroutines();
             StartCoroutine(GetClosestSectorToPlayer(2f));
@@ -371,7 +371,6 @@ namespace OuterWildsOnline
             Connection.Send(new ExtensionRequest("GeneralEvent", data, Connection.LastJoinedRoom));
             Instance.StartCoroutine(Instance.Disconnect(0.1f));
             //TODO fazer com que ele não disconecte quando ir para o menu principal
-            Destroy(Instance.GetComponent<ChatHandler>());
         }
         public IEnumerator Disconnect(float delay)
         {
