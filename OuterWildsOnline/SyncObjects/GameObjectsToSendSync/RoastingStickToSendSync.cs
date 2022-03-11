@@ -10,8 +10,8 @@ namespace OuterWildsOnline.SyncObjects
         protected override void Awake()
         {
             interpolate = true;
-            GlobalMessenger<Campfire>.RemoveListener("EnterRoastingMode", new Callback<Campfire>(this.OnEnterRoastingMode));
-            GlobalMessenger.RemoveListener("ExitRoastingMode", new Callback(this.OnExitRoastingMode));
+            GlobalMessenger<Campfire>.AddListener("EnterRoastingMode", new Callback<Campfire>(this.OnEnterRoastingMode));
+            GlobalMessenger.AddListener("ExitRoastingMode", new Callback(this.OnExitRoastingMode));
 
             SetObjectName("RoastingStick");
             base.Awake();
@@ -20,13 +20,13 @@ namespace OuterWildsOnline.SyncObjects
 
         private void OnEnterRoastingMode(Campfire campfire)
         {
-            ObjectData.PutBool("enable", false);
+            ObjectData.PutBool("enable", true);
             ConnectionController.Instance.UpdateObjectToSyncData(this);
         }
 
         private void OnExitRoastingMode()
         {
-            ObjectData.PutBool("enable", true);
+            ObjectData.PutBool("enable", false);
             ConnectionController.Instance.UpdateObjectToSyncData(this);
         }
 

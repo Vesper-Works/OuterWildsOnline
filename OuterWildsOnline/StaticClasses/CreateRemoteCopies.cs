@@ -273,7 +273,8 @@ namespace OuterWildsOnline
             remoteStick.GetChild(0).gameObject.AddComponent<SimpleRemoteInterpolation>();
             remoteStick.GetChild(0).localPosition = Vector3.forward;
             remoteStick.gameObject.AddComponent<SyncObjects.RoastingStickToRecieveSync>();
-            remoteStick.DestoryChildrenWithNameRecursively("RoastingStick_Arm");
+            remoteStick.DestroyChildrenWithNameRecursively("RoastingStick_Arm");
+            remoteStick.DestroyComponentFromGameObjectRecursively(typeof(RelativisticParticleSystem));
             remoteStick.gameObject.SetActive(false);
             remoteStick.localScale = Vector3.one * 0.6f;
 

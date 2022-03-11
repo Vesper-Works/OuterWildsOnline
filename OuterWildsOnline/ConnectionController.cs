@@ -359,8 +359,8 @@ namespace OuterWildsOnline
             StartCoroutine(GetClosestSectorToPlayer(2f));
             StartCoroutine(SendJoinedGameMessage());
             //StartCoroutine(ReloadAllRemoteUsers(2f));
-            StartCoroutine(CreateObjectClones(0.7f));
-            StartCoroutine(SetObjectsToSync(0.5f));
+            StartCoroutine(CreateObjectClones(0.5f));
+            StartCoroutine(SetObjectsToSync(0.7f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
         }
         private static void OnExitToMainMenuPatch()
@@ -608,10 +608,30 @@ namespace OuterWildsOnline
 
                 // Send login request
 
+                string playerName = "";
+                try //Stolen straight from QSB!
+                {
+                    var titleScreenManager = FindObjectOfType<TitleScreenManager>();
+                    var profileManager = titleScreenManager._profileManager;
+                    if (profileManager.GetType().Name == "MSStoreProfileManager")
+                    {
+                        playerName = (string)profileManager.GetType().GetProperty("userDisplayName").GetValue(profileManager);
+                    }
+                    else
+                    {
+                        playerName = StandaloneProfileManager.SharedInstance.currentProfile.profileName;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModHelper.Console.WriteLine($"Error - Exception when getting player name : {ex}", MessageType.Error);
+                    playerName = "Player";
+                }
+
 #if DEBUG
                 sfs.Send(new LoginRequest(""));
 #else
-                sfs.Send(new LoginRequest(StandaloneProfileManager.SharedInstance.currentProfile.profileName));
+                sfs.Send(new LoginRequest(playerName));
 #endif
             }
             else
