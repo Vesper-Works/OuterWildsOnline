@@ -263,6 +263,22 @@ namespace OuterWildsOnline
             remoteProbeBody.SetActive(false);
             return remoteProbe;
         }
+      
+        public static GameObject CreateRoastingStickRemoteCopy()
+        {
+            Transform remoteStick = GameObject.Instantiate(Locator.GetPlayerTransform().Find("RoastingSystem/Stick_Root").GetChild(0), null);
+            remoteStick.gameObject.AddComponent<SimpleRemoteInterpolation>();
+            remoteStick.localPosition -= Vector3.forward * 0.1f;
+            remoteStick.GetChild(0).gameObject.AddComponent<SimpleRemoteInterpolation>();
+            remoteStick.GetChild(0).localPosition = Vector3.forward;
+            remoteStick.gameObject.AddComponent<SyncObjects.RoastingStickToRecieveSync>();
+            remoteStick.DestoryChildrenWithNameRecursively("RoastingStick_Arm");
+            remoteStick.gameObject.SetActive(false);
+            remoteStick.localScale = Vector3.one * 0.6f;
+
+            return remoteStick.gameObject;
+        }
+      
         //Raft_Body
         //Disable:
         //Detector_Raft

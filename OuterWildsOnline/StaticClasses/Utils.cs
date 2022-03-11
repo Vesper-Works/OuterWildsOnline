@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace OuterWildsOnline
 {
@@ -20,7 +21,27 @@ namespace OuterWildsOnline
                 }
             }
         }
-
+        public static void DestoryChildrenWithNameRecursively(this Transform transform, string name)
+        {
+            List<GameObject> childrenToDestroy = new List<GameObject>(); 
+            foreach (Transform child in transform)
+            {
+                if (child.gameObject.name.Contains(name))
+                {
+                    childrenToDestroy.Add(child.gameObject);
+                }
+                if (child.childCount > 0)
+                {
+                    DestoryChildrenWithNameRecursively(child, name);
+                }
+            }
+            int length = childrenToDestroy.Count;
+            for (int i = 0; i < length; i++)
+            {
+                GameObject.DestroyImmediate(childrenToDestroy[i]);
+            }
+         
+        }
         public static void RemoveCollisionFromObjectRecursively(Transform transform)
         {
             foreach (Transform child in transform)
