@@ -88,12 +88,13 @@ namespace OuterWildsOnline.SyncObjects
 
             if (playerAnimationSync != null && playerStateSync != null)
             {
-                if (objectData.GetBool("suit"))
+                bool shouldBeWithSuit = objectData.GetBool("suit");
+                if (objectData.GetBool("suit") && !playerStateSync.IsWearingSuit())
                 {
                     playerAnimationSync.OnPutOnSuit();
                     playerStateSync.OnSuitUp();
                 }
-                else
+                else if(!shouldBeWithSuit && playerStateSync.IsWearingSuit())
                 {
                     playerAnimationSync.OnRemoveSuit();
                     playerStateSync.OnRemoveSuit();
