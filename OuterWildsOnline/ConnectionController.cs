@@ -534,7 +534,7 @@ namespace OuterWildsOnline
             if (connectButton == null) return;
             connectButton.Button.enabled = false;
             ModHelper.Menus.MainMenu.NewExpeditionButton.Button.enabled = false;
-            ModHelper.Menus.MainMenu.ResumeExpeditionButton.Title = "ENTER MULTIPLAYER EXPEDITION";
+            ModHelper.Menus.MainMenu.ResumeExpeditionButton.Title = "RESUME EXPEDITION";
             connectButton.Title = "CONNECTING...";
         }
 
