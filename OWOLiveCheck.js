@@ -1,7 +1,8 @@
 var XMLHttpRequest = require('xhr2');
 var Octokit = require('octokit');
 var http = new XMLHttpRequest();
-const octokit = new Octokit.Octokit();
+var args = process.argv.slice(2);
+const octokit = new Octokit.Octokit({ auth: args[0] });
 
 http.open("GET", "http://" + "gameserver.hopto.org", /*async*/true);
 http.onreadystatechange = function () {
@@ -14,7 +15,7 @@ http.onreadystatechange = function () {
           }
           else{
             octokit.request('PATCH /repos/vesper-works/OuterWildsOnline', {
-                description: 'An Outer Wilds MMO experience, just connect and play! Server is offline.'
+                description: 'An Outer Wilds MMO experience, just connect and play! Server is online.'
               })
             console.log("Failed Ping");
           }
