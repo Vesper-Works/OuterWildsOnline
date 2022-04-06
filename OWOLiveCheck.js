@@ -15,7 +15,7 @@ http.onreadystatechange = function () {
           }
           else{
             octokit.request('PATCH /repos/vesper-works/OuterWildsOnline', {
-                description: 'An Outer Wilds MMO experience, just connect and play! Server is online.'
+                description: 'An Outer Wilds MMO experience, just connect and play! Server is offline.'
               })
             console.log("Failed Ping");
           }
