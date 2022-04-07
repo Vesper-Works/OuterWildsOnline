@@ -18,7 +18,6 @@ If applicable, add screenshots to help explain your problem.
 
 **Basic information:**
  - OS :
- - Outer Wilds version :
  - Outer Wilds vendor (Steam/Epic) :
  - OWO Version :
 
