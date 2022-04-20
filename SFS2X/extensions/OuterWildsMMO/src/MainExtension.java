@@ -1,6 +1,7 @@
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.smartfoxserver.v2.SmartFoxServer;
 import com.smartfoxserver.v2.api.ISFSMMOApi;
 import com.smartfoxserver.v2.core.ISFSEvent;
@@ -53,7 +54,7 @@ public class MainExtension extends SFSExtension {
 		addRequestHandler("SyncShipData", ShipDataSyncHandler.class);
 		addRequestHandler("GeneralEvent", GeneralEventHandler.class);
 		addRequestHandler("SyncObject", ObjectSyncHandler.class);
-
+	
 
 	}
 

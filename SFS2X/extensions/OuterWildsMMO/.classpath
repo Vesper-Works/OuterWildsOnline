@@ -16,5 +16,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="D:/Program Files/SmartFoxServer_2X/SFS2X/lib/httpclient-4.5.2.jar"/>
+	<classpathentry kind="lib" path="D:/Program Files/SmartFoxServer_2X/SFS2X/lib/httpcore-4.4.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
