@@ -91,8 +91,8 @@ namespace OuterWildsOnline
         private void OnPlayerDeath(DeathType deathType)
         {
             var data = new SFSObject();
-            data.PutInt("died", (int)deathType); //JoinedGame
-            //data.PutInt("died", (int)deathType); //JoinedGame
+            data.PutInt("died", (int)deathType);
+            //data.PutInt("died", (int)deathType);
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
         }
 
@@ -292,7 +292,7 @@ namespace OuterWildsOnline
             sfs.EnableLagMonitor(true, 2, 5);
 
             SetOnLoadSceneStuff();
-
+            StartCoroutine(SendJoinedGameMessage());
             //// Register callback delegates
             //sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
             //sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
@@ -355,7 +355,7 @@ namespace OuterWildsOnline
 
             StopAllCoroutines();
             StartCoroutine(GetClosestSectorToPlayer(2f));
-            StartCoroutine(SendJoinedGameMessage());
+    
             //StartCoroutine(ReloadAllRemoteUsers(2f));
             StartCoroutine(CreateObjectClones(0.5f));
             StartCoroutine(SetObjectsToSync(0.7f));
