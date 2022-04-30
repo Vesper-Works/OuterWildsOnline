@@ -363,15 +363,16 @@ namespace OuterWildsOnline
         }
         private static void OnExitToMainMenuPatch()
         {
-            Instance.playerInGame = false;
-            var data = new SFSObject();
-            data.PutNull("lg"); //LeftGame
-            Connection.Send(new ExtensionRequest("GeneralEvent", data, Connection.LastJoinedRoom));
+
             Instance.StartCoroutine(Instance.Disconnect(0.1f));
             //TODO fazer com que ele não disconecte quando ir para o menu principal
         }
         public IEnumerator Disconnect(float delay)
         {
+            Instance.playerInGame = false;
+            var data = new SFSObject();
+            data.PutNull("lg"); //LeftGame
+            Connection.Send(new ExtensionRequest("GeneralEvent", data, Connection.LastJoinedRoom));
             yield return new WaitForSeconds(delay);
             Connection.RemoveAllEventListeners();
             Connection.Disconnect();
