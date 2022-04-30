@@ -8,6 +8,10 @@ In the future I plan to have almost all moveable things synced with ghost object
 
 Once the mod is downloaded, press the CONNECT TO SERVER button and then RESUME EXPEDITION.
 
+Config options:
+Server address - Keep as gameserver.hopto.org unless joining unofficial servers.
+Player Colour - A 255,255,255 RGB colour setting changing the tint of your Hearthian.
+
 Any questions? Feel free to ping me on the Outer Wilds Discord - @Vesper
 
 Want to contribute? Great! Check out the TODO project and have a go at creating something there, if you need any help or guidence, give me a ping in the [Outer Wilds Modding Discord](https://discord.gg/9vE5aHxcF9)!
