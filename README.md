@@ -9,13 +9,15 @@ In the future I plan to have almost all moveable things synced with ghost object
 Once the mod is downloaded, press the CONNECT TO SERVER button and then RESUME EXPEDITION.
 
 Currently Synced:<br />
-Player body.<br />
-Player Ship.<br />
-Probe (both the ship's and the player's).<br />
+- Player body.<br />
+  - Player flashlight.<br />
+  - Player roasting stick.<br />
+- Player Ship.<br />
+- Probe (both the ship's and the player's).<br />
 
 Config options:<br />
-Server address - Keep as gameserver.hopto.org unless joining unofficial servers.<br />
-Player Colour - A 255,255,255 RGB colour setting changing the tint of your Hearthian.
+- Server address - Keep as gameserver.hopto.org unless joining unofficial servers.<br />
+- Player Colour - A 255,255,255 RGB colour setting changing the tint of your Hearthian.
 
 Any questions? Feel free to ping me on the Outer Wilds Discord - @Vesper
 
