@@ -11,6 +11,7 @@ Once the mod is downloaded, press the CONNECT TO SERVER button and then RESUME E
 Currently Synced:<br />
 - Player body.<br />
   - Player flashlight.<br />
+  - Player roasting stick.<br />
 - Player Ship.<br />
 - Probe (both the ship's and the player's).<br />
 
