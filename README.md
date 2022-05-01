@@ -12,7 +12,9 @@ Currently Synced:<br />
 - Player body.<br />
   - Player flashlight.<br />
   - Player roasting stick.<br />
+  - Player thrusters.<br />
 - Player Ship.<br />
+  - Ship Thrusters.<br />
 - Probe (both the ship's and the player's).<br />
 
 Config options:<br />
