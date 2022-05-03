@@ -247,25 +247,17 @@ namespace OuterWildsOnline
 
         private void OnPutOnHelmet()
         {
-            helmetlessChatParent.gameObject.SetActive(false);
-            //helmetlessInputField.gameObject.SetActive(false);
-            //helmetlessNameField.gameObject.SetActive(false);
-
-            //helmetInputBox.SetActive(true);
-            //helmetNameField.SetActive(true);
+            if (helmetlessChatParent != null)
+            {
+                helmetlessChatParent.gameObject.SetActive(false);
+            }
         }
         private void OnRemoveHelmet()
         {
-            helmetlessChatParent.gameObject.SetActive(true);
-            //helmetInputBox.SetActive(false);
-            //helmetNameField.SetActive(false);
-            //foreach (var chatBoxText in helmetChatBoxes.Values)
-            //{
-            //    chatBoxText.gameObject.SetActive(false);
-            //}
-
-            //helmetlessInputField.gameObject.SetActive(true);
-            //helmetlessNameField.gameObject.SetActive(true);
+            if(helmetlessChatParent != null)
+            {
+                helmetlessChatParent.gameObject.SetActive(true);
+            }
         }
 
         private void Update()
