@@ -136,6 +136,7 @@ namespace OuterWildsOnline
             remotePlayer.AddComponent<SyncObjects.PlayerToReceiveSync>();
 
             //remotePlayer.AddComponent<LockOnReticule>().Init();
+            GameObject.DontDestroyOnLoad(remotePlayer);
             return remotePlayer;
         }
         public static GameObject CreateShipRemoteCopy()
@@ -217,7 +218,7 @@ namespace OuterWildsOnline
             remotePlayerShip.AddComponent<SyncObjects.ShipToReceiveSync>();
 
             remotePlayerShip.SetActive(false);
-
+            GameObject.DontDestroyOnLoad(remotePlayerShip);
             return remotePlayerShip;
         }
 
@@ -261,6 +262,7 @@ namespace OuterWildsOnline
 
             remoteProbe.SetActive(false);
             remoteProbeBody.SetActive(false);
+            GameObject.DontDestroyOnLoad(remoteProbe);
             return remoteProbe;
         }
       
@@ -276,7 +278,7 @@ namespace OuterWildsOnline
             remoteStick.DestroyComponentFromGameObjectRecursively(typeof(RelativisticParticleSystem));
             remoteStick.gameObject.SetActive(false);
             remoteStick.localScale = Vector3.one * 0.6f;
-
+            GameObject.DontDestroyOnLoad(remoteStick);
             return remoteStick.gameObject;
         }
       

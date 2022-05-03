@@ -21,6 +21,17 @@ using UnityEngine;
 
 namespace OuterWildsOnline
 {
+    public interface INewHorizons
+    {
+        void Create(Dictionary<string, object> config, IModBehaviour mod);
+
+        void LoadConfigs(IModBehaviour mod);
+
+        GameObject GetPlanet(string name);
+
+        String GetCurrentStarSystem();
+    }
+
     public class ConnectionController : ModBehaviour
     {
         public static IModHelper ModHelperInstance;
@@ -37,8 +48,13 @@ namespace OuterWildsOnline
 
         private Vector3 lastPlayerPosition = Vector3.zero;
         private ObjectToSendSync playerRepresentationObject;
-        private static string GetRoomNameFromScene(OWScene scene) 
+        private static string GetRoomNameFromScene(OWScene scene)
         {
+            if (ModHelperInstance.Interaction.ModExists("xen.NewHorizons"))
+            {
+                INewHorizons NewHorizonsAPI = ModHelperInstance.Interaction.GetModApi<INewHorizons>("xen.NewHorizons");
+                return NewHorizonsAPI.GetCurrentStarSystem();
+            }
             switch (scene) 
             {
                 case OWScene.SolarSystem:
@@ -114,7 +130,7 @@ namespace OuterWildsOnline
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
             //I think the remote objects aren't set to not destroy on load, so we don't need to make sure they are destroyed
-            RemoteObjects.Clear(false);
+            //RemoteObjects.Clear(false);
 
             if (sfs == null)
                 return;
@@ -293,19 +309,6 @@ namespace OuterWildsOnline
 
             SetOnLoadSceneStuff();
             StartCoroutine(SendJoinedGameMessage());
-            //// Register callback delegates
-            //sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
-            //sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
-            //sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
-            //sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
-
-            //StartCoroutine(SetObjectsToSync(0.5f));
-            //StartCoroutine(InstantiateNewSyncObjects(1f));
-            //StartCoroutine(GetClosestSectorToPlayer(0f));
-            //StartCoroutine(SendJoinedGameMessage());
-            //StartCoroutine(CreateObjectClones(0.7f));
-
-            //gameObject.AddComponent<ChatHandler>();
 
             ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
         }
@@ -316,28 +319,6 @@ namespace OuterWildsOnline
             sfs.EnableLagMonitor(true, 2, 5);
 
             SetOnLoadSceneStuff();
-
-
-            //sfs.RemoveAllEventListeners();
-
-            //// Register callback delegates
-            //sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
-            //sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
-            //sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
-            //sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
-
-            //SFSSectorManager.RefreshSectors();
-
-            //gameObject.AddComponent<ChatHandler>();
-
-            //StopAllCoroutines();
-            //StartCoroutine(GetClosestSectorToPlayer(2f));
-            //StartCoroutine(SendJoinedGameMessage());
-            //StartCoroutine(ReloadAllRemoteUsers(2f));
-            //StartCoroutine(CreateObjectClones(0.7f));
-            //StartCoroutine(SetObjectsToSync(0.5f));
-            //StartCoroutine(InstantiateNewSyncObjects(1f));
-
         }
         private void SetOnLoadSceneStuff() 
         {
@@ -395,6 +376,7 @@ namespace OuterWildsOnline
         }
         private IEnumerator CreateObjectClones(float delay)
         {
+            if(RemoteObjects.CloneStorage.Count != 0) { yield break; } //Clone bay already populated
             yield return new WaitForSeconds(delay);
             RemoteObjects.CloneStorage.Add("Player", CreateRemoteCopies.CreatePlayerRemoteCopy());
             ModHelper.Console.WriteLine("Player added to clone bay");
@@ -509,12 +491,19 @@ namespace OuterWildsOnline
                     else
                         SpawnRemoteObject(user.Id, data);
                 }
-                //If it is still in the objectsFromUser list then it isn no longer inside that user variables, which means it is no longer an existing object
+                //If it is still in the objectsFromUser list then it is no longer inside that user variables, which means it is no longer an existing object
                 foreach (var obj in existingObjectsFromUser)
                 {
                     ModHelper.Console.WriteLine($"The object {obj.ObjectName} ({obj.ObjectId}) from {obj.UserId} no longer exists");
                     RemoteObjects.RemoveObject(obj);
-                    Destroy(obj.gameObject);
+                    try
+                    {
+                        Destroy(obj.gameObject);
+                    }
+                    catch (Exception ex)
+                    {
+                        Destroy(obj);
+                    }
                 }
             }
         }
