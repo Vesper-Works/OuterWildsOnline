@@ -135,6 +135,7 @@ namespace OuterWildsOnline
 
             remotePlayer.AddComponent<SyncObjects.PlayerToReceiveSync>();
 
+            Utils.DestroyComponentFromGameObjectRecursively(remotePlayer.transform, typeof(PerCameraRendererState));
             //remotePlayer.AddComponent<LockOnReticule>().Init();
             GameObject.DontDestroyOnLoad(remotePlayer);
             return remotePlayer;
@@ -217,6 +218,7 @@ namespace OuterWildsOnline
 
             remotePlayerShip.AddComponent<SyncObjects.ShipToReceiveSync>();
 
+            Utils.DestroyComponentFromGameObjectRecursively(remotePlayerShip.transform, typeof(PerCameraRendererState));
             remotePlayerShip.SetActive(false);
             GameObject.DontDestroyOnLoad(remotePlayerShip);
             return remotePlayerShip;

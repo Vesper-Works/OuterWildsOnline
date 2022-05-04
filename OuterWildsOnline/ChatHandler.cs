@@ -60,15 +60,12 @@ namespace OuterWildsOnline
         private Text helmetNameFieldText;
 
         private NotificationData shipAloneInSpace;
-        //private NotificationData shipShowChat;
-        private int shipMessageCount;
 
         private bool selected;
 
         private ScreenPrompt exitChatPrompt;
         private ScreenPrompt enterChatPrompt;
 
-        private float chatOpacity = 1;
         private InputMode lastInputMode;
 
         public static ChatMode chatMode;
@@ -322,6 +319,7 @@ namespace OuterWildsOnline
             {
                 lastInputMode = OWInput.GetInputMode();
                 OWInput.ChangeInputMode(InputMode.KeyboardInput);
+                Locator.GetPauseCommandListener().AddPauseCommandLock();
                 selected = true;
                 Locator.GetPromptManager().AddScreenPrompt(exitChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(enterChatPrompt);
@@ -330,6 +328,7 @@ namespace OuterWildsOnline
             }
             if (Keyboard.current.escapeKey.wasPressedThisFrame && selected)
             {
+                
                 OWInput.ChangeInputMode(lastInputMode);
                 if (PlayerState.UsingShipComputer()) { OWInput.ChangeInputMode(InputMode.ShipComputer); }
                 selected = false;
@@ -337,6 +336,7 @@ namespace OuterWildsOnline
                 Locator.GetPromptManager().RemoveScreenPrompt(exitChatPrompt);
                 StopCoroutine(FadeOutChatAfterDisuse());
                 StartCoroutine(FadeOutChatAfterDisuse());
+                Locator.GetPauseCommandListener().RemovePauseCommandLock();
             }
         }
 

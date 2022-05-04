@@ -22,7 +22,7 @@ namespace OuterWildsOnline
 
         public static void RefreshSectors()
         {
-            if (UnityEngine.Object.FindObjectsOfType<Sector>().Length == 0) { ConnectionController.ModHelperInstance.Console.WriteLine("No Sectors Found"); return; }
+            if (UnityEngine.Object.FindObjectsOfType<Sector>().Length == 0) { ConnectionController.Console.WriteLine("No Sectors Found"); return; }
             Sector[] sectorsFound = UnityEngine.Object.FindObjectsOfType<Sector>();
             sectorsFound.OrderBy(sector => sector.GetName());
             sectorsFound.OrderBy(sector => sector.GetName() == Sector.Name.DreamWorld || sector.GetName() == Sector.Name.Vessel || sector.GetName() == Sector.Name.VesselDimension);

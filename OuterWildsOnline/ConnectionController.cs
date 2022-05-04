@@ -38,6 +38,8 @@ namespace OuterWildsOnline
     public class ConnectionController : ModBehaviour
     {
         public static IModHelper ModHelperInstance;
+        public static IModConsole Console;
+
         public static SmartFox Connection { get => Instance.sfs; }
 
         private SmartFox sfs;
@@ -57,18 +59,18 @@ namespace OuterWildsOnline
             if (interaction.ModExists("xen.NewHorizons"))
             {
                 INewHorizons NewHorizonsAPI = interaction.GetModApi<INewHorizons>("xen.NewHorizons");
-                if(NewHorizonsAPI.GetCurrentStarSystem() == "SolarSystem")
+                if (NewHorizonsAPI.GetCurrentStarSystem() == "SolarSystem")
                 {
                     string[] addons = NewHorizonsAPI.GetInstalledAddons();
                     if (addons.Contains("xen.NewHorizons"))
                     {
                         addons.QuickRemove("xen.NewHorizons");
                     }
-                    return Convert.ToBase64String(System.Security.Cryptography.MD5.Create().ComputeHash(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Join("", addons)))).Substring(0, 20);
+                    return Convert.ToBase64String(System.Security.Cryptography.MD5.Create().ComputeHash(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Join("", addons)))).Substring(0, 15);
                 }
                 else
                 {
-                    return NewHorizonsAPI.GetCurrentStarSystem();
+                    return NewHorizonsAPI.GetCurrentStarSystem().Substring(0, 15);
                 }
             }
             switch (scene)
@@ -95,6 +97,7 @@ namespace OuterWildsOnline
         {
             Instance = this;
             ModHelperInstance = ModHelper;
+            Console = ModHelper.Console;
 
             Application.runInBackground = true;
             // Skip flash screen.
@@ -320,27 +323,28 @@ namespace OuterWildsOnline
         }
         private void OnPlayerWakeUp()
         {
-            new GameObject("ChatHandler").AddComponent<ChatHandler>();
+
             SetOnLoadSceneStuff();
+
         }
         private void LoadServerThings()
         {
             ModHelper.Console.WriteLine("Loaded game scene!");
 
+            //SetOnLoadSceneStuff();
+
             sfs.EnableLagMonitor(true, 2, 5);
 
-            SetOnLoadSceneStuff();
             StartCoroutine(SendJoinedGameMessage());
-
 
             ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
         }
         private void ReloadServerThings()
         {
             ModHelper.Console.WriteLine("Reloaded game scene!");
-
+            //SetOnLoadSceneStuff();
             sfs.EnableLagMonitor(true, 2, 5);
-            SetOnLoadSceneStuff();
+
         }
         private void SetOnLoadSceneStuff()
         {
@@ -354,19 +358,16 @@ namespace OuterWildsOnline
 
             SFSSectorManager.RefreshSectors();
 
-
-
             StopAllCoroutines();
             StartCoroutine(GetClosestSectorToPlayer(2f));
 
-            //StartCoroutine(ReloadAllRemoteUsers(2f));
             StartCoroutine(CreateObjectClones(0.5f));
             StartCoroutine(SetObjectsToSync(0.7f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
+            new GameObject("ChatHandler").AddComponent<ChatHandler>();
         }
         private static void OnExitToMainMenuPatch()
         {
-
             Instance.StartCoroutine(Instance.Disconnect(0.1f));
             //TODO fazer com que ele não disconecte quando ir para o menu principal
         }
@@ -392,6 +393,7 @@ namespace OuterWildsOnline
         private IEnumerator SendJoinedGameMessage()
         {
             yield return new WaitForSeconds(3f);
+
             var data = new SFSObject();
             data.PutNull("jg"); //JoinedGame
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
