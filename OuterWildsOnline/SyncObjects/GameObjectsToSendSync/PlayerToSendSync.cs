@@ -134,7 +134,7 @@ namespace OuterWildsOnline.SyncObjects
             }
             catch
             {
-                ConnectionController.ModHelperInstance.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
+                ConnectionController.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
             }
         }
         

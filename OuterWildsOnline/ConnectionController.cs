@@ -16,14 +16,30 @@ using Sfs2X.Util;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 using UnityEngine;
 
 namespace OuterWildsOnline
 {
+    public interface INewHorizons
+    {
+        void Create(Dictionary<string, object> config, IModBehaviour mod);
+
+        void LoadConfigs(IModBehaviour mod);
+
+        GameObject GetPlanet(string name);
+
+        String GetCurrentStarSystem();
+
+        string[] GetInstalledAddons();
+    }
+
     public class ConnectionController : ModBehaviour
     {
         public static IModHelper ModHelperInstance;
+        public static IModConsole Console;
+
         public static SmartFox Connection { get => Instance.sfs; }
 
         private SmartFox sfs;
@@ -37,9 +53,27 @@ namespace OuterWildsOnline
 
         private Vector3 lastPlayerPosition = Vector3.zero;
         private ObjectToSendSync playerRepresentationObject;
-        private static string GetRoomNameFromScene(OWScene scene) 
+        private static string GetRoomNameFromScene(OWScene scene)
         {
-            switch (scene) 
+            var interaction = ModHelperInstance.Interaction;
+            if (interaction.ModExists("xen.NewHorizons"))
+            {
+                INewHorizons NewHorizonsAPI = interaction.GetModApi<INewHorizons>("xen.NewHorizons");
+                if (NewHorizonsAPI.GetCurrentStarSystem() == "SolarSystem")
+                {
+                    string[] addons = NewHorizonsAPI.GetInstalledAddons();
+                    if (addons.Contains("xen.NewHorizons"))
+                    {
+                        addons.QuickRemove("xen.NewHorizons");
+                    }
+                    return Convert.ToBase64String(System.Security.Cryptography.MD5.Create().ComputeHash(System.Text.ASCIIEncoding.ASCII.GetBytes(string.Join("", addons)))).Substring(0, 15);
+                }
+                else
+                {
+                    return NewHorizonsAPI.GetCurrentStarSystem().Substring(0, 15);
+                }
+            }
+            switch (scene)
             {
                 case OWScene.SolarSystem:
                     return "SolarSystem";
@@ -63,6 +97,7 @@ namespace OuterWildsOnline
         {
             Instance = this;
             ModHelperInstance = ModHelper;
+            Console = ModHelper.Console;
 
             Application.runInBackground = true;
             // Skip flash screen.
@@ -84,9 +119,10 @@ namespace OuterWildsOnline
             ModHelper.Menus.MainMenu.OnInit += DoMainMenuStuff;
 
             ModHelper.Events.Scenes.OnCompleteSceneChange += OnCompleteSceneChange;
-
+            GlobalMessenger.AddListener("WakeUp", new Callback(this.OnPlayerWakeUp));
             GlobalMessenger<DeathType>.AddListener("PlayerDeath", new Callback<DeathType>(this.OnPlayerDeath));
         }
+
 
         private void OnPlayerDeath(DeathType deathType)
         {
@@ -101,7 +137,7 @@ namespace OuterWildsOnline
             connectButton = ModHelper.Menus.MainMenu.NewExpeditionButton.Duplicate("");
             connectButton.OnClick += StartUpConnection;
 
-            if(sfs == null) 
+            if (sfs == null)
             {
                 SetButtonConnect();
                 return;
@@ -126,7 +162,7 @@ namespace OuterWildsOnline
             if (EnterOrCheckIfInValidSceneRoom(currentSceneRoom))
             {
                 RemoveAllObjectsFromSync();
-                if (!playerInGame) 
+                if (!playerInGame)
                 {
                     LoadServerThings();
                     playerInGame = true;
@@ -167,16 +203,16 @@ namespace OuterWildsOnline
                 sfs.ProcessEvents();
             }
         }
-        
-        public static void SetPlayerRepresentationObject(ObjectToSendSync playerRepresentationObject) 
+
+        public static void SetPlayerRepresentationObject(ObjectToSendSync playerRepresentationObject)
         {
             Instance.playerRepresentationObject = playerRepresentationObject;
         }
-        private void UpdateUserCoords() 
+        private void UpdateUserCoords()
         {
             List<UserVariable> userVariables = new List<UserVariable>();
 
-            if (usePlayerPosForSync && playerRepresentationObject !=  null)
+            if (usePlayerPosForSync && playerRepresentationObject != null)
             {
                 if (playerRepresentationObject.transform == null)
                     return;
@@ -216,7 +252,7 @@ namespace OuterWildsOnline
                 yield return new WaitForSecondsRealtime(0.4f);
             }
         }
-        
+
         private void RemoveRemoteUser(int userID)
         {
             ModHelper.Console.WriteLine("Removed: " + userID);
@@ -227,13 +263,13 @@ namespace OuterWildsOnline
         {
             string objName = data.GetUtfString("name");
             int objId = data.GetInt("id");
-            //ModHelper.Console.WriteLine($"({sfs.MySelf.Id}) Spawning {objName} from user {userID}");
-            if (!RemoteObjects.CloneStorage.ContainsKey(objName)) 
+
+            if (!RemoteObjects.CloneStorage.ContainsKey(objName))
             {
                 ModHelper.Console.WriteLine($"We don't have a prefab for the object with name {objName}");
                 return;
             }
-            
+
             GameObject remoteObject = Instantiate(RemoteObjects.CloneStorage[objName]);
             var comp = remoteObject.GetComponent<ObjectToRecieveSync>();
             comp.Init(objName, userID, objId);
@@ -242,7 +278,7 @@ namespace OuterWildsOnline
             {
                 ModHelper.Console.WriteLine($"New Object is named {comp.ObjectName} ({comp.ObjectId}) from {userID}");
                 comp.UpdateObjectData(data);
-            }            
+            }
             else //If we can't add a newly spawned one this means that this is, somehow, a duplicate, so destroy the latest duplicate
             {
                 ModHelper.Console.WriteLine($"There is no user with this id ({comp.UserId}) or a object with the same name ({comp.ObjectName}) and id ({comp.ObjectId})");
@@ -270,7 +306,7 @@ namespace OuterWildsOnline
                 //If the user is already in the game (went far away and came back), enable their remote objects
                 foreach (var syncedObject in RemoteObjects.GetUserObjectList(user.Id))
                 {
-                    if(syncedObject != null)
+                    if (syncedObject != null)
                         syncedObject.gameObject.SetActive(true);
                 }
             }
@@ -285,61 +321,32 @@ namespace OuterWildsOnline
                 }
             }
         }
+        private void OnPlayerWakeUp()
+        {
+
+            SetOnLoadSceneStuff();
+
+        }
         private void LoadServerThings()
         {
             ModHelper.Console.WriteLine("Loaded game scene!");
 
+            //SetOnLoadSceneStuff();
+
             sfs.EnableLagMonitor(true, 2, 5);
 
-            SetOnLoadSceneStuff();
             StartCoroutine(SendJoinedGameMessage());
-            //// Register callback delegates
-            //sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
-            //sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
-            //sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
-            //sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
-
-            //StartCoroutine(SetObjectsToSync(0.5f));
-            //StartCoroutine(InstantiateNewSyncObjects(1f));
-            //StartCoroutine(GetClosestSectorToPlayer(0f));
-            //StartCoroutine(SendJoinedGameMessage());
-            //StartCoroutine(CreateObjectClones(0.7f));
-
-            //gameObject.AddComponent<ChatHandler>();
 
             ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
         }
         private void ReloadServerThings()
         {
             ModHelper.Console.WriteLine("Reloaded game scene!");
-
+            //SetOnLoadSceneStuff();
             sfs.EnableLagMonitor(true, 2, 5);
 
-            SetOnLoadSceneStuff();
-
-
-            //sfs.RemoveAllEventListeners();
-
-            //// Register callback delegates
-            //sfs.AddEventListener(SFSEvent.CONNECTION_LOST, OnConnectionLost);
-            //sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
-            //sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
-            //sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
-
-            //SFSSectorManager.RefreshSectors();
-
-            //gameObject.AddComponent<ChatHandler>();
-
-            //StopAllCoroutines();
-            //StartCoroutine(GetClosestSectorToPlayer(2f));
-            //StartCoroutine(SendJoinedGameMessage());
-            //StartCoroutine(ReloadAllRemoteUsers(2f));
-            //StartCoroutine(CreateObjectClones(0.7f));
-            //StartCoroutine(SetObjectsToSync(0.5f));
-            //StartCoroutine(InstantiateNewSyncObjects(1f));
-
         }
-        private void SetOnLoadSceneStuff() 
+        private void SetOnLoadSceneStuff()
         {
             sfs.RemoveAllEventListeners();
 
@@ -351,19 +358,16 @@ namespace OuterWildsOnline
 
             SFSSectorManager.RefreshSectors();
 
-            new GameObject("ChatHandler").AddComponent<ChatHandler>();
-
             StopAllCoroutines();
             StartCoroutine(GetClosestSectorToPlayer(2f));
-    
-            //StartCoroutine(ReloadAllRemoteUsers(2f));
+
             StartCoroutine(CreateObjectClones(0.5f));
             StartCoroutine(SetObjectsToSync(0.7f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
+            new GameObject("ChatHandler").AddComponent<ChatHandler>();
         }
         private static void OnExitToMainMenuPatch()
         {
-
             Instance.StartCoroutine(Instance.Disconnect(0.1f));
             //TODO fazer com que ele não disconecte quando ir para o menu principal
         }
@@ -389,12 +393,14 @@ namespace OuterWildsOnline
         private IEnumerator SendJoinedGameMessage()
         {
             yield return new WaitForSeconds(3f);
+
             var data = new SFSObject();
             data.PutNull("jg"); //JoinedGame
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
         }
         private IEnumerator CreateObjectClones(float delay)
         {
+            if (RemoteObjects.CloneStorage.Count != 0) { yield break; } //Clone bay already populated
             yield return new WaitForSeconds(delay);
             RemoteObjects.CloneStorage.Add("Player", CreateRemoteCopies.CreatePlayerRemoteCopy());
             ModHelper.Console.WriteLine("Player added to clone bay");
@@ -411,14 +417,14 @@ namespace OuterWildsOnline
             Locator.GetPlayerTransform().gameObject.AddComponent<PlayerToSendSync>();
             Locator.GetShipBody().gameObject.AddComponent<ShipToSendSync>();
             Locator.GetProbe().gameObject.AddComponent<ProbeToSendSync>();
-            Locator.GetPlayerTransform().Find("RoastingSystem/Stick_Root").GetChild(0).gameObject.AddComponent<RoastingStickToSendSync>();      
+            Locator.GetPlayerTransform().Find("RoastingSystem/Stick_Root").GetChild(0).gameObject.AddComponent<RoastingStickToSendSync>();
         }
 
         #region ObjectAdditionRemovalAndUpdate
         public void AddObjectToSync(ObjectToSendSync @object)
         {
             //ModHelper.Console.WriteLine($"Adding to sync object ({@object.ObjectName} / {@object.ObjectId})");
-            
+
             ISFSObject objectsList = RemoteObjects.LocalObjectsListFromMyself;
 
             string objectKey = string.Join("-", @object.ObjectName, @object.ObjectId);
@@ -509,12 +515,19 @@ namespace OuterWildsOnline
                     else
                         SpawnRemoteObject(user.Id, data);
                 }
-                //If it is still in the objectsFromUser list then it isn no longer inside that user variables, which means it is no longer an existing object
+                //If it is still in the objectsFromUser list then it is no longer inside that user variables, which means it is no longer an existing object
                 foreach (var obj in existingObjectsFromUser)
                 {
                     ModHelper.Console.WriteLine($"The object {obj.ObjectName} ({obj.ObjectId}) from {obj.UserId} no longer exists");
                     RemoteObjects.RemoveObject(obj);
-                    Destroy(obj.gameObject);
+                    try
+                    {
+                        Destroy(obj.gameObject);
+                    }
+                    catch (Exception ex)
+                    {
+                        Destroy(obj);
+                    }
                 }
             }
         }
@@ -699,7 +712,7 @@ namespace OuterWildsOnline
             int userID = responseParams.GetInt("userId");
 
             //if (UsersData.GetUserName(userID,out string userName))
-                GeneralEventResponses(userID, responseParams, cmd);
+            GeneralEventResponses(userID, responseParams, cmd);
         }
         private void GeneralEventResponses(int userId, SFSObject responseParams, string cmd)
         {
@@ -731,7 +744,7 @@ namespace OuterWildsOnline
                 NotificationManager.SharedInstance.PostNotification(data, false);
                 RemoveRemoteUser(responseParams.GetInt("userId"));
             }
-            else if(responseParams.ContainsKey("died"))
+            else if (responseParams.ContainsKey("died"))
             {
                 string text = user.Name + " has died:\n" + Enum.GetName(typeof(DeathType), responseParams.GetInt("died"));
                 float displayTime = 4f;
@@ -765,7 +778,7 @@ namespace OuterWildsOnline
             User user = (User)evt.Params["user"];
             List<String> changedVars = (List<String>)evt.Params["changedVars"];
 
-            if (changedVars.Contains("objs") && !user.IsItMe)
+            if (changedVars.Contains("objs") && !user.IsItMe && user.IsJoinedInRoom(Connection.LastJoinedRoom))
                 CheckUserObjVariable(user);
         }
         private void Resume()

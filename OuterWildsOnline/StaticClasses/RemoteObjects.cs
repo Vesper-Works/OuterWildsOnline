@@ -87,7 +87,7 @@ namespace OuterWildsOnline
                 DestroyAllObjects();
 
             Objects.Clear();
-            CloneStorage.Clear();
+           // CloneStorage.Clear();
         }
         private static void DestroyAllObjects()
         {

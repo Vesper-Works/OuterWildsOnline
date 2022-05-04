@@ -27,6 +27,7 @@ namespace OuterWildsOnline.SyncObjects
             var data = new SFSObject();
             data.PutBool("tt", true);
             data.PutUtfString("objectName", ObjectName);
+            data.PutInt("objectId", objectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
         private void ShipStoppedTranslationalThrust()
@@ -34,6 +35,7 @@ namespace OuterWildsOnline.SyncObjects
             var data = new SFSObject();
             data.PutBool("tt", false);
             data.PutUtfString("objectName", ObjectName);
+            data.PutInt("objectId", objectId);
             sfs.Send(new ExtensionRequest("SyncObject", data, sfs.LastJoinedRoom));
         }
 
@@ -47,6 +49,7 @@ namespace OuterWildsOnline.SyncObjects
                 {
                     data.PutFloat("tmla", shipThrusterModel.GetLocalAcceleration().y);
                     data.PutUtfString("objectName", ObjectName);
+                    data.PutInt("objectId", objectId);
                     ThrusterFlameController[] thrusters1 = GameObject.Find("Ship_Body/Module_Engine/Effects_Engine/Thrusters").GetComponentsInChildren<ThrusterFlameController>(true);
                     ThrusterFlameController[] thrusters2 = GameObject.Find("Ship_Body/Module_Supplies/Effects_Supplies/Thrusters").GetComponentsInChildren<ThrusterFlameController>(true);
                     ThrusterFlameController[] thrusters = new ThrusterFlameController[thrusters1.Length + thrusters2.Length];

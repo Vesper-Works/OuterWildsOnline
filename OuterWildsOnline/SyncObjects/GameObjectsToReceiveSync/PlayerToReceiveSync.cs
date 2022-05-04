@@ -75,11 +75,11 @@ namespace OuterWildsOnline.SyncObjects
             }
             catch (System.Exception)
             {
-                ConnectionController.ModHelperInstance.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
+                ConnectionController.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
             }
             base.Start();
         }
-        
+
         public override void UpdateObjectData(ISFSObject objectData)
         {
             base.UpdateObjectData(objectData);
@@ -94,7 +94,7 @@ namespace OuterWildsOnline.SyncObjects
                     playerAnimationSync.OnPutOnSuit();
                     playerStateSync.OnSuitUp();
                 }
-                else if(!shouldBeWithSuit && playerStateSync.IsWearingSuit())
+                else if (!shouldBeWithSuit && playerStateSync.IsWearingSuit())
                 {
                     playerAnimationSync.OnRemoveSuit();
                     playerStateSync.OnRemoveSuit();
@@ -108,7 +108,7 @@ namespace OuterWildsOnline.SyncObjects
             }
             catch (System.Exception)
             {
-                ConnectionController.ModHelperInstance.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
+                ConnectionController.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
             }
         }
         protected override void OnExtensionResponse(SFSObject responseParams)
@@ -125,7 +125,7 @@ namespace OuterWildsOnline.SyncObjects
             SyncEventsData(responseParams);
         }
 
-        private void SyncEventsData(SFSObject responseParams) 
+        private void SyncEventsData(SFSObject responseParams)
         {
 
             if (responseParams.ContainsKey("jcf"))

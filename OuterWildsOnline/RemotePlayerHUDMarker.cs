@@ -64,7 +64,7 @@ namespace OuterWildsOnline
             }
             else
             {
-                ConnectionController.ModHelperInstance.Console.WriteLine($"Warning - _canvasMarker for {gameObject.name} is null!", OWML.Common.MessageType.Warning);
+                ConnectionController.Console.WriteLine($"Warning - _canvasMarker for {gameObject.name} is null!", OWML.Common.MessageType.Warning);
             }
         }
         private void Initialize()
