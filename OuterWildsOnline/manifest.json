@@ -3,7 +3,7 @@
   "author": "Vesper",
   "name": "Outer Wilds Online",
   "uniqueName": "Vesper.OuterWildsMMO",
-  "version": "0.4.5",
-  "owmlVersion": "2.3.2",
+  "version": "0.5.0",
+  "owmlVersion": "2.3.3",
   "conflicts": [ "Tandicase.interstellargargantua" ]
 }
