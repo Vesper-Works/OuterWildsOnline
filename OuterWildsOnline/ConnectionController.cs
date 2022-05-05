@@ -334,7 +334,7 @@ namespace OuterWildsOnline
             //SetOnLoadSceneStuff();
 
             sfs.EnableLagMonitor(true, 2, 5);
-
+            
             StartCoroutine(SendJoinedGameMessage());
 
             ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
@@ -358,7 +358,7 @@ namespace OuterWildsOnline
 
             SFSSectorManager.RefreshSectors();
 
-            StopAllCoroutines();
+            //StopAllCoroutines();
             StartCoroutine(GetClosestSectorToPlayer(2f));
 
             StartCoroutine(CreateObjectClones(0.5f));
