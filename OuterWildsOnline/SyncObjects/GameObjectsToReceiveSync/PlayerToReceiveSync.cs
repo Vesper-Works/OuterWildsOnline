@@ -4,6 +4,7 @@ using Sfs2X.Entities.Data;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System;
 
 namespace OuterWildsOnline.SyncObjects
 {
@@ -67,16 +68,7 @@ namespace OuterWildsOnline.SyncObjects
 
             IsFlashlightOn = ObjectData.GetBool("light");
 
-            try
-            {
-                string[] playerColourStr = ObjectData.GetUtfString("colour").Split(',');
-                Color playerColour = new Color(int.Parse(playerColourStr[0]) / 255f, int.Parse(playerColourStr[1]) / 255f, int.Parse(playerColourStr[2]) / 255f);
-                Utils.UpdateColourRecursive(playerColour, transform);
-            }
-            catch (System.Exception)
-            {
-                ConnectionController.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
-            }
+            UpdateColour();
             base.Start();
         }
 
@@ -100,15 +92,41 @@ namespace OuterWildsOnline.SyncObjects
                     playerStateSync.OnRemoveSuit();
                 }
             }
+            UpdateColour();
+        }
+        private void UpdateColour()
+        {
             try
             {
-                string[] playerColourStr = ObjectData.GetUtfString("colour").Split(',');
-                Color playerColour = new Color(int.Parse(playerColourStr[0]) / 255f, int.Parse(playerColourStr[1]) / 255f, int.Parse(playerColourStr[2]) / 255f);
-                Utils.UpdateColourRecursive(playerColour, transform);
+                string playerColourString = ObjectData.GetUtfString("colour");
+                if (playerColourString == "")
+                {
+
+                    System.Security.Cryptography.MD5 md5Hasher = System.Security.Cryptography.MD5.Create();
+                    var hashed = md5Hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(Utils.GetPlayerProfileName()));
+                    var ivalue = BitConverter.ToInt32(hashed, 0);
+                    Func<string, int> convertTo255 = delegate(string value)
+                    {
+                        return int.Parse(value) * 255 / 999;
+                    };
+                    Color playerColour = new Color(
+                        convertTo255(ivalue.ToString().Substring(0, 3)) / 255f,
+                        convertTo255(ivalue.ToString().Substring(3, 3)) / 255f,
+                        convertTo255(ivalue.ToString().Substring(6, 3)) / 255f);
+                    ConnectionController.ModHelperInstance.Console.WriteLine("From PlayerToReceiveSync: " + playerColour.ToString());
+                    Utils.UpdateColourRecursive(playerColour, transform);
+                }
+                else
+                {
+                    string[] playerColourStr = playerColourString.Split(',');
+                    Color playerColour = new Color(int.Parse(playerColourStr[0]) / 255f, int.Parse(playerColourStr[1]) / 255f, int.Parse(playerColourStr[2]) / 255f);
+                    Utils.UpdateColourRecursive(playerColour, transform);
+                }
             }
-            catch (System.Exception)
+            catch (System.Exception e)
             {
-                ConnectionController.Console.WriteLine("Player colour error. (Make sure to use x,x,x format).");
+                ConnectionController.ModHelperInstance.Console.WriteLine(e.Message);
+                ConnectionController.ModHelperInstance.Console.WriteLine("Player colour error. (Make sure to use x,x,x format). To Recieve");
             }
         }
         protected override void OnExtensionResponse(SFSObject responseParams)

@@ -18,8 +18,6 @@ namespace OuterWildsOnline
         private static Sector closestSectorToPlayer;
         private static int closestSectorToPlayerID;
 
-        private static OWRigidbody lastGround;
-
         public static void RefreshSectors()
         {
             if (UnityEngine.Object.FindObjectsOfType<Sector>().Length == 0) { ConnectionController.Console.WriteLine("No Sectors Found"); return; }

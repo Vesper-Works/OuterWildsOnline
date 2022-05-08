@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OWML.Common;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -79,6 +80,34 @@ namespace OuterWildsOnline
                 }
                 UpdateColourRecursive(color, possibleRenderer);
             }
+        }
+        public static string GetPlayerProfileName()
+        {
+            string playerName;
+            try //Stolen straight from QSB!
+            {
+                //ConnectionController.Console.WriteLine($"Here1", MessageType.Warning);
+                //var titleScreenManager = MonoBehaviour.FindObjectOfType<TitleScreenManager>();
+                //ConnectionController.Console.WriteLine($"Here2", MessageType.Warning);
+                //var profileManager = titleScreenManager._profileManager;
+                //ConnectionController.Console.WriteLine($"Here3", MessageType.Warning);
+                //if (profileManager.GetType().Name == "MSStoreProfileManager")
+                //{
+                //    playerName = (string)profileManager.GetType().GetProperty("userDisplayName").GetValue(profileManager);
+                //    ConnectionController.Console.WriteLine($"Here4", MessageType.Warning);
+                //}
+                //else
+                {
+                    playerName = StandaloneProfileManager.SharedInstance.currentProfile.profileName;
+                    ConnectionController.Console.WriteLine($"{playerName}", MessageType.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                ConnectionController.Console.WriteLine($"Error - Exception when getting player name : {ex}", MessageType.Error);
+                playerName = "Unknown Player";
+            }
+            return playerName;
         }
     }
 }

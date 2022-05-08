@@ -87,10 +87,12 @@ namespace OuterWildsOnline
         public override void Configure(IModConfig config)
         {
             serverAddress = config.GetSettingsValue<string>("serverAddress");
+
             if (playerRepresentationObject != null)
             {
                 playerRepresentationObject.ConfigChanged(config);
             }
+
         }
 
         private void Start()
@@ -334,7 +336,7 @@ namespace OuterWildsOnline
             //SetOnLoadSceneStuff();
 
             sfs.EnableLagMonitor(true, 2, 5);
-            
+
             StartCoroutine(SendJoinedGameMessage());
 
             ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
@@ -374,9 +376,7 @@ namespace OuterWildsOnline
         public IEnumerator Disconnect(float delay)
         {
             Instance.playerInGame = false;
-            var data = new SFSObject();
-            data.PutNull("lg"); //LeftGame
-            Connection.Send(new ExtensionRequest("GeneralEvent", data, Connection.LastJoinedRoom));
+            SendLeaveGameMessage();
             yield return new WaitForSeconds(delay);
             Connection.RemoveAllEventListeners();
             Connection.Disconnect();
@@ -384,6 +384,12 @@ namespace OuterWildsOnline
 
             if (Instance.connectButton != null)
                 Instance.SetButtonConnect();
+        }
+        private void SendLeaveGameMessage()
+        {
+            var data = new SFSObject();
+            data.PutNull("lg"); //LeftGame
+            Connection.Send(new ExtensionRequest("GeneralEvent", data, Connection.LastJoinedRoom));
         }
         private IEnumerator ReloadAllRemoteUsers(float delay)
         {
@@ -608,6 +614,7 @@ namespace OuterWildsOnline
 
             // Connect to SFS2X
             sfs.Connect(cfg);
+
         }
 
         #region ConnectionAndLoginEvent
@@ -619,30 +626,10 @@ namespace OuterWildsOnline
 
                 // Send login request
 
-                string playerName = "";
-                try //Stolen straight from QSB!
-                {
-                    var titleScreenManager = FindObjectOfType<TitleScreenManager>();
-                    var profileManager = titleScreenManager._profileManager;
-                    if (profileManager.GetType().Name == "MSStoreProfileManager")
-                    {
-                        playerName = (string)profileManager.GetType().GetProperty("userDisplayName").GetValue(profileManager);
-                    }
-                    else
-                    {
-                        playerName = StandaloneProfileManager.SharedInstance.currentProfile.profileName;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ModHelper.Console.WriteLine($"Error - Exception when getting player name : {ex}", MessageType.Error);
-                    playerName = "Player";
-                }
-
 #if DEBUG
                 sfs.Send(new LoginRequest(""));
 #else
-                sfs.Send(new LoginRequest(playerName));
+                sfs.Send(new LoginRequest(GetPlayerProfileName()));
 #endif
             }
             else
@@ -791,10 +778,17 @@ namespace OuterWildsOnline
 
         private void OnApplicationQuit()
         {
+            if (playerInGame)
+            {
+                SendLeaveGameMessage();
+
+            }
+
             Connection.RemoveAllEventListeners();
             Connection.Disconnect();
             Instance.StopAllCoroutines();
         }
+
 
     }
 }
