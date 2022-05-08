@@ -72,11 +72,18 @@ namespace OuterWildsOnline
 
         public static void UpdateColourRecursive(Color color, Transform child)
         {
+            if (child.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
+            {
+                meshRenderer.material.color = color;
+            }
             foreach (Transform possibleRenderer in child)
             {
-                if (possibleRenderer.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
+                if (possibleRenderer.TryGetComponent(out meshRenderer))
                 {
-                    meshRenderer.material.color = color;
+                    foreach (var material in meshRenderer.materials)
+                    {
+                        material.color = color;
+                    }                
                 }
                 UpdateColourRecursive(color, possibleRenderer);
             }
