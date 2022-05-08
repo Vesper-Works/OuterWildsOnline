@@ -629,7 +629,7 @@ namespace OuterWildsOnline
 #if DEBUG
                 sfs.Send(new LoginRequest(""));
 #else
-                sfs.Send(new LoginRequest(GetPlayerProfileName()));
+                sfs.Send(new LoginRequest(Utils.GetPlayerProfileName()));
 #endif
             }
             else

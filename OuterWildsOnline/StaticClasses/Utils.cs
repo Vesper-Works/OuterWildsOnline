@@ -99,7 +99,6 @@ namespace OuterWildsOnline
                 //else
                 {
                     playerName = StandaloneProfileManager.SharedInstance.currentProfile.profileName;
-                    ConnectionController.Console.WriteLine($"{playerName}", MessageType.Warning);
                 }
             }
             catch (Exception ex)

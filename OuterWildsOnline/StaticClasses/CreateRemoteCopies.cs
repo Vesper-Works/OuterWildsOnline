@@ -64,7 +64,6 @@ namespace OuterWildsOnline
 
             GameObject localPlayerBody = Locator.GetPlayerTransform().Find("Traveller_HEA_Player_v2").gameObject;
             GameObject remotePlayerBody = GameObject.Instantiate(localPlayerBody, remotePlayer.transform);
-            
 
             MakeBodyPartsVisible(remotePlayerBody.transform);
             remotePlayer.AddComponent<OWRigidbody>().MakeKinematic();

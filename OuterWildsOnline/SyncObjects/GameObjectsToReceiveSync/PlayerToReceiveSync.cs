@@ -113,7 +113,6 @@ namespace OuterWildsOnline.SyncObjects
                         convertTo255(ivalue.ToString().Substring(0, 3)) / 255f,
                         convertTo255(ivalue.ToString().Substring(3, 3)) / 255f,
                         convertTo255(ivalue.ToString().Substring(6, 3)) / 255f);
-                    ConnectionController.ModHelperInstance.Console.WriteLine("From PlayerToReceiveSync: " + playerColour.ToString());
                     Utils.UpdateColourRecursive(playerColour, transform);
                 }
                 else
