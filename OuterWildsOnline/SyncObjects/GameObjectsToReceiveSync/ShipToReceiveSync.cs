@@ -5,6 +5,22 @@ namespace OuterWildsOnline.SyncObjects
 {
     public class ShipToReceiveSync : ObjectToRecieveSync
     {
+        public override void Init(string objectName, int userID, int objectId)
+        {
+            base.Init(objectName, userID, objectId);
+            Utils.MakeReferenceFrameVolume(gameObject, GetComponent<OWRigidbody>(), 3f);
+            ConnectionController.ModHelperInstance.HarmonyHelper.AddPrefix<ReferenceFrame>("GetHUDDisplayName", typeof(ShipToReceiveSync), "GetHUDDisplayNamePatch");
+        }
+        public static bool GetHUDDisplayNamePatch(ReferenceFrame __instance, ref string __result)
+        {
+            ShipToReceiveSync shipToReceiveSync;
+            if (__instance.GetOWRigidBody().TryGetComponent<ShipToReceiveSync>(out shipToReceiveSync))
+            {
+                __result = ConnectionController.Connection.LastJoinedRoom.GetUserById(shipToReceiveSync.UserId).Name;
+                return false;
+            }
+            return true;
+        }
         protected override void OnExtensionResponse(SFSObject responseParams)
         {
             base.OnExtensionResponse(responseParams);

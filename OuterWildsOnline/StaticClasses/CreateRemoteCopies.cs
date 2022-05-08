@@ -135,7 +135,7 @@ namespace OuterWildsOnline
             remotePlayer.AddComponent<SyncObjects.PlayerToReceiveSync>();
 
             Utils.DestroyComponentFromGameObjectRecursively(remotePlayer.transform, typeof(PerCameraRendererState));
-            //remotePlayer.AddComponent<LockOnReticule>().Init();
+            //remotePlayer.AddComponent<LockOnReticule>((LockOnReticule)Resources.FindObjectsOfTypeAll(typeof(LockOnReticule))[0]).Init();
             GameObject.DontDestroyOnLoad(remotePlayer);
             return remotePlayer;
         }
