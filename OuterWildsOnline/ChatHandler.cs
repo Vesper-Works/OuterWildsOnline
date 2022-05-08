@@ -282,7 +282,7 @@ namespace OuterWildsOnline
                             {
                                 currentInputField.text += "!";
                             }
-                            if (Keyboard.current.slashKey.wasPressedThisFrame)
+                            else if (Keyboard.current.slashKey.wasPressedThisFrame)
                             {
                                 currentInputField.text += "?";
                             }

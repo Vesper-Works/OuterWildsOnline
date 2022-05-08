@@ -1,6 +1,7 @@
 ﻿using OWML.Common;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 namespace OuterWildsOnline
@@ -72,11 +73,18 @@ namespace OuterWildsOnline
 
         public static void UpdateColourRecursive(Color color, Transform child)
         {
+            if (child.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
+            {
+                meshRenderer.material.color = color;
+            }
             foreach (Transform possibleRenderer in child)
             {
-                if (possibleRenderer.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
+                if (possibleRenderer.TryGetComponent(out meshRenderer))
                 {
-                    meshRenderer.material.color = color;
+                    foreach (var material in meshRenderer.materials)
+                    {
+                        material.color = color;
+                    }                
                 }
                 UpdateColourRecursive(color, possibleRenderer);
             }
@@ -108,5 +116,70 @@ namespace OuterWildsOnline
             }
             return playerName;
         }
+        public static T GetCopyOf<T>(this Component comp, T other) where T : Component
+        {
+            Type type = comp.GetType();
+            if (type != other.GetType()) return null; // type mis-match
+            BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Default | BindingFlags.DeclaredOnly;
+            PropertyInfo[] pinfos = type.GetProperties(flags);
+            foreach (var pinfo in pinfos)
+            {
+                if (pinfo.CanWrite)
+                {
+                    try
+                    {
+                        pinfo.SetValue(comp, pinfo.GetValue(other, null), null);
+                    }
+                    catch { } // In case of NotImplementedException being thrown. For some reason specifying that exception didn't seem to catch it, so I didn't catch anything specific.
+                }
+            }
+            FieldInfo[] finfos = type.GetFields(flags);
+            foreach (var finfo in finfos)
+            {
+                finfo.SetValue(comp, finfo.GetValue(other));
+            }
+            return comp as T;
+        }
+        public static T AddComponent<T>(this GameObject go, T toAdd) where T : Component
+        {
+            return go.AddComponent<T>().GetCopyOf(toAdd) as T;
+        }
+        public static ReferenceFrameVolume MakeReferenceFrameVolume(GameObject body, OWRigidbody rigidbody, float sphereOfInfluence)
+        {
+            GameObject rfGO = new GameObject("RFVolume");
+            rfGO.transform.parent = body.transform;
+            rfGO.transform.localPosition = Vector3.zero;
+            rfGO.layer = 19;
+            rfGO.SetActive(false);
+
+            SphereCollider SC = rfGO.AddComponent<SphereCollider>();
+            SC.isTrigger = true;
+            SC.radius = sphereOfInfluence * 2;
+
+            ReferenceFrameVolume RFV = rfGO.AddComponent<ReferenceFrameVolume>();
+
+            ReferenceFrame RV = new ReferenceFrame(rigidbody);
+            RV._minSuitTargetDistance = sphereOfInfluence;
+            RV._maxTargetDistance = 0;
+            RV._autopilotArrivalDistance = 2.0f * sphereOfInfluence;
+            RV._autoAlignmentDistance = sphereOfInfluence * 1.5f;
+    
+            RV._hideLandingModePrompt = false;
+            RV._matchAngularVelocity = true;
+            RV._minMatchAngularVelocityDistance = 70;
+            RV._maxMatchAngularVelocityDistance = 400;
+            RV._bracketsRadius = sphereOfInfluence;
+
+            RFV._referenceFrame = RV;
+            RFV._minColliderRadius = sphereOfInfluence;
+            RFV._maxColliderRadius = sphereOfInfluence * 2f;
+            RFV._isPrimaryVolume = true;
+            RFV._isCloseRangeVolume = false;
+
+          
+            rfGO.SetActive(true);
+            return RFV;
+        }
+
     }
 }

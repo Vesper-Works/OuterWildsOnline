@@ -2,6 +2,9 @@
   "enabled": true,
   "settings": {
     "serverAddress": "gameserver.hopto.org",
-    "playerColour": ""
+    "clothesColour": "",
+    "handsColour": "",
+    "headColour": "",
+    "jetpackColour": ""
   }
 }
