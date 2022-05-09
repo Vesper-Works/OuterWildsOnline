@@ -15,6 +15,7 @@ namespace OuterWildsOnline.SyncObjects
 
         ThrusterFlameControllerSync[] thrustersControllersSync;
         ThrusterWashControllerSync thrusterWashControllerSync;
+        CanvasMapMarker mapCanvasMarker;
 
         public Vector3 LocalHeadRotation { get; private set; } = Vector3.zero;
         public bool IsFlashlightOn { get; private set; } = false;
@@ -26,27 +27,13 @@ namespace OuterWildsOnline.SyncObjects
             transform.name = objectOwner.Name;
 
             var obj = GameObject.FindWithTag("MapCamera");
-            var markerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
-            var canvasMarker = markerManager.InstantiateNewMarker(true);
-            markerManager.RegisterMarker(canvasMarker, GetComponent<OWRigidbody>());
+            var mapMarkerManager = obj.GetRequiredComponent<MapController>().GetMarkerManager();
+            mapCanvasMarker = mapMarkerManager.InstantiateNewMarker(true);
+            mapMarkerManager.RegisterMarker(mapCanvasMarker, GetComponent<OWRigidbody>());
 
-            canvasMarker.SetLabel(objectOwner.Name.ToUpper());
-            canvasMarker.SetColor(Color.white);
-            canvasMarker.SetVisibility(true);
-
-            //SpriteRenderer nameTag = new GameObject("Player Name Tag").AddComponent<SpriteRenderer>();
-            //TextToTexture textToTexture = new TextToTexture(Font.CreateDynamicFontFromOSFont(Font.GetOSInstalledFontNames()[0], 1), 1, 1);
-
-            //nameTag.sprite = Sprite.Create(textToTexture.CreateTextToTexture(objectOwner.Name, 0, 0, 1, 1, 1), new Rect(0, 0, 500, 500), new Vector2(250, 0));
-            //nameTag.text = objectOwner.Name;
-            ////nameTag.fontSize = 222;
-            //nameTag.alignment = TextAlignmentOptions.Center;
-            //nameTag.font = TMP_FontAsset.CreateFontAsset(Resources.FindObjectsOfTypeAll<Font>()[0]);
-            //nameTag.transform.parent = transform;
-            //nameTag.transform.localPosition = Vector3.up * 1.3f;
-            //nameTag.transform.localRotation = Quaternion.Euler(0, 180, 0);
-            //nameTag.transform.localScale = new Vector3(0.008f, 0.008f, 0.008f);
-            ////  helmetlessInputField.font = FindObjectOfType<DialogueBoxVer2>().GetComponentInChildren<Text>().font;
+            mapCanvasMarker.SetLabel(objectOwner.Name.ToUpper());
+            mapCanvasMarker.SetColor(Color.white);
+            mapCanvasMarker.SetVisibility(true);
 
             gameObject.AddComponent<RemotePlayerHUDMarker>().InitCanvasMarker(objectOwner.Name).InitCanvasMarker();
 
@@ -92,6 +79,20 @@ namespace OuterWildsOnline.SyncObjects
                 }
             }
             UpdateColour();
+            if (ObjectData.GetBool("far"))
+            {
+                mapCanvasMarker.SetLabel($"{transform.name} Deep Space Connection - Approximating...");
+                mapCanvasMarker.SetColor(Color.yellow);
+                GetComponent<RemotePlayerHUDMarker>().SetMarkerText($"{transform.name} Deep Space Connection - Approximating...");
+                GetComponent<RemotePlayerHUDMarker>()._canvasMarker.SetSecondaryLabel(CanvasMarker.SecondaryLabelType.DANGER);
+            }
+            else
+            {
+                mapCanvasMarker.SetLabel($"{transform.name}");
+                mapCanvasMarker.SetColor(Color.white);
+                GetComponent<RemotePlayerHUDMarker>().SetMarkerText($"{transform.name}");
+                GetComponent<RemotePlayerHUDMarker>()._canvasMarker.SetSecondaryLabel(CanvasMarker.SecondaryLabelType.NONE);
+            }
         }
         private void UpdateColour()
         {

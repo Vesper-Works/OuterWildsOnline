@@ -38,6 +38,7 @@ namespace OuterWildsOnline.SyncObjects
             base.Awake();
 
             ObjectData.PutBool("light", PlayerState.IsFlashlightOn());
+            ObjectData.PutBool("far", false);
             ObjectData.PutBool("suit", PlayerState.IsWearingSuit());
             ObjectData.PutUtfString("clothesColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("clothesColour"));
             ObjectData.PutUtfString("handsColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("handsColour"));
@@ -204,6 +205,22 @@ namespace OuterWildsOnline.SyncObjects
         }
         
         #region PlayerEventsData
+        private void PlayerFarFromSector()
+        {
+            if(ObjectData.ContainsKey("far") && !ObjectData.GetBool("far"))
+            {
+                ObjectData.PutBool("far", true);
+                ConnectionController.Instance.UpdateObjectToSyncData(this);
+            }
+        }
+        private void PlayerCloseToSector()
+        {
+            if(ObjectData.ContainsKey("far") && ObjectData.GetBool("far"))
+            {
+                ObjectData.PutBool("far", false);
+                ConnectionController.Instance.UpdateObjectToSyncData(this);
+            }
+        }
         private void PlayerJump()
         {
             var data = new SFSObject();
@@ -310,7 +327,8 @@ namespace OuterWildsOnline.SyncObjects
             GlobalMessenger.AddListener("TurnOffFlashlight", OnFlashlightOff);
             GlobalMessenger.AddListener("InitPlayerForceAlignment", PlayerInitPlayerForceAlignment);
             GlobalMessenger.AddListener("BreakPlayerForceAlignment", PlayerBreakPlayerForceAlignment);
-
+            GlobalMessenger.AddListener("PlayerFarFromSector", PlayerFarFromSector);
+            GlobalMessenger.AddListener("PlayerCloseToSector", PlayerCloseToSector);
             #region UnusedListeners
             //GlobalMessenger<Signalscope>.AddListener("EnterSignalscopeZoom", new Callback<Signalscope>(PlayerStateSync.OnEnterSignalscopeZoom));
             //GlobalMessenger.AddListener("ExitSignalscopeZoom", new Callback(PlayerStateSync.OnExitSignalscopeZoom));
