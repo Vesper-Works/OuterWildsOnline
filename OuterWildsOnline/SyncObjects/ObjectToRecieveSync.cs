@@ -54,14 +54,14 @@ namespace OuterWildsOnline.SyncObjects
                 GetComponent<SimpleRemoteInterpolation>().SetPosition(
                 new Vector3(responseParams.GetFloat("x"), responseParams.GetFloat("y"), responseParams.GetFloat("z")),
                 interpolate,
-                responseParams.GetInt("sec"));
+                responseParams.GetUtfString("sec"));
             }
             if (responseParams.ContainsKey("rotx"))
             {
                 GetComponent<SimpleRemoteInterpolation>().SetRotation(
                 Quaternion.Euler(responseParams.GetFloat("rotx"), responseParams.GetFloat("roty"), responseParams.GetFloat("rotz")),
                 interpolate,
-                responseParams.GetInt("sec"));
+                responseParams.GetUtfString("sec"));
             }
         }
         

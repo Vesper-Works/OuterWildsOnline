@@ -18,7 +18,7 @@ namespace OuterWildsOnline
             desiredRot = this.transform.rotation;
         }
 
-        public void SetPosition(Vector3 pos, bool interpolate, int sectorID)
+        public void SetPosition(Vector3 pos, bool interpolate, string sectorID)
         {
             if (transform.parent != SFSSectorManager.Sectors[sectorID].transform)
             { transform.SetParent(SFSSectorManager.Sectors[sectorID].transform); }
@@ -33,7 +33,7 @@ namespace OuterWildsOnline
                 this.transform.localPosition = pos;
             }
         }
-        public void SetRotation(Quaternion rot, bool interpolate, int sectorID)
+        public void SetRotation(Quaternion rot, bool interpolate, string sectorID)
         {
             if (transform.parent != SFSSectorManager.Sectors[sectorID].transform)
             { transform.SetParent(SFSSectorManager.Sectors[sectorID].transform); }
