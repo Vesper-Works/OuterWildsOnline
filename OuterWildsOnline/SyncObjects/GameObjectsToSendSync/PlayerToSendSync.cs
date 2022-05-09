@@ -133,7 +133,7 @@ namespace OuterWildsOnline.SyncObjects
         private void SetPlayerColour()
         {
             string playerColourString = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("clothesColour");
-            if (playerColourString == "")
+            if (string.IsNullOrEmpty(playerColourString))
             {
 
                 System.Security.Cryptography.MD5 md5Hasher = System.Security.Cryptography.MD5.Create();
