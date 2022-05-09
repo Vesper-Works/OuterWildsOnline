@@ -98,7 +98,7 @@ namespace OuterWildsOnline.SyncObjects
             try
             {
                 string playerColourString = ObjectData.GetUtfString("clothesColour");
-                if (playerColourString == "")
+                if (string.IsNullOrEmpty(playerColourString))
                 {
 
                     System.Security.Cryptography.MD5 md5Hasher = System.Security.Cryptography.MD5.Create();
