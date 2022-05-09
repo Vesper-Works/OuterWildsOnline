@@ -152,6 +152,13 @@ namespace OuterWildsOnline
         }
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
+            // Skin replacement
+            var noSuit = GameObject.Find("Player_Body/Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject;
+            var suit = GameObject.Find("Player_Body/Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject;
+
+            SkinReplacer.ReplaceSkin(suit, "Gabbro");
+            SkinReplacer.ReplaceSkin(noSuit, "Chert");
+
             //I think the remote objects aren't set to not destroy on load, so we don't need to make sure they are destroyed
             RemoteObjects.Clear(false);
 
@@ -175,13 +182,6 @@ namespace OuterWildsOnline
                     ReloadServerThings();
                 }
             }
-
-            // Skin replacement
-            var noSuit = GameObject.Find("Player_Body/Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject;
-            var suit = GameObject.Find("Player_Body/Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject;
-
-            SkinReplacer.ReplaceSkin(suit, "Gabbro");
-            SkinReplacer.ReplaceSkin(noSuit, "Chert");
         }
 
         private bool EnterOrCheckIfInValidSceneRoom(string currentSceneRoom)

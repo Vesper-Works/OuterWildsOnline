@@ -121,10 +121,12 @@ namespace OuterWildsOnline.StaticClasses
         {
             if(_assetBundle == null)
             {
-                ConnectionController.ModHelperInstance.Assets.LoadBundle($"AssetBundles/Skins");
+                _assetBundle = ConnectionController.ModHelperInstance.Assets.LoadBundle($"AssetBundles/skins");
             }
 
-            var prefab = _assetBundle.LoadAsset<GameObject>("Assets/Prefabs/{name}.prefab");
+            ConnectionController.Console.WriteLine($"Loading skin {name}");
+
+            var prefab = _assetBundle.LoadAsset<GameObject>($"Assets/Prefabs/{name}.prefab");
 
             return prefab;
         }
