@@ -24,6 +24,10 @@ Config options:<br />
 - Head Colour - A 255,255,255 RGB colour setting changing the tint of your Head.
 - Jetpack Colour - A 255,255,255 RGB colour setting changing the tint of your Jetpack.
 
+### Want to set up your own server?
+https://www.smartfoxserver.com/download/sfs2x#p=installer
+Download the SFS server, then transfer the server files from this repo (SFS folder) to the server files.
+
 Any questions? Feel free to ping me on the Outer Wilds Discord - @Vesper
 
 Want to contribute? Great! Check out the TODO project and have a go at creating something there, if you need any help or guidence, give me a ping in the [Outer Wilds Modding Discord](https://discord.gg/9vE5aHxcF9)!
