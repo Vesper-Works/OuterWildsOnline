@@ -28,7 +28,7 @@ namespace OuterWildsOnline.StaticClasses
             { "Feldspar", (name) => name.Replace("Feldspar_Skin:Short_Rig_V01:", playerPrefix) },
         };
 
-        public static void ReplaceSkin(GameObject playerBody, string skinName)
+        public static SkinnedMeshRenderer[] ReplaceSkin(GameObject playerBody, string skinName)
         {
             var skin = _skins.GetValueOrDefault(skinName);
             var map = _boneMaps.GetValueOrDefault(skinName);
@@ -36,18 +36,20 @@ namespace OuterWildsOnline.StaticClasses
             if (skin == default || map == default)
             {
                 Debug.Log($"SKIN [{skinName}] WASN'T FOUND");
-                return;
+                return null;
             }
 
             Debug.Log($"Swapping player mesh to {skinName} using {skin}, {map}");
-            Swap(playerBody, skin, map);
+
+            // Returns the skinned mesh renderer so if you switch to a different skin you can destroy the old one
+            return Swap(playerBody, skin, map);
         }
 
         /// <summary>
         /// Creates a copy of the skin and attaches all it's bones to the skeleton of the player
         /// boneMap maps from the bone name of the skin to the bone name of the original player prefab
         /// </summary>
-        private static void Swap(GameObject original, GameObject toCopy, Func<string, string> boneMap)
+        private static SkinnedMeshRenderer[] Swap(GameObject original, GameObject toCopy, Func<string, string> boneMap)
         {
             var newModel = GameObject.Instantiate(toCopy, original.transform.parent.transform);
             newModel.transform.localPosition = Vector3.zero;
@@ -101,7 +103,10 @@ namespace OuterWildsOnline.StaticClasses
                 // Reparent the skinnedMeshRenderer to the original object.
                 skinnedMeshRenderer.transform.parent = original.transform;
             }
+            // Since we reparented everything to the player we don't need this anymore
             GameObject.Destroy(newModel);
+
+            return skinnedMeshRenderers;
         }
 
         public static Transform SearchInChildren(Transform parent, string target)

@@ -133,19 +133,11 @@ namespace OuterWildsOnline
             flashLight.transform.localPosition = playerFlashLight.localPosition;
             flashLight.transform.localRotation = playerFlashLight.localRotation;
 
-
             remotePlayer.AddComponent<SyncObjects.PlayerToReceiveSync>();
 
             Utils.DestroyComponentFromGameObjectRecursively(remotePlayer.transform, typeof(PerCameraRendererState));
             //remotePlayer.AddComponent<LockOnReticule>((LockOnReticule)Resources.FindObjectsOfTypeAll(typeof(LockOnReticule))[0]).Init();
             GameObject.DontDestroyOnLoad(remotePlayer);
-
-            // Skin replacement
-            var noSuit = remotePlayer.transform.Find("player_mesh_noSuit:Traveller_HEA_Player").gameObject;
-            var suit = remotePlayer.transform.Find("Traveller_Mesh_v01:Traveller_Geo").gameObject;
-
-            SkinReplacer.ReplaceSkin(suit, "Gabbro");
-            SkinReplacer.ReplaceSkin(noSuit, "Chert");
 
             return remotePlayer;
         }
