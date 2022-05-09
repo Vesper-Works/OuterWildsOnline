@@ -4,7 +4,7 @@
 
 Essentially everyone is playing through their own loop, and broadcasting their positions and chat to each other to simulate a multiplayer experience.
 
-In the future I plan to have almost all moveable things synced with ghost objects.
+Before setting player colour in the config, your colours will be determined using a hash of your profile's name.
 
 Once the mod is downloaded, press the CONNECT TO SERVER button and then RESUME EXPEDITION.
 
@@ -19,7 +19,14 @@ Currently Synced:<br />
 
 Config options:<br />
 - Server address - Keep as gameserver.hopto.org unless joining unofficial servers.<br />
-- Player Colour - A 255,255,255 RGB colour setting changing the tint of your Hearthian.
+- Clothes Colour - A 255,255,255 RGB colour setting changing the tint of your Clothes.
+- Hands Colour - A 255,255,255 RGB colour setting changing the tint of your Hands.
+- Head Colour - A 255,255,255 RGB colour setting changing the tint of your Head.
+- Jetpack Colour - A 255,255,255 RGB colour setting changing the tint of your Jetpack.
+
+### Want to set up your own server?
+https://www.smartfoxserver.com/download/sfs2x#p=installer
+Download the SFS server, then transfer the server files from this repo (SFS folder) to the server files.
 
 Any questions? Feel free to ping me on the Outer Wilds Discord - @Vesper
 

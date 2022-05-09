@@ -88,5 +88,15 @@ namespace OuterWildsOnline
             this._canvasMarker.NotifyResetPosition();
         }
 
+        public void SetMarkerText(string text)
+        {
+            if(_canvasMarker != null)
+            {
+                _canvasMarker.SetLabel(text);
+            }
+            _markerLabel = text;
+
+        }
+
     }
 }

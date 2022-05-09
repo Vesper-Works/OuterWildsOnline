@@ -316,18 +316,35 @@ namespace OuterWildsOnline
                 //If the user is already in the game (went far away and came back), enable their remote objects
                 foreach (var syncedObject in RemoteObjects.GetUserObjectList(user.Id))
                 {
+                    Console.WriteLine($"{user.Name} has entered the AOI");
                     if (syncedObject != null)
+                    {
                         syncedObject.gameObject.SetActive(true);
+                        if (syncedObject.ObjectName == "Player")
+                        {
+                            Console.WriteLine($"Setting {user.Name}'s canvas marker to default");
+                            syncedObject.gameObject.GetComponent<RemotePlayerHUDMarker>().SetMarkerText($"{user.Name}");
+                        }
+                    }
                 }
             }
 
             // Handle removed users
             foreach (User user in removedUsers)
             {
+                Console.WriteLine($"{user.Name} has left the AOI");
+                GlobalMessenger.FireEvent("PlayerFarFromSector");
                 foreach (var syncedObject in RemoteObjects.GetUserObjectList(user.Id))
                 {
                     if (syncedObject != null)
+                    {
+                        if (syncedObject.ObjectName == "Player")
+                        {
+                            Console.WriteLine($"Setting {user.Name}'s canvas marker to losing connection");
+                            syncedObject.gameObject.GetComponent<RemotePlayerHUDMarker>().SetMarkerText($"{user.Name} <Losing Connection...>");
+                        }
                         syncedObject.gameObject.SetActive(false);
+                    }
                 }
             }
         }
@@ -671,7 +688,7 @@ namespace OuterWildsOnline
             {
                 MMORoomSettings settings = new MMORoomSettings(roomToJoin)
                 {
-                    DefaultAOI = new Vec3D(1000f, 1000f, 1000f),
+                    DefaultAOI = new Vec3D(100000f, 100000f, 100000f),
                     MaxUsers = 100,
                     Extension = new RoomExtension("OuterWildsMMO", "MainExtension"),
                     IsGame = true,

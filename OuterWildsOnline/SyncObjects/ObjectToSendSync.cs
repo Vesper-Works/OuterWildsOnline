@@ -96,7 +96,7 @@ namespace OuterWildsOnline.SyncObjects
                 syncData.PutFloat("rotz", rot.z);
             }
             syncData.PutBool("interp", interpolate);
-            syncData.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
+            syncData.PutUtfString("sec", SFSSectorManager.ClosestSectorToPlayerID);
         }
         protected virtual void OnForceSync(SFSObject syncData)
         {
@@ -109,7 +109,7 @@ namespace OuterWildsOnline.SyncObjects
             syncData.PutFloat("rotz", lastRotation.z);
 
             syncData.PutBool("interp", interpolate);
-            syncData.PutInt("sec", SFSSectorManager.ClosestSectorToPlayerID);
+            syncData.PutUtfString("sec", SFSSectorManager.ClosestSectorToPlayerID);
         }
         protected virtual void OnDestroy()
         {
