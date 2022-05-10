@@ -19,6 +19,9 @@ namespace OuterWildsOnline.SyncObjects
         ThrusterWashControllerSync thrusterWashControllerSync;
         CanvasMapMarker mapCanvasMarker;
 
+        private SkinnedMeshRenderer[] _currentSuitSkin;
+        private SkinnedMeshRenderer[] _currentSuitlessSkin;
+
         public Vector3 LocalHeadRotation { get; private set; } = Vector3.zero;
         public bool IsFlashlightOn { get; private set; } = false;
 
@@ -85,15 +88,35 @@ namespace OuterWildsOnline.SyncObjects
             //Feldspar,
             //Chert
             string customSkin = objectData.GetUtfString("customSkin");
-         
+
+            // Destroy the current skins if they exist
+            if (_currentSuitSkin != null)
+            {
+                foreach (var skin in _currentSuitSkin)
+                {
+                    GameObject.Destroy(skin.gameObject);
+                }
+                _currentSuitSkin = null;
+            }
+            if (_currentSuitlessSkin != null)
+            {
+                foreach (var skin in _currentSuitlessSkin)
+                {
+                    GameObject.Destroy(skin.gameObject);
+                }
+                _currentSuitlessSkin = null;
+            }
+
             if (customSkin == "Protagonist")
             {
+                SkinReplacer.ResetSkin(transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo").gameObject);
+                SkinReplacer.ResetSkin(transform.Find("Traveller_HEA_Player_v2(Clone)/player_mesh_noSuit:Traveller_HEA_Player").gameObject);
                 UpdateColour(false);
             }
             else
             {
-                SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo").gameObject, customSkin);
-                SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2(Clone)/player_mesh_noSuit:Traveller_HEA_Player").gameObject, customSkin);
+                _currentSuitSkin = SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo").gameObject, customSkin);
+                _currentSuitlessSkin = SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2(Clone)/player_mesh_noSuit:Traveller_HEA_Player").gameObject, customSkin);
                 UpdateColour(true);
             }
 

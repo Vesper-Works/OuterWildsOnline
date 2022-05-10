@@ -11,6 +11,9 @@ namespace OuterWildsOnline.SyncObjects
 {
     public class PlayerToSendSync : ObjectToSendSync
     {
+        private SkinnedMeshRenderer[] _currentSuitSkin;
+        private SkinnedMeshRenderer[] _currentSuitlessSkin;
+
         private UnityEngine.UI.Text pingText;
         private void PingPongHandler(BaseEvent evt)
         {
@@ -136,22 +139,37 @@ namespace OuterWildsOnline.SyncObjects
             string skinCode = config.GetSettingsValue<string>("customSkin");
             ConnectionController.Console.WriteLine(skinCode);
             ObjectData.PutUtfString("customSkin", skinCode);
+
+            // Destroy the current skins if they exist
+            if (_currentSuitSkin != null)
+            {
+                foreach (var skin in _currentSuitSkin)
+                {
+                    GameObject.Destroy(skin.gameObject);
+                }
+                _currentSuitSkin = null;
+            }
+            if (_currentSuitlessSkin != null)
+            {
+                foreach (var skin in _currentSuitlessSkin)
+                {
+                    GameObject.Destroy(skin.gameObject);
+                }
+                _currentSuitlessSkin = null;
+            }
+
             switch (Enum.Parse(typeof(CustomSkin), skinCode))
             {
                 case CustomSkin.Protagonist:
                     SetPlayerColour();
+                    SkinReplacer.ResetSkin(transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject);
+                    SkinReplacer.ResetSkin(transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject);
                     break;
                 case CustomSkin.Gabbro:
-                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject, "Gabbro");
-                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject, "Gabbro");
-                    break;
                 case CustomSkin.Feldspar:
-                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject, "Feldspar");
-                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject, "Feldspar");
-                    break;
                 case CustomSkin.Chert:
-                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject, "Chert");
-                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject, "Feldspar");
+                    _currentSuitSkin = SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject, skinCode);
+                    _currentSuitlessSkin = SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject, skinCode);
                     break;
             }
             ConnectionController.Instance.UpdateObjectToSyncData(this);

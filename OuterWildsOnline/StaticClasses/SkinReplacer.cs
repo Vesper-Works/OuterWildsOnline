@@ -35,14 +35,40 @@ namespace OuterWildsOnline.StaticClasses
 
             if (skin == default || map == default)
             {
-                Debug.Log($"SKIN [{skinName}] WASN'T FOUND");
+                ConnectionController.Console.WriteLine($"SKIN [{skinName}] WASN'T FOUND");
                 return null;
             }
 
-            Debug.Log($"Swapping player mesh to {skinName} using {skin}, {map}");
+            ConnectionController.Console.WriteLine($"Swapping player mesh to {skinName} using {skin}, {map}");
 
             // Returns the skinned mesh renderer so if you switch to a different skin you can destroy the old one
             return Swap(playerBody, skin, map);
+        }
+
+        public static void ResetSkin(GameObject playerBody)
+        {
+            // Maybe you'll want to cache this dictionary
+            var playerPrefab = RemoteObjects.CloneStorage["Player"];
+            var suitRenderers = playerPrefab.transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo").GetComponentsInChildren<SkinnedMeshRenderer>();
+            var suitlessRenderers = playerPrefab.transform.Find("Traveller_HEA_Player_v2(Clone)/player_mesh_noSuit:Traveller_HEA_Player").GetComponentsInChildren<SkinnedMeshRenderer>();
+            var originalMeshs = new Dictionary<string, Mesh>();
+            foreach(var skinnedMeshRenderer in suitRenderers.Concat(suitlessRenderers))
+            {
+                ConnectionController.Console.WriteLine($"Adding skin to dictionary: [{skinnedMeshRenderer.gameObject.name}]");
+                originalMeshs.Add(skinnedMeshRenderer.gameObject.name, skinnedMeshRenderer.sharedMesh);
+            }
+
+            foreach(var skinnedMeshRenderer in playerBody.GetComponentsInChildren<SkinnedMeshRenderer>())
+            {
+                if(originalMeshs.ContainsKey(skinnedMeshRenderer.gameObject.name))
+                {
+                    skinnedMeshRenderer.sharedMesh = originalMeshs[skinnedMeshRenderer.gameObject.name];
+                }
+                else
+                {
+                    ConnectionController.Console.WriteLine($"Couldn't find: [{skinnedMeshRenderer.gameObject.name}]");
+                }
+            }
         }
 
         /// <summary>
@@ -83,7 +109,7 @@ namespace OuterWildsOnline.StaticClasses
                     if (newParent == null)
                     {
                         // This should never happen in a release, this is just for testing with new models
-                        Debug.Log($"Couldn't find bone [{matchingBone}] matching [{bone}]");
+                        ConnectionController.Console.WriteLine($"Couldn't find bone [{matchingBone}] matching [{bone}]");
                     }
                     else
                     {
