@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using OuterWildsOnline.StaticClasses;
+using OWML.Common;
 using Sfs2X.Core;
 using Sfs2X.Entities.Data;
 using Sfs2X.Requests;
@@ -44,8 +45,12 @@ namespace OuterWildsOnline.SyncObjects
             ObjectData.PutUtfString("handsColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("handsColour"));
             ObjectData.PutUtfString("headColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("headColour"));
             ObjectData.PutUtfString("jetpackColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("jetpackColour"));
+            ObjectData.PutUtfString("customSkin", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("customSkin"));
+            string skinCode = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("customSkin");
+            ConnectionController.Console.WriteLine(skinCode);
             SetPlayerColour();
         }
+
         protected override void Start()
         {
             base.Start();
@@ -123,11 +128,32 @@ namespace OuterWildsOnline.SyncObjects
         }
         public override void ConfigChanged(IModConfig config)
         {
-            ObjectData.PutUtfString("clothesColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("clothesColour"));
-            ObjectData.PutUtfString("handsColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("handsColour"));
-            ObjectData.PutUtfString("headColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("headColour"));
-            ObjectData.PutUtfString("jetpackColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("jetpackColour"));
-            SetPlayerColour();
+          
+            ObjectData.PutUtfString("clothesColour", config.GetSettingsValue<string>("clothesColour"));
+            ObjectData.PutUtfString("handsColour", config.GetSettingsValue<string>("handsColour"));
+            ObjectData.PutUtfString("headColour", config.GetSettingsValue<string>("headColour"));
+            ObjectData.PutUtfString("jetpackColour", config.GetSettingsValue<string>("jetpackColour"));
+            string skinCode = config.GetSettingsValue<string>("customSkin");
+            ConnectionController.Console.WriteLine(skinCode);
+            ObjectData.PutUtfString("customSkin", skinCode);
+            switch (Enum.Parse(typeof(CustomSkin), skinCode))
+            {
+                case CustomSkin.Protagonist:
+                    SetPlayerColour();
+                    break;
+                case CustomSkin.Gabbro:
+                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject, "Gabbro");
+                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject, "Gabbro");
+                    break;
+                case CustomSkin.Feldspar:
+                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject, "Feldspar");
+                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject, "Feldspar");
+                    break;
+                case CustomSkin.Chert:
+                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject, "Chert");
+                    SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject, "Feldspar");
+                    break;
+            }
             ConnectionController.Instance.UpdateObjectToSyncData(this);
         }
         private void SetPlayerColour()
@@ -203,11 +229,11 @@ namespace OuterWildsOnline.SyncObjects
                     transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm"));
             }
         }
-        
+
         #region PlayerEventsData
         private void PlayerFarFromSector()
         {
-            if(ObjectData.ContainsKey("far") && !ObjectData.GetBool("far"))
+            if (ObjectData.ContainsKey("far") && !ObjectData.GetBool("far"))
             {
                 ObjectData.PutBool("far", true);
                 ConnectionController.Instance.UpdateObjectToSyncData(this);
@@ -215,7 +241,7 @@ namespace OuterWildsOnline.SyncObjects
         }
         private void PlayerCloseToSector()
         {
-            if(ObjectData.ContainsKey("far") && ObjectData.GetBool("far"))
+            if (ObjectData.ContainsKey("far") && ObjectData.GetBool("far"))
             {
                 ObjectData.PutBool("far", false);
                 ConnectionController.Instance.UpdateObjectToSyncData(this);

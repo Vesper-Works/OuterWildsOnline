@@ -124,8 +124,16 @@ namespace OuterWildsOnline
             ModHelper.Events.Scenes.OnCompleteSceneChange += OnCompleteSceneChange;
             GlobalMessenger.AddListener("WakeUp", new Callback(this.OnPlayerWakeUp));
             GlobalMessenger<DeathType>.AddListener("PlayerDeath", new Callback<DeathType>(this.OnPlayerDeath));
-        }
 
+            ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("TryOpenPauseMenu", typeof(ConnectionController), "TryOpenPauseMenuPatch");
+        }
+        public static void TryOpenPauseMenuPatch()
+        {
+            if (MonoBehaviour.FindObjectOfType<PauseMenuManager>()._isPaused)
+            {
+                OWTime.Unpause(OWTime.PauseType.Menu);
+            }
+        }
 
         private void OnPlayerDeath(DeathType deathType)
         {
@@ -152,13 +160,6 @@ namespace OuterWildsOnline
         }
         private void OnCompleteSceneChange(OWScene oldScene, OWScene newScene)
         {
-            // Skin replacement
-            var noSuit = GameObject.Find("Player_Body/Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject;
-            var suit = GameObject.Find("Player_Body/Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject;
-
-            SkinReplacer.ReplaceSkin(suit, "Gabbro");
-            SkinReplacer.ReplaceSkin(noSuit, "Chert");
-
             //I think the remote objects aren't set to not destroy on load, so we don't need to make sure they are destroyed
             RemoteObjects.Clear(false);
 

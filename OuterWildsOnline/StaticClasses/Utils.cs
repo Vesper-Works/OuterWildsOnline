@@ -6,6 +6,13 @@ using UnityEngine;
 
 namespace OuterWildsOnline
 {
+    public enum CustomSkin
+    {
+        Protagonist,
+        Gabbro,
+        Feldspar,
+        Chert
+    }
     public static class Utils
     {
         public static void SetActiveRecursively(Transform transform, bool active)
@@ -180,6 +187,5 @@ namespace OuterWildsOnline
             rfGO.SetActive(true);
             return RFV;
         }
-
     }
 }
