@@ -39,7 +39,7 @@ namespace OuterWildsOnline.StaticClasses
                 return null;
             }
 
-            ConnectionController.Console.WriteLine($"Swapping player mesh to {skinName} using {skin}, {map}");
+            //ConnectionController.Console.WriteLine($"Swapping player mesh to {skinName} using {skin}, {map}");
 
             // Returns the skinned mesh renderer so if you switch to a different skin you can destroy the old one
             return Swap(playerBody, skin, map);
@@ -54,7 +54,7 @@ namespace OuterWildsOnline.StaticClasses
             var originalMeshs = new Dictionary<string, Mesh>();
             foreach(var skinnedMeshRenderer in suitRenderers.Concat(suitlessRenderers))
             {
-                ConnectionController.Console.WriteLine($"Adding skin to dictionary: [{skinnedMeshRenderer.gameObject.name}]");
+                //ConnectionController.Console.WriteLine($"Adding skin to dictionary: [{skinnedMeshRenderer.gameObject.name}]");
                 originalMeshs.Add(skinnedMeshRenderer.gameObject.name, skinnedMeshRenderer.sharedMesh);
             }
 
@@ -155,7 +155,7 @@ namespace OuterWildsOnline.StaticClasses
                 _assetBundle = ConnectionController.ModHelperInstance.Assets.LoadBundle($"AssetBundles/skins");
             }
 
-            ConnectionController.Console.WriteLine($"Loading skin {name}");
+            //ConnectionController.Console.WriteLine($"Loading skin {name}");
 
             var prefab = _assetBundle.LoadAsset<GameObject>($"Assets/Prefabs/{name}.prefab");
 
