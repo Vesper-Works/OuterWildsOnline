@@ -21,6 +21,7 @@ namespace OuterWildsOnline.SyncObjects
 
         private SkinnedMeshRenderer[] _currentSuitSkin;
         private SkinnedMeshRenderer[] _currentSuitlessSkin;
+        private string customSkin;
 
         public Vector3 LocalHeadRotation { get; private set; } = Vector3.zero;
         public bool IsFlashlightOn { get; private set; } = false;
@@ -106,7 +107,8 @@ namespace OuterWildsOnline.SyncObjects
             //Gabbro,
             //Feldspar,
             //Chert
-            string customSkin = ObjectData.GetUtfString("customSkin");
+            if(customSkin == ObjectData.GetUtfString("customSkin")) { return; }
+            customSkin = ObjectData.GetUtfString("customSkin");
 
             // Destroy the current skins if they exist
             if (_currentSuitSkin != null)
