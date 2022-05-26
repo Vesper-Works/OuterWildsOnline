@@ -64,7 +64,7 @@ namespace OuterWildsOnline
             {
                 Locator.GetPromptManager().AddScreenPrompt(appraisePrompt, PromptPosition.UpperRight, true);
             }
-            appraisalCountPrompt = new ScreenPrompt(Instance.appraisalCount, 1);
+            appraisalCountPrompt = new ScreenPrompt(Instance.appraisalCount);
             Locator.GetPromptManager().AddScreenPrompt(appraisalCountPrompt, PromptPosition.UpperRight, true);
         }
         private void OnConversationEnded()
@@ -93,10 +93,11 @@ namespace OuterWildsOnline
                 currentPlayerMessageRoomVariable.GetSFSObjectValue().PutInt("apr", currentPlayerMessageRoomVariable.GetSFSObjectValue().GetInt("apr") + 1);
                 currentPlayerMessageRoomVariable.GetSFSObjectValue().PutIntArray("aprlist", currentPlayerMessageRoomVariable.GetSFSObjectValue().GetIntArray("aprlist").Append(ConnectionController.Connection.MySelf.PlayerId).ToArray());
                 ConnectionController.Connection.Send(new SetRoomVariablesRequest(new List<RoomVariable>() { currentPlayerMessageRoomVariable }, ConnectionController.Connection.LastJoinedRoom));
-                Locator.GetPromptManager().RemoveScreenPrompt(appraisalCountPrompt);
-                appraisalCountPrompt = new ScreenPrompt(Instance.appraisalCount, 1);
-                Locator.GetPromptManager().AddScreenPrompt(appraisalCountPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().AddScreenPrompt(appraiseUnavailablePrompt, PromptPosition.UpperRight, true);
+                Locator.GetPromptManager().RemoveScreenPrompt(appraisalCountPrompt);
+                appraisalCountPrompt = new ScreenPrompt(Instance.appraisalCount);
+                Locator.GetPromptManager().AddScreenPrompt(appraisalCountPrompt, PromptPosition.UpperRight, true);
+        
                 Locator.GetPromptManager().RemoveScreenPrompt(appraisePrompt);
             }
             if (OWInput.IsNewlyPressed(cancelMessagePrompt.GetInputCommandList()[0]) && (writing || placing))
