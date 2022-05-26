@@ -98,8 +98,8 @@ namespace OuterWildsOnline
 		private void Start()
 		{
             this._playerController = gameObject.GetComponentInParent<PlayerControllerSync>();
-			_unsuitedGroup = transform.Find("player_mesh_noSuit:Traveller_HEA_Player").gameObject;
-			_suitedGroup = transform.Find("Traveller_Mesh_v01:Traveller_Geo").gameObject;
+			_unsuitedGroup = transform.GetChild(0).gameObject;
+			_suitedGroup = transform.GetChild(1).gameObject;
 			_playerStateSync = GetComponentInParent<PlayerStateSync>();
 			_grounded = true;
 		}
@@ -259,8 +259,8 @@ namespace OuterWildsOnline
 		// Token: 0x06000041 RID: 65 RVA: 0x00002C67 File Offset: 0x00000E67
 		public void OnPutOnSuit()
 		{
-			Start();
-            this._animator.runtimeAnimatorController = this._baseAnimController;
+			//Start();
+            //this._animator.runtimeAnimatorController = this._baseAnimController;
             this._unsuitedGroup.SetActive(false);
 			this._suitedGroup.SetActive(true);
         }
@@ -268,8 +268,8 @@ namespace OuterWildsOnline
 		// Token: 0x06000042 RID: 66 RVA: 0x00002C99 File Offset: 0x00000E99
 		public void OnRemoveSuit()
 		{
-			Start();
-			this._animator.runtimeAnimatorController = this._unsuitedAnimOverride;
+			//Start();
+			//this._animator.runtimeAnimatorController = this._unsuitedAnimOverride;
 			this._unsuitedGroup.SetActive(true);
             this._suitedGroup.SetActive(false);
         }

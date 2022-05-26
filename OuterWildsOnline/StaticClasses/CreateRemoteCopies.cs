@@ -1,11 +1,12 @@
-﻿using System;
+﻿using OuterWildsOnline.StaticClasses;
+using System;
 using UnityEngine;
 
 namespace OuterWildsOnline
 {
     public static class CreateRemoteCopies
     {
-        private static void FindAndDoAction(Transform parentTransform, Action<Transform> action, bool ignoreIfNotFound, params string[] childNames) 
+        private static void FindAndDoAction(Transform parentTransform, Action<Transform> action, bool ignoreIfNotFound, params string[] childNames)
         {
             for (int i = 0; i < childNames.Length; i++)
             {
@@ -58,6 +59,7 @@ namespace OuterWildsOnline
             withSuit.Find("Traveller_Mesh_v01:PlayerSuit_LeftArm").gameObject.SetActive(true);
             withSuit.Find("Traveller_Mesh_v01:PlayerSuit_RightArm").gameObject.SetActive(true);
         }
+
         public static GameObject CreatePlayerRemoteCopy()
         {
             GameObject remotePlayer = new GameObject("Remote Player");
@@ -131,12 +133,12 @@ namespace OuterWildsOnline
             flashLight.transform.localPosition = playerFlashLight.localPosition;
             flashLight.transform.localRotation = playerFlashLight.localRotation;
 
-
             remotePlayer.AddComponent<SyncObjects.PlayerToReceiveSync>();
 
             Utils.DestroyComponentFromGameObjectRecursively(remotePlayer.transform, typeof(PerCameraRendererState));
             //remotePlayer.AddComponent<LockOnReticule>((LockOnReticule)Resources.FindObjectsOfTypeAll(typeof(LockOnReticule))[0]).Init();
             GameObject.DontDestroyOnLoad(remotePlayer);
+
             return remotePlayer;
         }
         public static GameObject CreateShipRemoteCopy()
@@ -153,7 +155,7 @@ namespace OuterWildsOnline
             remoteVFXObjects.transform.parent = remotePlayerShip.transform;
 
             GameObject.Instantiate(GameObject.Find("Ship_Body/Module_Cabin/Effects_Cabin/ThrusterWash/ThrusterWash_Ship"), remoteVFXObjects.transform);
-            
+
             string[] listOfObjectsToFind_Thrusters = new string[]
             {
                 "Ship_Body/Module_Engine/Effects_Engine/Thrusters",
@@ -205,7 +207,7 @@ namespace OuterWildsOnline
                 "Ship_Body/Module_LandingGear/LandingGear_Right/Geo_LandingGear_Right/ShadowCaster_RightLeg"
             };
 
-            void InstantiateAndMove(Transform t) 
+            void InstantiateAndMove(Transform t)
             {
                 GameObject.Instantiate(t.gameObject, remotePlayerShip.transform).transform.localPosition -= new Vector3(0, 4, 0);
             }
@@ -266,7 +268,7 @@ namespace OuterWildsOnline
             GameObject.DontDestroyOnLoad(remoteProbe);
             return remoteProbe;
         }
-      
+
         public static GameObject CreateRoastingStickRemoteCopy()
         {
             Transform remoteStick = GameObject.Instantiate(Locator.GetPlayerTransform().Find("RoastingSystem/Stick_Root").GetChild(0), null);
@@ -282,7 +284,7 @@ namespace OuterWildsOnline
             GameObject.DontDestroyOnLoad(remoteStick);
             return remoteStick.gameObject;
         }
-      
+
         //Raft_Body
         //Disable:
         //Detector_Raft
@@ -294,7 +296,7 @@ namespace OuterWildsOnline
         //ChurnParticles (Particles)
         //ImpactAudio (Audio)
         //MovementAudio (Audio)
-        public static GameObject CreateRaftRemoteCopy() 
+        public static GameObject CreateRaftRemoteCopy()
         {
 
             return null;
