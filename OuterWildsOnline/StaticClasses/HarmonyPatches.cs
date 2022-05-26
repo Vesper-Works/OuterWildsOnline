@@ -24,7 +24,7 @@ namespace OuterWildsOnline.StaticClasses
             ConnectionController.Instance.StartCoroutine(ConnectionController.Instance.Disconnect(0.1f));
         }
 
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         [HarmonyPatch(typeof(PauseMenuManager), nameof(PauseMenuManager.TryOpenPauseMenu))]
         public static void TryOpenPauseMenuPatch()
         {

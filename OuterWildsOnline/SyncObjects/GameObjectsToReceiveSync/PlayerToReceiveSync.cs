@@ -103,11 +103,15 @@ namespace OuterWildsOnline.SyncObjects
         }
         private void UpdateSkin()
         {
-            //Protagonist,
-            //Gabbro,
-            //Feldspar,
-            //Chert
-            if(customSkin == ObjectData.GetUtfString("customSkin")) { return; }
+            if (customSkin == "Protagonist")
+            {
+                UpdateColour(false);
+            }
+            else
+            {
+                UpdateColour(true);
+            }
+            if (customSkin == ObjectData.GetUtfString("customSkin")) { return; }
             customSkin = ObjectData.GetUtfString("customSkin");
 
             // Destroy the current skins if they exist
@@ -166,7 +170,7 @@ namespace OuterWildsOnline.SyncObjects
                     hue = (hue + (300f / 360f)) % 1;
                     Color tertiary = Color.HSVToRGB(hue, saturation, brightness);
 
-                    Utils.UpdateColourRecursive(primary, transform);                
+                    Utils.UpdateColourRecursive(primary, transform);
                     Utils.UpdateColourRecursive(tertiary,
                         transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:Props_HEA_Jetpack"));
                     if (plain) { return; }
@@ -200,7 +204,7 @@ namespace OuterWildsOnline.SyncObjects
                     Color headColour = new Color(int.Parse(headColourStr[0]) / 255f, int.Parse(headColourStr[1]) / 255f, int.Parse(headColourStr[2]) / 255f);
                     Color jetpackColour = new Color(int.Parse(jetpackColourStr[0]) / 255f, int.Parse(jetpackColourStr[1]) / 255f, int.Parse(jetpackColourStr[2]) / 255f);
 
-                    Utils.UpdateColourRecursive(clothesColour, transform);                  
+                    Utils.UpdateColourRecursive(clothesColour, transform);
                     Utils.UpdateColourRecursive(jetpackColour,
                         transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:Props_HEA_Jetpack"));
                     if (plain) { return; }

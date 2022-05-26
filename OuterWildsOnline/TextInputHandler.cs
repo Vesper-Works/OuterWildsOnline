@@ -26,8 +26,11 @@ namespace OuterWildsOnline
         {            
             if (UnityEngine.InputSystem.Keyboard.current.backspaceKey.wasPressedThisFrame)
             {
-                WrittenText = WrittenText.Remove(WrittenText.Length - 1);
-                StartCoroutine(DeleteCharacters(0.75f));
+                if(WrittenText.Length > 0)
+                {
+                    WrittenText = WrittenText.Remove(WrittenText.Length - 1);
+                    StartCoroutine(DeleteCharacters(0.75f));
+                }        
             }
         }
         private IEnumerator DeleteCharacters(float delay)
@@ -36,8 +39,12 @@ namespace OuterWildsOnline
 
             while (UnityEngine.InputSystem.Keyboard.current.backspaceKey.isPressed)
             {
-                WrittenText = WrittenText.Remove(WrittenText.Length - 1);
-                yield return new WaitForSeconds(0.1f);
+                if (WrittenText.Length > 0)
+                {
+                    WrittenText = WrittenText.Remove(WrittenText.Length - 1);
+                    yield return new WaitForSeconds(0.1f);
+                }
+            
             }
         }
         public void BeginRecording(bool clear)

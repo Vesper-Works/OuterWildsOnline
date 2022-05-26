@@ -92,6 +92,7 @@ namespace OuterWildsOnline
             {
                 currentPlayerMessageRoomVariable.GetSFSObjectValue().PutInt("apr", currentPlayerMessageRoomVariable.GetSFSObjectValue().GetInt("apr") + 1);
                 currentPlayerMessageRoomVariable.GetSFSObjectValue().PutIntArray("aprlist", currentPlayerMessageRoomVariable.GetSFSObjectValue().GetIntArray("aprlist").Append(ConnectionController.Connection.MySelf.PlayerId).ToArray());
+              
                 ConnectionController.Connection.Send(new SetRoomVariablesRequest(new List<RoomVariable>() { currentPlayerMessageRoomVariable }, ConnectionController.Connection.LastJoinedRoom));
                 Locator.GetPromptManager().AddScreenPrompt(appraiseUnavailablePrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(appraisalCountPrompt);
@@ -224,7 +225,7 @@ namespace OuterWildsOnline
             data.PutInt("apr", 1);
             data.PutUtfString("user", Utils.GetPlayerProfileName());
             data.PutUtfStringArray("mes", pages.ToArray());
-            data.PutIntArray("aprlist", new int[] { });
+            data.PutIntArray("aprlist", new int[] { ConnectionController.Connection.MySelf.PlayerId });
 
             variable.PutUtfString("name", Guid.NewGuid().ToString());
             variable.PutSFSObject("data", data);

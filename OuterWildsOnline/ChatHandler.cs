@@ -294,7 +294,7 @@ namespace OuterWildsOnline
                 Locator.GetPromptManager().AddScreenPrompt(exitChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(enterChatPrompt);
                 ChatFullOpacity();
-                TextInputHandler.Instance.BeginRecording(false);
+                TextInputHandler.Instance.BeginRecording(true);
             }
             if (OWInput.IsNewlyPressed(exitChatPrompt.GetInputCommandList()[0]) && selected)
             {
