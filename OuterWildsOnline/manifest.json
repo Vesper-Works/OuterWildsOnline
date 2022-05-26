@@ -3,7 +3,7 @@
   "author": "Vesper",
   "name": "Outer Wilds Online",
   "uniqueName": "Vesper.OuterWildsMMO",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "owmlVersion": "2.3.3",
   "conflicts": [ "" ]
 }
