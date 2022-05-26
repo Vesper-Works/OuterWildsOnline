@@ -73,8 +73,8 @@ namespace OuterWildsOnline
         {
             shipAloneInSpace = new NotificationData(NotificationTarget.Ship, "Alone in space", 5f, true);
 
-            enterChatPrompt = new ScreenPrompt("ENTER to start chatting");
-            exitChatPrompt = new ScreenPrompt("ESC to stop chatting");
+            enterChatPrompt = new ScreenPrompt(InputLibrary.enter , "Start Chatting");
+            exitChatPrompt = new ScreenPrompt(InputLibrary.escape, "Stop Chatting");
 
             Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, PromptPosition.UpperRight, true);
 
@@ -193,6 +193,7 @@ namespace OuterWildsOnline
 
         private IEnumerator FadeOutChatAfterDisuse()
         {
+            StopCoroutine(FadeOutChatAfterDisuse());
             yield return new WaitForSecondsRealtime(5f);
             FadeChatOut(1);
         }
@@ -251,7 +252,7 @@ namespace OuterWildsOnline
         }
         private void OnRemoveHelmet()
         {
-            if(helmetlessChatParent != null)
+            if (helmetlessChatParent != null)
             {
                 helmetlessChatParent.gameObject.SetActive(true);
             }
@@ -264,49 +265,18 @@ namespace OuterWildsOnline
                 OWInput.GetInputMode() != InputMode.KeyboardInput &&
                 OWInput.GetInputMode() != InputMode.ShipCockpit) { return; }
 
+
+
             if (selected && chatMode != ChatMode.NA)
             {
                 if (Keyboard.current.enterKey.wasPressedThisFrame)
                 {
                     if (currentInputField.text.Trim(' ') == "") { return; }
                     sfs.Send(new Sfs2X.Requests.PublicMessageRequest(chatMode.ToString() + "ʣ" + currentInputField.text));
-                    currentInputField.text = "";
+                    TextInputHandler.Instance.ClearText();
                 }
-                foreach (var key in Keyboard.current.allKeys)
-                {
-                    if (key.wasPressedThisFrame && key.displayName.Length == 1)
-                    {
-                        if (Keyboard.current.shiftKey.isPressed)
-                        {
-                            if (Keyboard.current.digit1Key.wasPressedThisFrame)
-                            {
-                                currentInputField.text += "!";
-                            }
-                            else if (Keyboard.current.slashKey.wasPressedThisFrame)
-                            {
-                                currentInputField.text += "?";
-                            }
-                            else
-                            {
-                                currentInputField.text += key.displayName.ToUpper();
-                            }
-                        }
-                        else
-                        {
-                            currentInputField.text += key.displayName.ToLower();
-                        }
-                        FormatText(currentInputField);
-                    }
-                }
-                if (Keyboard.current.backspaceKey.wasPressedThisFrame)
-                {
-                    currentInputField.text = currentInputField.text.Remove(currentInputField.text.Length - 1);
-                    StartCoroutine(DeleteCharacters(0.75f));
-                }
-                if (Keyboard.current.spaceKey.wasPressedThisFrame)
-                {
-                    currentInputField.text += " ";
-                }
+                currentInputField.text = TextInputHandler.Instance.WrittenText;
+                FormatText(currentInputField);
             }
             if (selected)
             {
@@ -315,7 +285,7 @@ namespace OuterWildsOnline
                     UpdateOpenChat();
                 }
             }
-            if (Keyboard.current.enterKey.wasPressedThisFrame && !selected)
+            if (OWInput.IsNewlyPressed(enterChatPrompt.GetInputCommandList()[0]) && !selected)
             {
                 lastInputMode = OWInput.GetInputMode();
                 OWInput.ChangeInputMode(InputMode.KeyboardInput);
@@ -323,34 +293,21 @@ namespace OuterWildsOnline
                 selected = true;
                 Locator.GetPromptManager().AddScreenPrompt(exitChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(enterChatPrompt);
-                StopCoroutine(FadeOutChatAfterDisuse());
                 ChatFullOpacity();
+                TextInputHandler.Instance.BeginRecording(false);
             }
-            if (Keyboard.current.escapeKey.wasPressedThisFrame && selected)
+            if (OWInput.IsNewlyPressed(exitChatPrompt.GetInputCommandList()[0]) && selected)
             {
-                
                 OWInput.ChangeInputMode(lastInputMode);
                 if (PlayerState.UsingShipComputer()) { OWInput.ChangeInputMode(InputMode.ShipComputer); }
                 selected = false;
                 Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(exitChatPrompt);
-                StopCoroutine(FadeOutChatAfterDisuse());
                 StartCoroutine(FadeOutChatAfterDisuse());
                 Locator.GetPauseCommandListener().RemovePauseCommandLock();
+                TextInputHandler.Instance.StopRecording();
             }
         }
-
-        private IEnumerator DeleteCharacters(float delay)
-        {
-            yield return new WaitForSeconds(delay);
-
-            while (Keyboard.current.backspaceKey.isPressed)
-            {
-                currentInputField.text = currentInputField.text.Remove(currentInputField.text.Length - 1);
-                yield return new WaitForSeconds(0.1f);
-            }
-        }
-
         private void UpdateOpenChat()
         {
             if (NoChatsAvailable)
@@ -485,16 +442,6 @@ namespace OuterWildsOnline
         {
             if (text.text.Length % 40 == 0) { text.text += Environment.NewLine; }
         }
-        private string FormatTextFirstTime(string text)
-        {
-            var numOfLines = Mathf.FloorToInt(text.Length / 40);
-
-            for (int i = 1; i < numOfLines; i++)
-            {
-                text = text.Insert(i * 40, Environment.NewLine);
-            }
-            return text;
-        }
 
         private void OnPublicMessage(BaseEvent evt)
         {
@@ -506,8 +453,6 @@ namespace OuterWildsOnline
             ChatFullOpacity();
             if (!selected)
             {
-                ChatFullOpacity();
-                StopCoroutine(FadeOutChatAfterDisuse());
                 StartCoroutine(FadeOutChatAfterDisuse());
             }
         }

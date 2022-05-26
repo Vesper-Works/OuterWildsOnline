@@ -282,7 +282,15 @@ namespace OuterWildsOnline
             GameObject.DontDestroyOnLoad(remoteStick);
             return remoteStick.gameObject;
         }
-      
+        public static GameObject CreateMessageCopy()
+        {
+            GameObject recorder = GameObject.Instantiate(GameObject.Find("TimberHearth_Body/Sector_TH/Sector_RadioTower/RadioTower_DLC/Interactibles_RadioTower/Prefab_HEA_Recorder"), null);
+            recorder.GetComponent<InteractReceiver>().EnableInteraction();
+            recorder.SetActive(false);
+            GameObject.DontDestroyOnLoad(recorder);
+            return recorder;
+        }
+
         //Raft_Body
         //Disable:
         //Detector_Raft

@@ -1,3 +1,4 @@
+using OuterWildsOnline.StaticClasses;
 using OuterWildsOnline.SyncObjects;
 using OWML.Common;
 using OWML.Common.Menus;
@@ -123,14 +124,13 @@ namespace OuterWildsOnline
             ModHelper.Events.Scenes.OnCompleteSceneChange += OnCompleteSceneChange;
             GlobalMessenger.AddListener("WakeUp", new Callback(this.OnPlayerWakeUp));
             GlobalMessenger<DeathType>.AddListener("PlayerDeath", new Callback<DeathType>(this.OnPlayerDeath));
+            HarmonyPatches.init();
         }
-
 
         private void OnPlayerDeath(DeathType deathType)
         {
             var data = new SFSObject();
             data.PutInt("died", (int)deathType);
-            //data.PutInt("died", (int)deathType);
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
         }
 
@@ -342,9 +342,7 @@ namespace OuterWildsOnline
         }
         private void OnPlayerWakeUp()
         {
-
             SetOnLoadSceneStuff();
-
         }
         private void LoadServerThings()
         {
@@ -355,8 +353,6 @@ namespace OuterWildsOnline
             sfs.EnableLagMonitor(true, 2, 5);
 
             StartCoroutine(SendJoinedGameMessage());
-
-            ModHelper.HarmonyHelper.AddPostfix<PauseMenuManager>("OnExitToMainMenu", typeof(ConnectionController), "OnExitToMainMenuPatch");
         }
         private void ReloadServerThings()
         {
@@ -374,6 +370,7 @@ namespace OuterWildsOnline
             sfs.AddEventListener(SFSEvent.PROXIMITY_LIST_UPDATE, OnProximityListUpdate);
             sfs.AddEventListener(SFSEvent.EXTENSION_RESPONSE, OnExtensionResponse);
             sfs.AddEventListener(SFSEvent.USER_VARIABLES_UPDATE, OnUserVariablesUpdate);
+            sfs.AddEventListener(SFSEvent.ROOM_VARIABLES_UPDATE, OnRoomVarsUpdate);
 
             SFSSectorManager.RefreshSectors();
 
@@ -383,13 +380,13 @@ namespace OuterWildsOnline
             StartCoroutine(CreateObjectClones(0.5f));
             StartCoroutine(SetObjectsToSync(0.7f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
+            StartCoroutine(InstantiatePersistantObjects(3f));
             new GameObject("ChatHandler").AddComponent<ChatHandler>();
+            new GameObject("MessageHandler").AddComponent<MessageHandler>();
+            new GameObject("TextInputHandler").AddComponent<TextInputHandler>();
+
         }
-        private static void OnExitToMainMenuPatch()
-        {
-            Instance.StartCoroutine(Instance.Disconnect(0.1f));
-            //TODO fazer com que ele não disconecte quando ir para o menu principal
-        }
+
         public IEnumerator Disconnect(float delay)
         {
             Instance.playerInGame = false;
@@ -433,6 +430,8 @@ namespace OuterWildsOnline
             ModHelper.Console.WriteLine("Probe added to clone bay");
             RemoteObjects.CloneStorage.Add("RoastingStick", CreateRemoteCopies.CreateRoastingStickRemoteCopy());
             ModHelper.Console.WriteLine("RoastingStick added to clone bay");
+            RemoteObjects.CloneStorage.Add("Message", CreateRemoteCopies.CreateMessageCopy());
+            ModHelper.Console.WriteLine("Message added to clone bay");
         }
         private IEnumerator SetObjectsToSync(float delay)
         {
@@ -564,6 +563,41 @@ namespace OuterWildsOnline
                     CheckUserObjVariable(user);
             }
         }
+        private IEnumerator InstantiatePersistantObjects(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            foreach (var roomVariable in sfs.LastJoinedRoom.GetVariables())
+            {
+                InstantiateMessage(roomVariable);
+            }
+        }
+        private void InstantiateMessage(RoomVariable roomVariable)
+        {
+            ISFSObject data = roomVariable.GetSFSObjectValue();
+
+            string pages = "";
+            foreach (var page in data.GetUtfStringArray("mes"))
+            {
+                pages += $"<Page>{page}</Page>\n";
+            }
+            GameObject testGameObject = Instantiate(RemoteObjects.CloneStorage["Message"]);
+            testGameObject.name = roomVariable.Name;
+            testGameObject.GetComponent<SingleInteractionVolume>()._playerCam = Locator.GetPlayerCamera();
+            testGameObject.GetComponent<CharacterDialogueTree>().SetTextXml(new TextAsset(
+$@"<DialogueTree>
+    <NameField>RECORDING</NameField>
+    <DialogueNode>
+        <EntryCondition>DEFAULT</EntryCondition>
+        <Dialogue>
+            {pages}
+        </Dialogue>
+    </DialogueNode>
+</DialogueTree>"));
+            testGameObject.transform.SetParent(SFSSectorManager.Sectors[data.GetUtfString("sec")].transform);
+            testGameObject.transform.localPosition = new Vector3(data.GetFloat("posx"), data.GetFloat("posy"), data.GetFloat("posz"));
+            testGameObject.transform.localRotation = Quaternion.Euler(data.GetFloat("rotx"), data.GetFloat("roty"), data.GetFloat("rotz"));
+            testGameObject.SetActive(true);
+        }
 
         #region ConnectButtonEvents
         private void SetButtonConnecting()
@@ -627,7 +661,7 @@ namespace OuterWildsOnline
             cfg.Host = "127.0.0.1";
 #endif
             cfg.Port = 9933;
-            cfg.Zone = "OuterWildsMMO";
+            cfg.Zone = "OuterWildsOnline";
 
             // Connect to SFS2X
             sfs.Connect(cfg);
@@ -682,11 +716,13 @@ namespace OuterWildsOnline
                 {
                     DefaultAOI = new Vec3D(100000f, 100000f, 100000f),
                     MaxUsers = 100,
-                    Extension = new RoomExtension("OuterWildsMMO", "MainExtension"),
+                    Extension = new RoomExtension("OuterWildsOnline", "RoomExtension"),
                     IsGame = true,
                     SendAOIEntryPoint = true,
                     UserMaxLimboSeconds = 120,
-                    MaxVariables = 10000
+                    MaxVariables = 10000,
+                    Permissions = new RoomPermissions()
+                    { AllowPublicMessages = true }
                 };
                 sfs.Send(new CreateRoomRequest(settings, true));
             }
@@ -785,6 +821,18 @@ namespace OuterWildsOnline
             if (changedVars.Contains("objs") && !user.IsItMe && user.IsJoinedInRoom(Connection.LastJoinedRoom))
                 CheckUserObjVariable(user);
         }
+        private void OnRoomVarsUpdate(BaseEvent evt)
+        {
+            List<String> changedVars = (List<String>)evt.Params["changedVars"];
+
+            foreach (var roomVar in sfs.LastJoinedRoom.GetVariables())
+            {
+                if (changedVars.Contains(roomVar.Name))
+                {
+                    InstantiateMessage(roomVar);
+                }
+            }
+        }
         private void Resume()
         {
             // Simulate "resume game" button press.
@@ -795,6 +843,7 @@ namespace OuterWildsOnline
 
         private void OnApplicationQuit()
         {
+
             if (playerInGame)
             {
                 SendLeaveGameMessage();

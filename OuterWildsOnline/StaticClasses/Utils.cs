@@ -26,7 +26,7 @@ namespace OuterWildsOnline
         }
         public static void DestroyChildrenWithNameRecursively(this Transform transform, string name)
         {
-            List<GameObject> childrenToDestroy = new List<GameObject>(); 
+            List<GameObject> childrenToDestroy = new List<GameObject>();
             foreach (Transform child in transform)
             {
                 if (child.gameObject.name.Contains(name))
@@ -42,7 +42,7 @@ namespace OuterWildsOnline
             for (int i = 0; i < length; i++)
             {
                 GameObject.DestroyImmediate(childrenToDestroy[i]);
-            }        
+            }
         }
         public static void DestroyComponentFromGameObjectRecursively(this Transform transform, Type component)
         {
@@ -51,7 +51,7 @@ namespace OuterWildsOnline
             {
                 if (child.TryGetComponent(component, out Component componentToDestroy))
                 {
-                   Component.DestroyImmediate(componentToDestroy);
+                    Component.DestroyImmediate(componentToDestroy);
                 }
                 if (child.childCount > 0)
                 {
@@ -61,16 +61,16 @@ namespace OuterWildsOnline
         }
         public static void RemoveCollisionFromObjectRecursively(Transform transform)
         {
+            if (transform.TryGetComponent<Collider>(out Collider collider)) { collider.enabled = false; }
             foreach (Transform child in transform)
             {
-                if (child.gameObject.name.ToLower().Contains("collision")) { child.gameObject.SetActive(false); }
+                if (child.TryGetComponent<Collider>(out collider)) { collider.enabled = false; }
                 if (child.childCount > 0)
                 {
                     RemoveCollisionFromObjectRecursively(child);
                 }
             }
         }
-
         public static void UpdateColourRecursive(Color color, Transform child)
         {
             if (child.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
@@ -84,13 +84,52 @@ namespace OuterWildsOnline
                     foreach (var material in meshRenderer.materials)
                     {
                         material.color = color;
-                    }                
+                    }
                 }
                 UpdateColourRecursive(color, possibleRenderer);
             }
         }
+        public static void MakeObjectAcceptTransparencyRecursive(Transform child)
+        {
+            if (child.TryGetComponent(out Renderer meshRenderer))
+            {
+                var mat = meshRenderer.material;
+
+                // set rendering mode to transparent
+                mat.SetFloat("_Mode", 4);
+                mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                mat.SetInt("_ZWrite", 0);
+                mat.DisableKeyword("_ALPHATEST_ON");
+                mat.DisableKeyword("_ALPHABLEND_ON");
+                mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                mat.renderQueue = 3000;
+            }
+            foreach (Transform possibleRenderer in child)
+            {
+                if (possibleRenderer.TryGetComponent(out meshRenderer))
+                {
+                    foreach (var mat in meshRenderer.materials)
+                    {
+                        // set rendering mode to transparent
+                        mat.SetFloat("_Mode", 3);
+                        mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                        mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                        mat.SetInt("_ZWrite", 0);
+                        mat.DisableKeyword("_ALPHATEST_ON");
+                        mat.DisableKeyword("_ALPHABLEND_ON");
+                        mat.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                        mat.renderQueue = 3000;
+                    }
+                }
+                MakeObjectAcceptTransparencyRecursive(possibleRenderer);
+            }
+        }
         public static string GetPlayerProfileName()
         {
+#if DEBUG
+            return ConnectionController.Connection.MySelf.Name;
+#endif
             string playerName;
             try //Stolen straight from QSB!
             {
@@ -163,7 +202,7 @@ namespace OuterWildsOnline
             RV._maxTargetDistance = 0;
             RV._autopilotArrivalDistance = 2.0f * sphereOfInfluence;
             RV._autoAlignmentDistance = sphereOfInfluence * 1.5f;
-    
+
             RV._hideLandingModePrompt = false;
             RV._matchAngularVelocity = true;
             RV._minMatchAngularVelocityDistance = 70;
@@ -176,7 +215,7 @@ namespace OuterWildsOnline
             RFV._isPrimaryVolume = true;
             RFV._isCloseRangeVolume = false;
 
-          
+
             rfGO.SetActive(true);
             return RFV;
         }
