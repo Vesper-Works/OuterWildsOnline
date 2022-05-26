@@ -5,6 +5,12 @@
     "clothesColour": "",
     "handsColour": "",
     "headColour": "",
-    "jetpackColour": ""
+    "jetpackColour": "",
+    "customSkin": {
+      "type": "selector",
+      "value": "Protagonist",
+      "options": [ "Protagonist", "Gabbro", "Feldspar", "Chert" ],
+      "title": "Custom Skin"
+    }
   }
 }

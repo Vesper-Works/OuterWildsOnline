@@ -1,4 +1,5 @@
-﻿using OWML.Common;
+﻿using OuterWildsOnline.StaticClasses;
+using OWML.Common;
 using Sfs2X.Core;
 using Sfs2X.Entities.Data;
 using Sfs2X.Requests;
@@ -10,6 +11,9 @@ namespace OuterWildsOnline.SyncObjects
 {
     public class PlayerToSendSync : ObjectToSendSync
     {
+        private SkinnedMeshRenderer[] _currentSuitSkin;
+        private SkinnedMeshRenderer[] _currentSuitlessSkin;
+
         private UnityEngine.UI.Text pingText;
         private void PingPongHandler(BaseEvent evt)
         {
@@ -44,8 +48,12 @@ namespace OuterWildsOnline.SyncObjects
             ObjectData.PutUtfString("handsColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("handsColour"));
             ObjectData.PutUtfString("headColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("headColour"));
             ObjectData.PutUtfString("jetpackColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("jetpackColour"));
+            ObjectData.PutUtfString("customSkin", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("customSkin"));
+            string skinCode = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("customSkin");
+            ConnectionController.Console.WriteLine(skinCode);
             SetPlayerColour();
         }
+
         protected override void Start()
         {
             base.Start();
@@ -123,17 +131,53 @@ namespace OuterWildsOnline.SyncObjects
         }
         public override void ConfigChanged(IModConfig config)
         {
-            ObjectData.PutUtfString("clothesColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("clothesColour"));
-            ObjectData.PutUtfString("handsColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("handsColour"));
-            ObjectData.PutUtfString("headColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("headColour"));
-            ObjectData.PutUtfString("jetpackColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("jetpackColour"));
-            SetPlayerColour();
+          
+            ObjectData.PutUtfString("clothesColour", config.GetSettingsValue<string>("clothesColour"));
+            ObjectData.PutUtfString("handsColour", config.GetSettingsValue<string>("handsColour"));
+            ObjectData.PutUtfString("headColour", config.GetSettingsValue<string>("headColour"));
+            ObjectData.PutUtfString("jetpackColour", config.GetSettingsValue<string>("jetpackColour"));
+            string skinCode = config.GetSettingsValue<string>("customSkin");
+            ConnectionController.Console.WriteLine(skinCode);
+            ObjectData.PutUtfString("customSkin", skinCode);
+
+            // Destroy the current skins if they exist
+            if (_currentSuitSkin != null)
+            {
+                foreach (var skin in _currentSuitSkin)
+                {
+                    GameObject.Destroy(skin.gameObject);
+                }
+                _currentSuitSkin = null;
+            }
+            if (_currentSuitlessSkin != null)
+            {
+                foreach (var skin in _currentSuitlessSkin)
+                {
+                    GameObject.Destroy(skin.gameObject);
+                }
+                _currentSuitlessSkin = null;
+            }
+
+            switch (Enum.Parse(typeof(CustomSkin), skinCode))
+            {
+                case CustomSkin.Protagonist:
+                    SetPlayerColour();
+                    SkinReplacer.ResetSkin(transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject);
+                    SkinReplacer.ResetSkin(transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject);
+                    break;
+                case CustomSkin.Gabbro:
+                case CustomSkin.Feldspar:
+                case CustomSkin.Chert:
+                    _currentSuitSkin = SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/Traveller_Mesh_v01:Traveller_Geo").gameObject, skinCode);
+                    _currentSuitlessSkin = SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player").gameObject, skinCode);
+                    break;
+            }
             ConnectionController.Instance.UpdateObjectToSyncData(this);
         }
         private void SetPlayerColour()
         {
             string playerColourString = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("clothesColour");
-            if (playerColourString == "")
+            if (string.IsNullOrEmpty(playerColourString))
             {
 
                 System.Security.Cryptography.MD5 md5Hasher = System.Security.Cryptography.MD5.Create();
@@ -203,11 +247,11 @@ namespace OuterWildsOnline.SyncObjects
                     transform.Find("Traveller_HEA_Player_v2/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm"));
             }
         }
-        
+
         #region PlayerEventsData
         private void PlayerFarFromSector()
         {
-            if(ObjectData.ContainsKey("far") && !ObjectData.GetBool("far"))
+            if (ObjectData.ContainsKey("far") && !ObjectData.GetBool("far"))
             {
                 ObjectData.PutBool("far", true);
                 ConnectionController.Instance.UpdateObjectToSyncData(this);
@@ -215,7 +259,7 @@ namespace OuterWildsOnline.SyncObjects
         }
         private void PlayerCloseToSector()
         {
-            if(ObjectData.ContainsKey("far") && ObjectData.GetBool("far"))
+            if (ObjectData.ContainsKey("far") && ObjectData.GetBool("far"))
             {
                 ObjectData.PutBool("far", false);
                 ConnectionController.Instance.UpdateObjectToSyncData(this);

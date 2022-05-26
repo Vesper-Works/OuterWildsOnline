@@ -90,13 +90,24 @@ namespace OuterWildsOnline
 
         public void SetMarkerText(string text)
         {
-            if(_canvasMarker != null)
+            if (_canvasMarker != null)
             {
                 _canvasMarker.SetLabel(text);
             }
             _markerLabel = text;
+        }
+        public void SetHazard(bool hazard)
+        {
+            if (_canvasMarker == null) { return; }
+            if (hazard)
+            {
+                _canvasMarker.SetSecondaryLabel(CanvasMarker.SecondaryLabelType.DANGER);
+            }
+            else
+            {
+                _canvasMarker.SetSecondaryLabel(CanvasMarker.SecondaryLabelType.NONE);
+            }
 
         }
-
     }
 }

@@ -105,18 +105,18 @@ namespace OuterWildsOnline
             Application.runInBackground = true;
             // Skip flash screen.
             var titleScreenAnimation = FindObjectOfType<TitleScreenAnimation>();
-            titleScreenAnimation.SetValue("_fadeDuration", 0);
-            titleScreenAnimation.SetValue("_gamepadSplash", false);
-            titleScreenAnimation.SetValue("_introPan", false);
+            titleScreenAnimation._fadeDuration = 0;
+            titleScreenAnimation._gamepadSplash = false;
+            titleScreenAnimation._introPan = false;
             titleScreenAnimation.Invoke("FadeInTitleLogo");
 
             // Skip menu fade.
             var titleAnimationController = FindObjectOfType<TitleAnimationController>();
-            titleAnimationController.SetValue("_logoFadeDelay", 0.001f);
-            titleAnimationController.SetValue("_logoFadeDuration", 0.001f);
-            titleAnimationController.SetValue("_optionsFadeDelay", 0.001f);
-            titleAnimationController.SetValue("_optionsFadeDuration", 0.001f);
-            titleAnimationController.SetValue("_optionsFadeSpacing", 0.001f);
+            titleAnimationController._logoFadeDelay = 0.001f;
+            titleAnimationController._logoFadeDuration = 0.001f;
+            titleAnimationController._optionsFadeDelay = 0.001f;
+            titleAnimationController._optionsFadeDuration = 0.001f;
+            titleAnimationController._optionsFadeSpacing = 0.001f;
 
 
             ModHelper.Menus.MainMenu.OnInit += DoMainMenuStuff;
@@ -124,6 +124,7 @@ namespace OuterWildsOnline
             ModHelper.Events.Scenes.OnCompleteSceneChange += OnCompleteSceneChange;
             GlobalMessenger.AddListener("WakeUp", new Callback(this.OnPlayerWakeUp));
             GlobalMessenger<DeathType>.AddListener("PlayerDeath", new Callback<DeathType>(this.OnPlayerDeath));
+
             HarmonyPatches.init();
         }
 

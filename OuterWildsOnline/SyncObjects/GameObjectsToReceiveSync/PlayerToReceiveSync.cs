@@ -5,6 +5,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System;
+using OuterWildsOnline.StaticClasses;
+
 namespace OuterWildsOnline.SyncObjects
 {
     public class PlayerToReceiveSync : ObjectToRecieveSync
@@ -16,6 +18,10 @@ namespace OuterWildsOnline.SyncObjects
         ThrusterFlameControllerSync[] thrustersControllersSync;
         ThrusterWashControllerSync thrusterWashControllerSync;
         CanvasMapMarker mapCanvasMarker;
+
+        private SkinnedMeshRenderer[] _currentSuitSkin;
+        private SkinnedMeshRenderer[] _currentSuitlessSkin;
+        private string customSkin;
 
         public Vector3 LocalHeadRotation { get; private set; } = Vector3.zero;
         public bool IsFlashlightOn { get; private set; } = false;
@@ -54,7 +60,7 @@ namespace OuterWildsOnline.SyncObjects
 
             IsFlashlightOn = ObjectData.GetBool("light");
 
-            UpdateColour();
+            UpdateSkin();
             base.Start();
         }
 
@@ -78,34 +84,75 @@ namespace OuterWildsOnline.SyncObjects
                     playerStateSync.OnRemoveSuit();
                 }
             }
-            UpdateColour();
+            UpdateSkin();
+
             if (ObjectData.GetBool("far"))
             {
                 mapCanvasMarker.SetLabel($"{transform.name} Deep Space Connection - Approximating...");
                 mapCanvasMarker.SetColor(Color.yellow);
                 GetComponent<RemotePlayerHUDMarker>().SetMarkerText($"{transform.name} Deep Space Connection - Approximating...");
-                GetComponent<RemotePlayerHUDMarker>()._canvasMarker.SetSecondaryLabel(CanvasMarker.SecondaryLabelType.DANGER);
+                GetComponent<RemotePlayerHUDMarker>().SetHazard(true);
             }
             else
             {
                 mapCanvasMarker.SetLabel($"{transform.name}");
                 mapCanvasMarker.SetColor(Color.white);
                 GetComponent<RemotePlayerHUDMarker>().SetMarkerText($"{transform.name}");
-                GetComponent<RemotePlayerHUDMarker>()._canvasMarker.SetSecondaryLabel(CanvasMarker.SecondaryLabelType.NONE);
+                GetComponent<RemotePlayerHUDMarker>().SetHazard(false);
             }
         }
-        private void UpdateColour()
+        private void UpdateSkin()
+        {
+            //Protagonist,
+            //Gabbro,
+            //Feldspar,
+            //Chert
+            if(customSkin == ObjectData.GetUtfString("customSkin")) { return; }
+            customSkin = ObjectData.GetUtfString("customSkin");
+
+            // Destroy the current skins if they exist
+            if (_currentSuitSkin != null)
+            {
+                foreach (var skin in _currentSuitSkin)
+                {
+                    GameObject.Destroy(skin.gameObject);
+                }
+                _currentSuitSkin = null;
+            }
+            if (_currentSuitlessSkin != null)
+            {
+                foreach (var skin in _currentSuitlessSkin)
+                {
+                    GameObject.Destroy(skin.gameObject);
+                }
+                _currentSuitlessSkin = null;
+            }
+
+            if (customSkin == "Protagonist")
+            {
+                SkinReplacer.ResetSkin(transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo").gameObject);
+                SkinReplacer.ResetSkin(transform.Find("Traveller_HEA_Player_v2(Clone)/player_mesh_noSuit:Traveller_HEA_Player").gameObject);
+                UpdateColour(false);
+            }
+            else
+            {
+                _currentSuitSkin = SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo").gameObject, customSkin);
+                _currentSuitlessSkin = SkinReplacer.ReplaceSkin(transform.Find("Traveller_HEA_Player_v2(Clone)/player_mesh_noSuit:Traveller_HEA_Player").gameObject, customSkin);
+                UpdateColour(true);
+            }
+        }
+        private void UpdateColour(bool plain)
         {
             try
             {
                 string playerColourString = ObjectData.GetUtfString("clothesColour");
-                if (playerColourString == "")
+                if (string.IsNullOrEmpty(playerColourString))
                 {
 
                     System.Security.Cryptography.MD5 md5Hasher = System.Security.Cryptography.MD5.Create();
                     var hashed = md5Hasher.ComputeHash(System.Text.Encoding.UTF8.GetBytes(Utils.GetPlayerProfileName()));
                     var ivalue = BitConverter.ToInt32(hashed, 0);
-                    Func<string, int> convertTo255 = delegate(string value)
+                    Func<string, int> convertTo255 = delegate (string value)
                     {
                         return int.Parse(value) * 255 / 999;
                     };
@@ -119,21 +166,22 @@ namespace OuterWildsOnline.SyncObjects
                     hue = (hue + (300f / 360f)) % 1;
                     Color tertiary = Color.HSVToRGB(hue, saturation, brightness);
 
-                    Utils.UpdateColourRecursive(primary, transform);
-                    Utils.UpdateColourRecursive(tertiary, 
+                    Utils.UpdateColourRecursive(primary, transform);                
+                    Utils.UpdateColourRecursive(tertiary,
                         transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:Props_HEA_Jetpack"));
-                    Utils.UpdateColourRecursive(secondary, 
+                    if (plain) { return; }
+                    Utils.UpdateColourRecursive(secondary,
                         transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm"));
-                    Utils.UpdateColourRecursive(secondary, 
+                    Utils.UpdateColourRecursive(secondary,
                         transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_RightArm"));
 
-                    Utils.UpdateColourRecursive(primary, 
+                    Utils.UpdateColourRecursive(primary,
                         transform.Find("Traveller_HEA_Player_v2(Clone)/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Clothes"));
-                    Utils.UpdateColourRecursive(secondary, 
+                    Utils.UpdateColourRecursive(secondary,
                         transform.Find("Traveller_HEA_Player_v2(Clone)/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_Head"));
-                    Utils.UpdateColourRecursive(tertiary, 
+                    Utils.UpdateColourRecursive(tertiary,
                         transform.Find("Traveller_HEA_Player_v2(Clone)/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_LeftArm"));
-                    Utils.UpdateColourRecursive(tertiary, 
+                    Utils.UpdateColourRecursive(tertiary,
                         transform.Find("Traveller_HEA_Player_v2(Clone)/player_mesh_noSuit:Traveller_HEA_Player/player_mesh_noSuit:Player_RightArm"));
 
                 }
@@ -143,18 +191,19 @@ namespace OuterWildsOnline.SyncObjects
                     string[] handsColourStr = ObjectData.GetUtfString("handsColour").Split(',');
                     string[] headColourStr = ObjectData.GetUtfString("headColour").Split(',');
                     string[] jetpackColourStr = ObjectData.GetUtfString("jetpackColour").Split(',');
-                    if(clothesColourStr.Length != 3) { clothesColourStr = new string[] { "255", "255", "255" }; }
-                    if(handsColourStr.Length != 3) { handsColourStr = new string[] { "255", "255", "255" }; }
-                    if(headColourStr.Length != 3) { headColourStr = new string[] { "255", "255", "255" }; }
-                    if(jetpackColourStr.Length != 3) { jetpackColourStr = new string[] { "255", "255", "255" }; }
+                    if (clothesColourStr.Length != 3) { clothesColourStr = new string[] { "255", "255", "255" }; }
+                    if (handsColourStr.Length != 3) { handsColourStr = new string[] { "255", "255", "255" }; }
+                    if (headColourStr.Length != 3) { headColourStr = new string[] { "255", "255", "255" }; }
+                    if (jetpackColourStr.Length != 3) { jetpackColourStr = new string[] { "255", "255", "255" }; }
                     Color clothesColour = new Color(int.Parse(clothesColourStr[0]) / 255f, int.Parse(clothesColourStr[1]) / 255f, int.Parse(clothesColourStr[2]) / 255f);
                     Color handsColour = new Color(int.Parse(handsColourStr[0]) / 255f, int.Parse(handsColourStr[1]) / 255f, int.Parse(handsColourStr[2]) / 255f);
                     Color headColour = new Color(int.Parse(headColourStr[0]) / 255f, int.Parse(headColourStr[1]) / 255f, int.Parse(headColourStr[2]) / 255f);
                     Color jetpackColour = new Color(int.Parse(jetpackColourStr[0]) / 255f, int.Parse(jetpackColourStr[1]) / 255f, int.Parse(jetpackColourStr[2]) / 255f);
 
-                    Utils.UpdateColourRecursive(clothesColour, transform);
+                    Utils.UpdateColourRecursive(clothesColour, transform);                  
                     Utils.UpdateColourRecursive(jetpackColour,
                         transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:Props_HEA_Jetpack"));
+                    if (plain) { return; }
                     Utils.UpdateColourRecursive(handsColour,
                         transform.Find("Traveller_HEA_Player_v2(Clone)/Traveller_Mesh_v01:Traveller_Geo/Traveller_Mesh_v01:PlayerSuit_LeftArm"));
                     Utils.UpdateColourRecursive(handsColour,
