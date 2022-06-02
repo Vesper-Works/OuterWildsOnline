@@ -90,11 +90,12 @@ namespace OuterWildsOnline
                 currentPlayerMessageRoomVariable != null &&
                 !currentPlayerMessageRoomVariable.GetSFSObjectValue().GetIntArray("aprlist").Contains(ConnectionController.Connection.MySelf.PlayerId))
             {
+                var variable = new SFSObject();
                 currentPlayerMessageRoomVariable.GetSFSObjectValue().PutInt("apr", currentPlayerMessageRoomVariable.GetSFSObjectValue().GetInt("apr") + 1);
                 currentPlayerMessageRoomVariable.GetSFSObjectValue().PutIntArray("aprlist", currentPlayerMessageRoomVariable.GetSFSObjectValue().GetIntArray("aprlist").Append(ConnectionController.Connection.MySelf.PlayerId).ToArray());
-              
-                ConnectionController.Connection.Send(new SetRoomVariablesRequest(new List<RoomVariable>() { currentPlayerMessageRoomVariable }, ConnectionController.Connection.LastJoinedRoom));
-                Locator.GetPromptManager().AddScreenPrompt(appraiseUnavailablePrompt, PromptPosition.UpperRight, true);
+                variable.PutUtfString("name", currentPlayerMessageRoomVariable.Name);
+                variable.PutSFSObject("data", currentPlayerMessageRoomVariable.GetSFSObjectValue());
+                ConnectionController.Connection.Send(new ExtensionRequest("SetPersistantData", variable, ConnectionController.Connection.LastJoinedRoom)); Locator.GetPromptManager().AddScreenPrompt(appraiseUnavailablePrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(appraisalCountPrompt);
                 appraisalCountPrompt = new ScreenPrompt(Instance.appraisalCount);
                 Locator.GetPromptManager().AddScreenPrompt(appraisalCountPrompt, PromptPosition.UpperRight, true);
