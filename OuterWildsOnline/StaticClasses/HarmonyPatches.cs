@@ -66,7 +66,7 @@ namespace OuterWildsOnline.StaticClasses
             ConnectionController.Console.WriteLine(__instance.gameObject.name);
             if (Guid.TryParse(__instance.gameObject.name, out Guid result))
             {
-                MessageHandler.Instance.PlayerMessageOpened(result.ToString());
+                MessageHandler.Instance.PlayerMessageOpened(result.ToString(), __instance.gameObject);
             }
         }
     }

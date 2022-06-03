@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace OuterWildsOnline
 {
@@ -381,11 +382,27 @@ namespace OuterWildsOnline
             StartCoroutine(CreateObjectClones(0.5f));
             StartCoroutine(SetObjectsToSync(0.7f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
-            StartCoroutine(InstantiatePersistantObjects(3f));
+            StartCoroutine(InstantiatePersistantObjects(1f));
             new GameObject("ChatHandler").AddComponent<ChatHandler>();
             new GameObject("MessageHandler").AddComponent<MessageHandler>();
             new GameObject("TextInputHandler").AddComponent<TextInputHandler>();
 
+            List<Transform> results = new List<Transform>();
+           
+                var s = SceneManager.GetActiveScene();
+                if (s.isLoaded)
+                {
+                    var allGameObjects = s.GetRootGameObjects();
+                    for (int j = 0; j < allGameObjects.Length; j++)
+                    {
+                        var go = allGameObjects[j];
+                        results.AddRange(go.GetComponentsInChildren<Transform>(true));
+                    }
+                }
+            
+
+            TransformReferences.TransformPaths.Clear();
+            TransformReferences.AddTransforms(results.ToArray());
         }
 
         public IEnumerator Disconnect(float delay)
@@ -581,10 +598,10 @@ namespace OuterWildsOnline
             {
                 pages += $"<Page>{page}</Page>\n";
             }
-            GameObject testGameObject = Instantiate(RemoteObjects.CloneStorage["Message"]);
-            testGameObject.name = roomVariable.Name;
-            testGameObject.GetComponent<SingleInteractionVolume>()._playerCam = Locator.GetPlayerCamera();
-            testGameObject.GetComponent<CharacterDialogueTree>().SetTextXml(new TextAsset(
+            GameObject messageGameObject = Instantiate(RemoteObjects.CloneStorage["Message"]);
+            messageGameObject.name = roomVariable.Name;
+            messageGameObject.GetComponent<SingleInteractionVolume>()._playerCam = Locator.GetPlayerCamera();
+            messageGameObject.GetComponent<CharacterDialogueTree>().SetTextXml(new TextAsset(
 $@"<DialogueTree>
     <NameField>RECORDING</NameField>
     <DialogueNode>
@@ -594,10 +611,10 @@ $@"<DialogueTree>
         </Dialogue>
     </DialogueNode>
 </DialogueTree>"));
-            testGameObject.transform.SetParent(SFSSectorManager.Sectors[data.GetUtfString("sec")].transform);
-            testGameObject.transform.localPosition = new Vector3(data.GetFloat("posx"), data.GetFloat("posy"), data.GetFloat("posz"));
-            testGameObject.transform.localRotation = Quaternion.Euler(data.GetFloat("rotx"), data.GetFloat("roty"), data.GetFloat("rotz"));
-            testGameObject.SetActive(true);
+            messageGameObject.transform.SetParent(TransformReferences.TransformPaths.First(x => x.Value == data.GetUtfString("path")).Key);
+            messageGameObject.transform.localPosition = new Vector3(data.GetFloat("posx"), data.GetFloat("posy"), data.GetFloat("posz"));
+            messageGameObject.transform.localRotation = Quaternion.Euler(data.GetFloat("rotx"), data.GetFloat("roty"), data.GetFloat("rotz"));
+            messageGameObject.SetActive(true);
         }
 
         #region ConnectButtonEvents
@@ -825,7 +842,7 @@ $@"<DialogueTree>
         private void OnRoomVarsUpdate(BaseEvent evt)
         {
             List<String> changedVars = (List<String>)evt.Params["changedVars"];
-
+            if (!RemoteObjects.CloneStorage.ContainsKey("Message")) { return; }
             foreach (var roomVar in sfs.LastJoinedRoom.GetVariables())
             {
                 if (changedVars.Contains(roomVar.Name))

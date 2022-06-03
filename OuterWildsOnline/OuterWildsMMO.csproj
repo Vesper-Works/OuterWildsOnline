@@ -4,7 +4,7 @@
     <TargetFramework>net48</TargetFramework>
     <OutputPath>Build</OutputPath>
     <AssemblyTitle>OuterWildsMMO</AssemblyTitle>
-    <Product>OuterWildsMMO</Product>
+    <Product>OuterWildsOnline</Product>
     <Copyright>Copyright ©  2020</Copyright>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>

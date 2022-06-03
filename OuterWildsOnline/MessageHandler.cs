@@ -1,4 +1,5 @@
-﻿using Sfs2X.Entities.Data;
+﻿using OuterWildsOnline.StaticClasses;
+using Sfs2X.Entities.Data;
 using Sfs2X.Entities.Variables;
 using Sfs2X.Requests;
 using System;
@@ -31,6 +32,7 @@ namespace OuterWildsOnline
             }
         }
         RoomVariable currentPlayerMessageRoomVariable;
+        GameObject currentMessageGameObject;
         Transform ghost;
         DialogueBoxVer2 dialog;
         List<string> pages = new List<string>() { "" };
@@ -41,8 +43,10 @@ namespace OuterWildsOnline
         ScreenPrompt previousPagePrompt = new ScreenPrompt(InputLibrary.left2, "Previous Page");
         ScreenPrompt cancelMessagePrompt = new ScreenPrompt(InputLibrary.escape, "Cancel");
         ScreenPrompt appraisePrompt = new ScreenPrompt(InputLibrary.up2, "Appraise");
+        ScreenPrompt hidePrompt = new ScreenPrompt(InputLibrary.down2, "Hide");
         ScreenPrompt appraiseUnavailablePrompt = new ScreenPrompt("Already Appraised");
         ScreenPrompt appraisalCountPrompt;
+        LayerMask placementLayerMask = OWLayerMask.physicalMask;
         public static MessageHandler Instance { get; private set; }
         private void Start()
         {
@@ -50,12 +54,29 @@ namespace OuterWildsOnline
             GlobalMessenger.AddListener("SuitUp", new Callback(this.OnSuitUp));
             GlobalMessenger.AddListener("RemoveSuit", new Callback(this.OnRemoveSuit));
             GlobalMessenger.AddListener("ExitConversation", new Callback(this.OnConversationEnded));
+
         }
-        public void PlayerMessageOpened(string roomVariableName)
+        private void OnDestroy()
+        {
+            Locator.GetPromptManager().RemoveScreenPrompt(startPlacingPrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(startWritingPrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(stopWritingPrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(nextPagePrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(previousPagePrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(cancelMessagePrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(appraisePrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(hidePrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(appraiseUnavailablePrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(appraisalCountPrompt);
+            GlobalMessenger.RemoveListener("SuitUp", new Callback(this.OnSuitUp));
+            GlobalMessenger.RemoveListener("RemoveSuit", new Callback(this.OnRemoveSuit));
+            GlobalMessenger.RemoveListener("ExitConversation", new Callback(this.OnConversationEnded));
+        }
+        public void PlayerMessageOpened(string roomVariableName, GameObject messageGameObject)
         {
             if (currentPlayerMessageRoomVariable != null && currentPlayerMessageRoomVariable.Name == roomVariableName) { return; }
             currentPlayerMessageRoomVariable = ConnectionController.Connection.LastJoinedRoom.GetVariable(roomVariableName);
-
+            currentMessageGameObject = messageGameObject;
             if (currentPlayerMessageRoomVariable.GetSFSObjectValue().GetIntArray("aprlist").Contains(ConnectionController.Connection.MySelf.PlayerId))
             {
                 Locator.GetPromptManager().AddScreenPrompt(appraiseUnavailablePrompt, PromptPosition.UpperRight, true);
@@ -64,14 +85,17 @@ namespace OuterWildsOnline
             {
                 Locator.GetPromptManager().AddScreenPrompt(appraisePrompt, PromptPosition.UpperRight, true);
             }
+            Locator.GetPromptManager().AddScreenPrompt(hidePrompt, PromptPosition.UpperRight, true);
             appraisalCountPrompt = new ScreenPrompt(Instance.appraisalCount);
             Locator.GetPromptManager().AddScreenPrompt(appraisalCountPrompt, PromptPosition.UpperRight, true);
         }
         private void OnConversationEnded()
         {
             currentPlayerMessageRoomVariable = null;
+            currentMessageGameObject = null;
             Locator.GetPromptManager().RemoveScreenPrompt(appraiseUnavailablePrompt);
             Locator.GetPromptManager().RemoveScreenPrompt(appraisePrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(hidePrompt);
             Locator.GetPromptManager().RemoveScreenPrompt(appraisalCountPrompt);
         }
         private void OnSuitUp()
@@ -99,12 +123,19 @@ namespace OuterWildsOnline
                 Locator.GetPromptManager().RemoveScreenPrompt(appraisalCountPrompt);
                 appraisalCountPrompt = new ScreenPrompt(Instance.appraisalCount);
                 Locator.GetPromptManager().AddScreenPrompt(appraisalCountPrompt, PromptPosition.UpperRight, true);
-        
+
                 Locator.GetPromptManager().RemoveScreenPrompt(appraisePrompt);
+            }
+            if (OWInput.IsNewlyPressed(hidePrompt.GetInputCommandList()[0]) &&
+                currentPlayerMessageRoomVariable != null)
+            {
+                currentMessageGameObject.SetActive(false);
+                currentMessageGameObject.GetComponent<CharacterDialogueTree>().EndConversation();       
             }
             if (OWInput.IsNewlyPressed(cancelMessagePrompt.GetInputCommandList()[0]) && (writing || placing))
             {
                 Cancel();
+                GlobalMessenger.FireEvent("FinishedMessage");
             }
             if (OWInput.IsNewlyPressed(startWritingPrompt.GetInputCommandList()[0]) && !writing && placing)
             {
@@ -115,9 +146,10 @@ namespace OuterWildsOnline
                 !placing &&
                 PlayerState.IsWearingSuit() &&
                 OWInput.GetInputMode() == InputMode.Character &&
-                Physics.Raycast(Locator.GetPlayerCamera().transform.position, Locator.GetPlayerCamera().transform.forward, 10, OWLayerMask.groundMask))
+                Physics.Raycast(Locator.GetPlayerCamera().transform.position, Locator.GetPlayerCamera().transform.forward, 10, placementLayerMask))
             {
                 StartPlacing();
+                GlobalMessenger.FireEvent("WritingMessage");
             }
             if (writing)
             {
@@ -160,13 +192,14 @@ namespace OuterWildsOnline
                         pages.RemoveAt(currentPage);
                     }
                     StopWriting();
+                    GlobalMessenger.FireEvent("FinishedMessage");
                 }
             }
             if (placing)
             {
-                if (Physics.Raycast(Locator.GetPlayerCamera().transform.position, Locator.GetPlayerCamera().transform.forward, out RaycastHit hit, 10, OWLayerMask.groundMask))
+                if (Physics.Raycast(Locator.GetPlayerCamera().transform.position, Locator.GetPlayerCamera().transform.forward, out RaycastHit hit, 10, placementLayerMask))
                 {
-                    ghost.SetParent(SFSSectorManager.Sectors[SFSSectorManager.ClosestSectorToPlayerID].transform);
+                    ghost.SetParent(hit.collider.transform);
                     ghost.position = hit.point;
                     ghost.rotation = Quaternion.Euler(Quaternion.LookRotation(hit.normal).eulerAngles + new Vector3(90, 0, 0));
                 }
@@ -211,18 +244,18 @@ namespace OuterWildsOnline
             var variable = new SFSObject();
             var data = new SFSObject();
 
-            Vector3 pos = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformPoint(ghost.position);
+            Vector3 pos = ghost.parent.InverseTransformPoint(ghost.position);
             data.PutFloat("posx", pos.x);
             data.PutFloat("posy", pos.y);
             data.PutFloat("posz", pos.z);
 
-            var rot = SFSSectorManager.ClosestSectorToPlayer.transform.InverseTransformRotation(ghost.rotation).eulerAngles;
+            var rot = ghost.parent.InverseTransformRotation(ghost.rotation).eulerAngles;
             data.PutFloat("rotx", rot.x);
             data.PutFloat("roty", rot.y);
             data.PutFloat("rotz", rot.z);
 
-            data.PutUtfString("sec", SFSSectorManager.ClosestSectorToPlayerID);
-            data.PutUtfString("time", DateTime.Now.Date.ToString("yyyy/MM/dd"));
+            data.PutUtfString("path", TransformReferences.TransformPaths[ghost.parent]);
+            data.PutUtfString("time", DateTime.Now.ToUniversalTime().Date.ToString("yyyy/MM/dd"));
             data.PutInt("apr", 1);
             data.PutUtfString("user", Utils.GetPlayerProfileName());
             data.PutUtfStringArray("mes", pages.ToArray());
