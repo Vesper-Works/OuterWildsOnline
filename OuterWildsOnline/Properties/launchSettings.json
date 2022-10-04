@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "OuterWildsOnline": {
+      "commandName": "Executable",
+      "executablePath": "D:\\Steam\\steamapps\\common\\Outer Wilds\\OuterWilds.exe"
+    }
+  }
+}

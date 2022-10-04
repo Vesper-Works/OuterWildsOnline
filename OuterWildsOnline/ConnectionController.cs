@@ -382,7 +382,7 @@ namespace OuterWildsOnline
             StartCoroutine(CreateObjectClones(0.5f));
             StartCoroutine(SetObjectsToSync(0.7f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
-            StartCoroutine(InstantiatePersistantObjects(1f));
+            StartCoroutine(InstantiatePersistantObjects(2f));
             new GameObject("ChatHandler").AddComponent<ChatHandler>();
             new GameObject("MessageHandler").AddComponent<MessageHandler>();
             new GameObject("TextInputHandler").AddComponent<TextInputHandler>();
@@ -431,7 +431,6 @@ namespace OuterWildsOnline
         private IEnumerator SendJoinedGameMessage()
         {
             yield return new WaitForSeconds(3f);
-
             var data = new SFSObject();
             data.PutNull("jg"); //JoinedGame
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
@@ -611,7 +610,22 @@ $@"<DialogueTree>
         </Dialogue>
     </DialogueNode>
 </DialogueTree>"));
-            messageGameObject.transform.SetParent(TransformReferences.TransformPaths.First(x => x.Value == data.GetUtfString("path")).Key);
+            if (data.ContainsKey("objID") &&
+                sfs.MySelf.Name != data.GetUtfString("user") &&
+                RemoteObjects.GetObject(
+                    sfs.UserManager.GetUserByName(data.GetUtfString("user")).PlayerId, 
+                    data.GetUtfString("type"), 
+                    data.GetInt("objID"), 
+                    out ObjectToRecieveSync objectToParentTo))
+            {
+                
+                messageGameObject.transform.SetParent(objectToParentTo.transform);
+            }
+            else
+            {
+                messageGameObject.transform.SetParent(TransformReferences.TransformPaths.First(x => x.Value == data.GetUtfString("path")).Key);
+            }
+       
             messageGameObject.transform.localPosition = new Vector3(data.GetFloat("posx"), data.GetFloat("posy"), data.GetFloat("posz"));
             messageGameObject.transform.localRotation = Quaternion.Euler(data.GetFloat("rotx"), data.GetFloat("roty"), data.GetFloat("rotz"));
             messageGameObject.SetActive(true);
@@ -851,13 +865,6 @@ $@"<DialogueTree>
                 }
             }
         }
-        private void Resume()
-        {
-            // Simulate "resume game" button press.
-            var resume = FindObjectOfType<TitleScreenManager>().GetValue<SubmitActionLoadScene>("_resumeGameAction");
-            if (resume == null) { resume = FindObjectOfType<TitleScreenManager>().GetValue<SubmitActionLoadScene>("_newGameAction"); }
-            resume.Invoke("ConfirmSubmit");
-        }
 
         private void OnApplicationQuit()
         {
@@ -865,12 +872,11 @@ $@"<DialogueTree>
             if (playerInGame)
             {
                 SendLeaveGameMessage();
-
             }
 
             Connection.RemoveAllEventListeners();
             Connection.Disconnect();
-            Instance.StopAllCoroutines();
+            //Instance.StopAllCoroutines();
         }
 
 

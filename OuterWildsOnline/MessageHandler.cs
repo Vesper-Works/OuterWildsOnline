@@ -36,8 +36,8 @@ namespace OuterWildsOnline
         Transform ghost;
         DialogueBoxVer2 dialog;
         List<string> pages = new List<string>() { "" };
-        ScreenPrompt startPlacingPrompt = new ScreenPrompt(InputLibrary.lockOn, "Start Placing Message");
-        ScreenPrompt startWritingPrompt = new ScreenPrompt(InputLibrary.lockOn, "Start Writing");
+        ScreenPrompt startPlacingPrompt = new ScreenPrompt(InputLibrary.interactSecondary, "Start Placing Message");
+        ScreenPrompt startWritingPrompt = new ScreenPrompt(InputLibrary.interactSecondary, "Start Writing");
         ScreenPrompt stopWritingPrompt = new ScreenPrompt(InputLibrary.enter, "Finish And Place Message");
         ScreenPrompt nextPagePrompt = new ScreenPrompt(InputLibrary.right2, "Next Page");
         ScreenPrompt previousPagePrompt = new ScreenPrompt(InputLibrary.left2, "Previous Page");
@@ -244,16 +244,34 @@ namespace OuterWildsOnline
             var variable = new SFSObject();
             var data = new SFSObject();
 
-            Vector3 pos = ghost.parent.InverseTransformPoint(ghost.position);
-            data.PutFloat("posx", pos.x);
-            data.PutFloat("posy", pos.y);
-            data.PutFloat("posz", pos.z);
+            if (ghost.ObjectOrParentsHaveComponent(out SyncObjects.ObjectToSendSync localObject))
+            {
+                data.PutUtfString("type", localObject.ObjectName);
+                data.PutInt("objID", localObject.ObjectId);
 
-            var rot = ghost.parent.InverseTransformRotation(ghost.rotation).eulerAngles;
-            data.PutFloat("rotx", rot.x);
-            data.PutFloat("roty", rot.y);
-            data.PutFloat("rotz", rot.z);
+                Vector3 pos = ghost.parent.InverseTransformPoint(ghost.position);
+                data.PutFloat("posx", pos.x);
+                data.PutFloat("posy", pos.y);
+                data.PutFloat("posz", pos.z);
 
+                var rot = ghost.parent.InverseTransformRotation(ghost.rotation).eulerAngles;
+                data.PutFloat("rotx", rot.x);
+                data.PutFloat("roty", rot.y);
+                data.PutFloat("rotz", rot.z);
+            }
+            else
+            {
+                Vector3 pos = ghost.parent.InverseTransformPoint(ghost.position);
+                data.PutFloat("posx", pos.x);
+                data.PutFloat("posy", pos.y);
+                data.PutFloat("posz", pos.z);
+
+                var rot = ghost.parent.InverseTransformRotation(ghost.rotation).eulerAngles;
+                data.PutFloat("rotx", rot.x);
+                data.PutFloat("roty", rot.y);
+                data.PutFloat("rotz", rot.z);
+         
+            }
             data.PutUtfString("path", TransformReferences.TransformPaths[ghost.parent]);
             data.PutUtfString("time", DateTime.Now.ToUniversalTime().Date.ToString("yyyy/MM/dd"));
             data.PutInt("apr", 1);
@@ -285,7 +303,7 @@ namespace OuterWildsOnline
             Locator.GetPromptManager().RemoveScreenPrompt(nextPagePrompt);
             Locator.GetPromptManager().RemoveScreenPrompt(previousPagePrompt);
             Locator.GetPromptManager().RemoveScreenPrompt(cancelMessagePrompt);
-            Locator.GetPromptManager().AddScreenPrompt(startPlacingPrompt);
+            Locator.GetPromptManager().AddScreenPrompt(startPlacingPrompt, PromptPosition.UpperRight, true);
             Locator.GetPauseCommandListener().RemovePauseCommandLock();
             currentPage = 0;
             pages = new List<String>() { "" };
@@ -318,7 +336,7 @@ namespace OuterWildsOnline
             Locator.GetPromptManager().RemoveScreenPrompt(nextPagePrompt);
             Locator.GetPromptManager().RemoveScreenPrompt(previousPagePrompt);
             Locator.GetPromptManager().RemoveScreenPrompt(cancelMessagePrompt);
-            Locator.GetPromptManager().AddScreenPrompt(startPlacingPrompt);
+            Locator.GetPromptManager().AddScreenPrompt(startPlacingPrompt, PromptPosition.UpperRight, true);
             Locator.GetPauseCommandListener().RemovePauseCommandLock();
             currentPage = 0;
             pages = new List<String>() { "" };
