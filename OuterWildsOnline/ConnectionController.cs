@@ -440,15 +440,15 @@ namespace OuterWildsOnline
             if (RemoteObjects.CloneStorage.Count != 0) { yield break; } //Clone bay already populated
             yield return new WaitForSeconds(delay);
             RemoteObjects.CloneStorage.Add("Player", CreateRemoteCopies.CreatePlayerRemoteCopy());
-            ModHelper.Console.WriteLine("Player added to clone bay");
+            ModHelper.Console.WriteLine("Player added to clone bay", MessageType.Debug);
             RemoteObjects.CloneStorage.Add("Ship", CreateRemoteCopies.CreateShipRemoteCopy());
-            ModHelper.Console.WriteLine("Ship added to clone bay");
+            ModHelper.Console.WriteLine("Ship added to clone bay", MessageType.Debug);
             RemoteObjects.CloneStorage.Add("Probe", CreateRemoteCopies.CreateProbeRemoteCopy());
-            ModHelper.Console.WriteLine("Probe added to clone bay");
+            ModHelper.Console.WriteLine("Probe added to clone bay", MessageType.Debug);
             RemoteObjects.CloneStorage.Add("RoastingStick", CreateRemoteCopies.CreateRoastingStickRemoteCopy());
-            ModHelper.Console.WriteLine("RoastingStick added to clone bay");
+            ModHelper.Console.WriteLine("RoastingStick added to clone bay", MessageType.Debug);
             RemoteObjects.CloneStorage.Add("Message", CreateRemoteCopies.CreateMessageCopy());
-            ModHelper.Console.WriteLine("Message added to clone bay");
+            ModHelper.Console.WriteLine("Message added to clone bay", MessageType.Debug);
         }
         private IEnumerator SetObjectsToSync(float delay)
         {
@@ -469,7 +469,7 @@ namespace OuterWildsOnline
             string objectKey = string.Join("-", @object.ObjectName, @object.ObjectId);
             if (objectsList.ContainsKey(objectKey))
             {
-                ModHelper.Console.WriteLine($"There is already a object with this key! ({objectKey})");
+                ModHelper.Console.WriteLine($"There is already a object with this key! ({objectKey})", MessageType.Debug);
                 return;
             }
             objectsList.PutSFSObject(objectKey, @object.ObjectData);

@@ -63,7 +63,7 @@ namespace OuterWildsOnline.StaticClasses
         [HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.DisplayDialogueBox2))]
         public static void DisplayDialogueBox2(CharacterDialogueTree __instance)
         {
-            ConnectionController.Console.WriteLine(__instance.gameObject.name);
+            //ConnectionController.Console.WriteLine(__instance.gameObject.name);
             if (Guid.TryParse(__instance.gameObject.name, out Guid result))
             {
                 MessageHandler.Instance.PlayerMessageOpened(result.ToString(), __instance.gameObject);
