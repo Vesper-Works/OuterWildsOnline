@@ -115,8 +115,27 @@ namespace OuterWildsOnline
 
             SetUpTexts();
 
+            GlobalMessenger.AddListener("WritingMessage", OnWritingMessage);
+            GlobalMessenger.AddListener("FinishedMessage", OnFinishedMessage);
         }
-
+        private bool lastEnter;
+        private void OnWritingMessage()
+        {
+            lastEnter = Locator.GetPromptManager().GetScreenPromptList(PromptPosition.UpperRight).Contains(enterChatPrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(enterChatPrompt);
+            Locator.GetPromptManager().RemoveScreenPrompt(exitChatPrompt);
+        }
+        private void OnFinishedMessage()
+        {
+            if (lastEnter)
+            {
+                Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, PromptPosition.UpperRight, true);
+            }
+            else
+            {
+                Locator.GetPromptManager().AddScreenPrompt(exitChatPrompt, PromptPosition.UpperRight, true);
+            }
+        }
         private void SetUpTexts()
         {
             helmetInputFieldText = helmetInputText.GetComponent<Text>();
@@ -294,7 +313,7 @@ namespace OuterWildsOnline
                 Locator.GetPromptManager().AddScreenPrompt(exitChatPrompt, PromptPosition.UpperRight, true);
                 Locator.GetPromptManager().RemoveScreenPrompt(enterChatPrompt);
                 ChatFullOpacity();
-                TextInputHandler.Instance.BeginRecording(false);
+                TextInputHandler.Instance.BeginRecording(true);
             }
             if (OWInput.IsNewlyPressed(exitChatPrompt.GetInputCommandList()[0]) && selected)
             {

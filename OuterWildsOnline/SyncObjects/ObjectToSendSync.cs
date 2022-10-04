@@ -114,7 +114,9 @@ namespace OuterWildsOnline.SyncObjects
         protected virtual void OnDestroy()
         {
             if(RemoteObjects.GetObject(sfs.MySelf.Id,ObjectName,ObjectId,out _))
+            {
                 ConnectionController.Instance.RemoveObjectToSync(this);
+            }
         }
     }
 }

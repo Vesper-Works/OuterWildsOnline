@@ -78,6 +78,21 @@ namespace OuterWildsOnline
                 }
             }
         }
+
+        public static bool ObjectOrParentsHaveComponent<T>(this Transform transform, out T foundComponent) where T : Component
+        {
+            if(transform.TryGetComponent(typeof(T), out Component newFoundComponent))
+            {
+                foundComponent = (T)newFoundComponent;
+                return true;
+            }
+            else if(transform.parent != null)
+            {
+                return transform.parent.ObjectOrParentsHaveComponent(out foundComponent);
+            }
+            foundComponent = null;
+            return false;
+        }
         public static void UpdateColourRecursive(Color color, Transform child)
         {
             if (child.TryGetComponent(out SkinnedMeshRenderer meshRenderer))
@@ -225,6 +240,12 @@ namespace OuterWildsOnline
 
             rfGO.SetActive(true);
             return RFV;
+        }
+        public static string GetPath(this Transform current)
+        {
+            if (current.parent == null)
+                return "/" + current.name;
+            return current.parent.GetPath() + "/" + current.name;
         }
     }
 }

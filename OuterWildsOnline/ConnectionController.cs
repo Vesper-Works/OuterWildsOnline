@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace OuterWildsOnline
 {
@@ -381,11 +382,27 @@ namespace OuterWildsOnline
             StartCoroutine(CreateObjectClones(0.5f));
             StartCoroutine(SetObjectsToSync(0.7f));
             StartCoroutine(InstantiateNewSyncObjects(1f));
-            StartCoroutine(InstantiatePersistantObjects(3f));
+            StartCoroutine(InstantiatePersistantObjects(2f));
             new GameObject("ChatHandler").AddComponent<ChatHandler>();
             new GameObject("MessageHandler").AddComponent<MessageHandler>();
             new GameObject("TextInputHandler").AddComponent<TextInputHandler>();
 
+            List<Transform> results = new List<Transform>();
+           
+                var s = SceneManager.GetActiveScene();
+                if (s.isLoaded)
+                {
+                    var allGameObjects = s.GetRootGameObjects();
+                    for (int j = 0; j < allGameObjects.Length; j++)
+                    {
+                        var go = allGameObjects[j];
+                        results.AddRange(go.GetComponentsInChildren<Transform>(true));
+                    }
+                }
+            
+
+            TransformReferences.TransformPaths.Clear();
+            TransformReferences.AddTransforms(results.ToArray());
         }
 
         public IEnumerator Disconnect(float delay)
@@ -414,7 +431,6 @@ namespace OuterWildsOnline
         private IEnumerator SendJoinedGameMessage()
         {
             yield return new WaitForSeconds(3f);
-
             var data = new SFSObject();
             data.PutNull("jg"); //JoinedGame
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
@@ -424,15 +440,15 @@ namespace OuterWildsOnline
             if (RemoteObjects.CloneStorage.Count != 0) { yield break; } //Clone bay already populated
             yield return new WaitForSeconds(delay);
             RemoteObjects.CloneStorage.Add("Player", CreateRemoteCopies.CreatePlayerRemoteCopy());
-            ModHelper.Console.WriteLine("Player added to clone bay");
+            ModHelper.Console.WriteLine("Player added to clone bay", MessageType.Debug);
             RemoteObjects.CloneStorage.Add("Ship", CreateRemoteCopies.CreateShipRemoteCopy());
-            ModHelper.Console.WriteLine("Ship added to clone bay");
+            ModHelper.Console.WriteLine("Ship added to clone bay", MessageType.Debug);
             RemoteObjects.CloneStorage.Add("Probe", CreateRemoteCopies.CreateProbeRemoteCopy());
-            ModHelper.Console.WriteLine("Probe added to clone bay");
+            ModHelper.Console.WriteLine("Probe added to clone bay", MessageType.Debug);
             RemoteObjects.CloneStorage.Add("RoastingStick", CreateRemoteCopies.CreateRoastingStickRemoteCopy());
-            ModHelper.Console.WriteLine("RoastingStick added to clone bay");
+            ModHelper.Console.WriteLine("RoastingStick added to clone bay", MessageType.Debug);
             RemoteObjects.CloneStorage.Add("Message", CreateRemoteCopies.CreateMessageCopy());
-            ModHelper.Console.WriteLine("Message added to clone bay");
+            ModHelper.Console.WriteLine("Message added to clone bay", MessageType.Debug);
         }
         private IEnumerator SetObjectsToSync(float delay)
         {
@@ -453,7 +469,7 @@ namespace OuterWildsOnline
             string objectKey = string.Join("-", @object.ObjectName, @object.ObjectId);
             if (objectsList.ContainsKey(objectKey))
             {
-                ModHelper.Console.WriteLine($"There is already a object with this key! ({objectKey})");
+                ModHelper.Console.WriteLine($"There is already a object with this key! ({objectKey})", MessageType.Debug);
                 return;
             }
             objectsList.PutSFSObject(objectKey, @object.ObjectData);
@@ -581,10 +597,10 @@ namespace OuterWildsOnline
             {
                 pages += $"<Page>{page}</Page>\n";
             }
-            GameObject testGameObject = Instantiate(RemoteObjects.CloneStorage["Message"]);
-            testGameObject.name = roomVariable.Name;
-            testGameObject.GetComponent<SingleInteractionVolume>()._playerCam = Locator.GetPlayerCamera();
-            testGameObject.GetComponent<CharacterDialogueTree>().SetTextXml(new TextAsset(
+            GameObject messageGameObject = Instantiate(RemoteObjects.CloneStorage["Message"]);
+            messageGameObject.name = roomVariable.Name;
+            messageGameObject.GetComponent<SingleInteractionVolume>()._playerCam = Locator.GetPlayerCamera();
+            messageGameObject.GetComponent<CharacterDialogueTree>().SetTextXml(new TextAsset(
 $@"<DialogueTree>
     <NameField>RECORDING</NameField>
     <DialogueNode>
@@ -594,10 +610,25 @@ $@"<DialogueTree>
         </Dialogue>
     </DialogueNode>
 </DialogueTree>"));
-            testGameObject.transform.SetParent(SFSSectorManager.Sectors[data.GetUtfString("sec")].transform);
-            testGameObject.transform.localPosition = new Vector3(data.GetFloat("posx"), data.GetFloat("posy"), data.GetFloat("posz"));
-            testGameObject.transform.localRotation = Quaternion.Euler(data.GetFloat("rotx"), data.GetFloat("roty"), data.GetFloat("rotz"));
-            testGameObject.SetActive(true);
+            if (data.ContainsKey("objID") &&
+                sfs.MySelf.Name != data.GetUtfString("user") &&
+                RemoteObjects.GetObject(
+                    sfs.UserManager.GetUserByName(data.GetUtfString("user")).PlayerId, 
+                    data.GetUtfString("type"), 
+                    data.GetInt("objID"), 
+                    out ObjectToRecieveSync objectToParentTo))
+            {
+                
+                messageGameObject.transform.SetParent(objectToParentTo.transform);
+            }
+            else
+            {
+                messageGameObject.transform.SetParent(TransformReferences.TransformPaths.First(x => x.Value == data.GetUtfString("path")).Key);
+            }
+       
+            messageGameObject.transform.localPosition = new Vector3(data.GetFloat("posx"), data.GetFloat("posy"), data.GetFloat("posz"));
+            messageGameObject.transform.localRotation = Quaternion.Euler(data.GetFloat("rotx"), data.GetFloat("roty"), data.GetFloat("rotz"));
+            messageGameObject.SetActive(true);
         }
 
         #region ConnectButtonEvents
@@ -825,7 +856,7 @@ $@"<DialogueTree>
         private void OnRoomVarsUpdate(BaseEvent evt)
         {
             List<String> changedVars = (List<String>)evt.Params["changedVars"];
-
+            if (!RemoteObjects.CloneStorage.ContainsKey("Message")) { return; }
             foreach (var roomVar in sfs.LastJoinedRoom.GetVariables())
             {
                 if (changedVars.Contains(roomVar.Name))
@@ -834,13 +865,6 @@ $@"<DialogueTree>
                 }
             }
         }
-        private void Resume()
-        {
-            // Simulate "resume game" button press.
-            var resume = FindObjectOfType<TitleScreenManager>().GetValue<SubmitActionLoadScene>("_resumeGameAction");
-            if (resume == null) { resume = FindObjectOfType<TitleScreenManager>().GetValue<SubmitActionLoadScene>("_newGameAction"); }
-            resume.Invoke("ConfirmSubmit");
-        }
 
         private void OnApplicationQuit()
         {
@@ -848,12 +872,11 @@ $@"<DialogueTree>
             if (playerInGame)
             {
                 SendLeaveGameMessage();
-
             }
 
             Connection.RemoveAllEventListeners();
             Connection.Disconnect();
-            Instance.StopAllCoroutines();
+            //Instance.StopAllCoroutines();
         }
 
 

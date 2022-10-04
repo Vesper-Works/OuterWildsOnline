@@ -24,7 +24,7 @@ namespace OuterWildsOnline.StaticClasses
             ConnectionController.Instance.StartCoroutine(ConnectionController.Instance.Disconnect(0.1f));
         }
 
-        [HarmonyPrefix]
+        [HarmonyPostfix]
         [HarmonyPatch(typeof(PauseMenuManager), nameof(PauseMenuManager.TryOpenPauseMenu))]
         public static void TryOpenPauseMenuPatch()
         {
@@ -63,10 +63,10 @@ namespace OuterWildsOnline.StaticClasses
         [HarmonyPatch(typeof(CharacterDialogueTree), nameof(CharacterDialogueTree.DisplayDialogueBox2))]
         public static void DisplayDialogueBox2(CharacterDialogueTree __instance)
         {
-            ConnectionController.Console.WriteLine(__instance.gameObject.name);
+            //ConnectionController.Console.WriteLine(__instance.gameObject.name);
             if (Guid.TryParse(__instance.gameObject.name, out Guid result))
             {
-                MessageHandler.Instance.PlayerMessageOpened(result.ToString());
+                MessageHandler.Instance.PlayerMessageOpened(result.ToString(), __instance.gameObject);
             }
         }
     }
