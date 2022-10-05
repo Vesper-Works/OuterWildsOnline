@@ -29,12 +29,13 @@ namespace OuterWildsOnline
                 if (sectorsFound[i].transform.parent == null || Sectors.ContainsKey(sectorsFound[i].transform.parent.gameObject.name))
                 {
                     Sectors[i.ToString()] = sectorsFound[i];
+                    //Log.Message(sectorsFound[i].gameObject.name);
                 }
                 else
                 {
                     Sectors[sectorsFound[i].transform.parent.gameObject.name] = sectorsFound[i];
                 }
-
+                
             }
         }
 
@@ -62,6 +63,7 @@ namespace OuterWildsOnline
                     closestDistance = currentDistance;
                     closestSectorToPlayer = sector.Value;
                     closestSectorToPlayerID = sector.Key;
+                    //Log.Message(sector.Key);   
                 }
             }
             if(closestDistance > 2000)

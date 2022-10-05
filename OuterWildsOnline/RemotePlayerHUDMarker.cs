@@ -107,7 +107,11 @@ namespace OuterWildsOnline
             {
                 _canvasMarker.SetSecondaryLabel(CanvasMarker.SecondaryLabelType.NONE);
             }
-
+        }
+        public void SetVisible(bool visible)
+        {
+            if (_canvasMarker == null) { return; }
+            _canvasMarker._visible = visible; 
         }
     }
 }
