@@ -1,12 +1,33 @@
 {
   "enabled": true,
   "settings": {
-    "serverAddress": "gameserver.hopto.org",
-    "clothesColour": "",
-    "handsColour": "",
-    "headColour": "",
-    "jetpackColour": "",
-    "customSkin": {
+    "ServerAddress": "gameserver.hopto.org",
+    "Label": {
+      "type": "text",
+      "value": "0-255,0-255,0-255",
+      "title": "Colour Entered Using RGB"
+    },
+    "ClothesColour": {
+      "type": "text",
+      "value": "255,255,255",
+      "title": "Clothes Colour"
+    },
+    "HandsColour": {
+      "type": "text",
+      "value": "255,255,255",
+      "title": "Hands Colour"
+    },
+    "HeadColour": {
+      "type": "text",
+      "value": "255,255,255",
+      "title": "Head Colour"
+    },
+    "JetpackColour": {
+      "type": "text",
+      "value": "255,255,255",
+      "title": "Jetpack Colour"
+    },
+    "CustomSkin": {
       "type": "selector",
       "value": "Protagonist",
       "options": [ "Protagonist", "Gabbro", "Feldspar", "Chert" ],

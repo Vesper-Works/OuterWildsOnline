@@ -44,12 +44,12 @@ namespace OuterWildsOnline.SyncObjects
             ObjectData.PutBool("light", PlayerState.IsFlashlightOn());
             ObjectData.PutBool("far", false);
             ObjectData.PutBool("suit", PlayerState.IsWearingSuit());
-            ObjectData.PutUtfString("clothesColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("clothesColour"));
-            ObjectData.PutUtfString("handsColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("handsColour"));
-            ObjectData.PutUtfString("headColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("headColour"));
-            ObjectData.PutUtfString("jetpackColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("jetpackColour"));
-            ObjectData.PutUtfString("customSkin", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("customSkin"));
-            string skinCode = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("customSkin");
+            ObjectData.PutUtfString("clothesColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("ClothesColour"));
+            ObjectData.PutUtfString("handsColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("HandsColour"));
+            ObjectData.PutUtfString("headColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("HeadColour"));
+            ObjectData.PutUtfString("jetpackColour", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("JetpackColour"));
+            ObjectData.PutUtfString("customSkin", ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("CustomSkin"));
+            string skinCode = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("CustomSkin");
             ConnectionController.Console.WriteLine(skinCode);
             SetPlayerColour();
         }
@@ -132,11 +132,11 @@ namespace OuterWildsOnline.SyncObjects
         public override void ConfigChanged(IModConfig config)
         {
           
-            ObjectData.PutUtfString("clothesColour", config.GetSettingsValue<string>("clothesColour"));
-            ObjectData.PutUtfString("handsColour", config.GetSettingsValue<string>("handsColour"));
-            ObjectData.PutUtfString("headColour", config.GetSettingsValue<string>("headColour"));
-            ObjectData.PutUtfString("jetpackColour", config.GetSettingsValue<string>("jetpackColour"));
-            string skinCode = config.GetSettingsValue<string>("customSkin");
+            ObjectData.PutUtfString("clothesColour", config.GetSettingsValue<string>("ClothesColour"));
+            ObjectData.PutUtfString("handsColour", config.GetSettingsValue<string>("HandsColour"));
+            ObjectData.PutUtfString("headColour", config.GetSettingsValue<string>("HeadColour"));
+            ObjectData.PutUtfString("jetpackColour", config.GetSettingsValue<string>("JetpackColour"));
+            string skinCode = config.GetSettingsValue<string>("CustomSkin");
             ConnectionController.Console.WriteLine(skinCode);
             ObjectData.PutUtfString("customSkin", skinCode);
 
@@ -176,7 +176,7 @@ namespace OuterWildsOnline.SyncObjects
         }
         private void SetPlayerColour()
         {
-            string playerColourString = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("clothesColour");
+            string playerColourString = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("ClothesColour");
             if (string.IsNullOrEmpty(playerColourString))
             {
 
@@ -217,9 +217,9 @@ namespace OuterWildsOnline.SyncObjects
             else
             {
                 string[] clothesColourStr = playerColourString.Split(',');
-                string[] handsColourStr = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("handsColour").Split(',');
-                string[] headColourStr = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("headColour").Split(',');
-                string[] jetpackColourStr = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("jetpackColour").Split(',');
+                string[] handsColourStr = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("HandsColour").Split(',');
+                string[] headColourStr = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("HeadColour").Split(',');
+                string[] jetpackColourStr = ConnectionController.ModHelperInstance.Config.GetSettingsValue<string>("JetpackColour").Split(',');
                 if (clothesColourStr.Length != 3) { clothesColourStr = new string[] { "255", "255", "255" }; }
                 if (handsColourStr.Length != 3) { handsColourStr = new string[] { "255", "255", "255" }; }
                 if (headColourStr.Length != 3) { headColourStr = new string[] { "255", "255", "255" }; }

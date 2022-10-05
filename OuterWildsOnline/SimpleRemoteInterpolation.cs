@@ -20,6 +20,12 @@ namespace OuterWildsOnline
 
         public void SetPosition(Vector3 pos, bool interpolate, string sectorID)
         {
+            if (!SFSSectorManager.Sectors.ContainsKey(sectorID))
+            {
+                ConnectionController.Console.WriteLine("Sector not found with ID : " + sectorID, OWML.Common.MessageType.Error);
+                //SFSSectorManager.RefreshSectors();
+                return;
+            }
             if (transform.parent != SFSSectorManager.Sectors[sectorID].transform)
             { transform.SetParent(SFSSectorManager.Sectors[sectorID].transform); }
             interpolateOn = interpolate;
@@ -35,6 +41,12 @@ namespace OuterWildsOnline
         }
         public void SetRotation(Quaternion rot, bool interpolate, string sectorID)
         {
+            if (!SFSSectorManager.Sectors.ContainsKey(sectorID))
+            {
+                ConnectionController.Console.WriteLine("Sector not found with ID : " + sectorID, OWML.Common.MessageType.Error);
+                //SFSSectorManager.RefreshSectors();
+                return;
+            }
             if (transform.parent != SFSSectorManager.Sectors[sectorID].transform)
             { transform.SetParent(SFSSectorManager.Sectors[sectorID].transform); }
             interpolateOn = interpolate;

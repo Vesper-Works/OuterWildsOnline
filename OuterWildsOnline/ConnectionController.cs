@@ -88,7 +88,7 @@ namespace OuterWildsOnline
         public static ConnectionController Instance { get; private set; }
         public override void Configure(IModConfig config)
         {
-            serverAddress = config.GetSettingsValue<string>("serverAddress");
+            serverAddress = config.GetSettingsValue<string>("ServerAddress");
 
             if (playerRepresentationObject != null)
             {
@@ -133,6 +133,9 @@ namespace OuterWildsOnline
         {
             var data = new SFSObject();
             data.PutInt("died", (int)deathType);
+#if DEBUG
+            data.PutNull("debug");
+#endif
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
         }
 
@@ -316,7 +319,7 @@ namespace OuterWildsOnline
                         syncedObject.gameObject.SetActive(true);
                         if (syncedObject.ObjectName == "Player")
                         {
-                            Console.WriteLine($"Setting {user.Name}'s canvas marker to default");
+                            syncedObject.gameObject.GetComponent<RemotePlayerHUDMarker>().SetVisible(true);
                             syncedObject.gameObject.GetComponent<RemotePlayerHUDMarker>().SetMarkerText($"{user.Name}");
                         }
                     }
@@ -327,7 +330,6 @@ namespace OuterWildsOnline
             foreach (User user in removedUsers)
             {
                 Console.WriteLine($"{user.Name} has left the AOI");
-                GlobalMessenger.FireEvent("PlayerFarFromSector");
                 foreach (var syncedObject in RemoteObjects.GetUserObjectList(user.Id))
                 {
                     if (syncedObject != null)
@@ -335,7 +337,7 @@ namespace OuterWildsOnline
                         if (syncedObject.ObjectName == "Player")
                         {
                             Console.WriteLine($"Setting {user.Name}'s canvas marker to losing connection");
-                            syncedObject.gameObject.GetComponent<RemotePlayerHUDMarker>().SetMarkerText($"{user.Name} <Losing Connection...>");
+                            syncedObject.gameObject.GetComponent<RemotePlayerHUDMarker>().SetVisible(false);
                         }
                         syncedObject.gameObject.SetActive(false);
                     }
@@ -388,18 +390,18 @@ namespace OuterWildsOnline
             new GameObject("TextInputHandler").AddComponent<TextInputHandler>();
 
             List<Transform> results = new List<Transform>();
-           
-                var s = SceneManager.GetActiveScene();
-                if (s.isLoaded)
+
+            var s = SceneManager.GetActiveScene();
+            if (s.isLoaded)
+            {
+                var allGameObjects = s.GetRootGameObjects();
+                for (int j = 0; j < allGameObjects.Length; j++)
                 {
-                    var allGameObjects = s.GetRootGameObjects();
-                    for (int j = 0; j < allGameObjects.Length; j++)
-                    {
-                        var go = allGameObjects[j];
-                        results.AddRange(go.GetComponentsInChildren<Transform>(true));
-                    }
+                    var go = allGameObjects[j];
+                    results.AddRange(go.GetComponentsInChildren<Transform>(true));
                 }
-            
+            }
+
 
             TransformReferences.TransformPaths.Clear();
             TransformReferences.AddTransforms(results.ToArray());
@@ -421,6 +423,9 @@ namespace OuterWildsOnline
         {
             var data = new SFSObject();
             data.PutNull("lg"); //LeftGame
+#if DEBUG
+            data.PutNull("debug");
+#endif
             Connection.Send(new ExtensionRequest("GeneralEvent", data, Connection.LastJoinedRoom));
         }
         private IEnumerator ReloadAllRemoteUsers(float delay)
@@ -433,6 +438,9 @@ namespace OuterWildsOnline
             yield return new WaitForSeconds(3f);
             var data = new SFSObject();
             data.PutNull("jg"); //JoinedGame
+#if DEBUG
+            data.PutNull("debug");
+#endif
             sfs.Send(new ExtensionRequest("GeneralEvent", data, sfs.LastJoinedRoom));
         }
         private IEnumerator CreateObjectClones(float delay)
@@ -613,19 +621,19 @@ $@"<DialogueTree>
             if (data.ContainsKey("objID") &&
                 sfs.MySelf.Name != data.GetUtfString("user") &&
                 RemoteObjects.GetObject(
-                    sfs.UserManager.GetUserByName(data.GetUtfString("user")).PlayerId, 
-                    data.GetUtfString("type"), 
-                    data.GetInt("objID"), 
+                    sfs.UserManager.GetUserByName(data.GetUtfString("user")).PlayerId,
+                    data.GetUtfString("type"),
+                    data.GetInt("objID"),
                     out ObjectToRecieveSync objectToParentTo))
             {
-                
+
                 messageGameObject.transform.SetParent(objectToParentTo.transform);
             }
             else
             {
                 messageGameObject.transform.SetParent(TransformReferences.TransformPaths.First(x => x.Value == data.GetUtfString("path")).Key);
             }
-       
+
             messageGameObject.transform.localPosition = new Vector3(data.GetFloat("posx"), data.GetFloat("posy"), data.GetFloat("posz"));
             messageGameObject.transform.localRotation = Quaternion.Euler(data.GetFloat("rotx"), data.GetFloat("roty"), data.GetFloat("rotz"));
             messageGameObject.SetActive(true);
@@ -868,17 +876,16 @@ $@"<DialogueTree>
 
         private void OnApplicationQuit()
         {
-
-            if (playerInGame)
+            if (Connection != null)
             {
-                SendLeaveGameMessage();
+                if (playerInGame)
+                {
+                    SendLeaveGameMessage();
+                }
+                Connection.RemoveAllEventListeners();
+                Connection.Disconnect();
             }
-
-            Connection.RemoveAllEventListeners();
-            Connection.Disconnect();
             //Instance.StopAllCoroutines();
         }
-
-
     }
 }

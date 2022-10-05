@@ -37,7 +37,7 @@ namespace OuterWildsOnline
         DialogueBoxVer2 dialog;
         List<string> pages = new List<string>() { "" };
         ScreenPrompt startPlacingPrompt = new ScreenPrompt(InputLibrary.interactSecondary, "Start Placing Message");
-        ScreenPrompt startWritingPrompt = new ScreenPrompt(InputLibrary.interactSecondary, "Start Writing");
+        ScreenPrompt startWritingPrompt = new ScreenPrompt(InputLibrary.lockOn, "Start Writing");
         ScreenPrompt stopWritingPrompt = new ScreenPrompt(InputLibrary.enter, "Finish And Place Message");
         ScreenPrompt nextPagePrompt = new ScreenPrompt(InputLibrary.right2, "Next Page");
         ScreenPrompt previousPagePrompt = new ScreenPrompt(InputLibrary.left2, "Previous Page");
