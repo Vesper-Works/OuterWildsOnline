@@ -428,11 +428,6 @@ namespace OuterWildsOnline
 #endif
             Connection.Send(new ExtensionRequest("GeneralEvent", data, Connection.LastJoinedRoom));
         }
-        private IEnumerator ReloadAllRemoteUsers(float delay)
-        {
-            yield return new WaitForSeconds(delay);
-            RemoteObjects.RemoveAllObjects(true);
-        }
         private IEnumerator SendJoinedGameMessage()
         {
             yield return new WaitForSeconds(3f);
@@ -783,14 +778,12 @@ $@"<DialogueTree>
         private void OnExtensionResponse(BaseEvent evt)
         {
             string cmd = (string)evt.Params["cmd"];
-
             if (cmd != "GeneralEvent") { return; }
 
             SFSObject responseParams = (SFSObject)evt.Params["params"];
 
             if (responseParams == null) { return; }
             int userID = responseParams.GetInt("userId");
-
             //if (UsersData.GetUserName(userID,out string userName))
             GeneralEventResponses(userID, responseParams, cmd);
         }
@@ -873,19 +866,27 @@ $@"<DialogueTree>
                 }
             }
         }
+        private IEnumerator SendMessagesBeforeClosing()
+        {
+            if (playerInGame)
+            {
+                SendLeaveGameMessage();
+            }
+            Connection.RemoveAllEventListeners();
+            Connection.Disconnect();
 
+            yield return new WaitForSeconds(2f);
+            Application.Quit();
+        }
+
+        [Obsolete]
         private void OnApplicationQuit()
         {
-            if (Connection != null)
+            if (Connection != null && Connection.IsConnected)
             {
-                if (playerInGame)
-                {
-                    SendLeaveGameMessage();
-                }
-                Connection.RemoveAllEventListeners();
-                Connection.Disconnect();
+                StartCoroutine(SendMessagesBeforeClosing());
+                Application.CancelQuit();
             }
-            //Instance.StopAllCoroutines();
         }
     }
 }
