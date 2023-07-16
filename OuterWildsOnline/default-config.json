@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "settings": {
-    "ServerAddress": "gameserver.hopto.org",
+    "ServerAddress": "owo.outerwildsmods.com",
     "Label": {
       "type": "text",
       "value": "0-255,0-255,0-255",
