@@ -8,6 +8,8 @@ Before setting player colour in the config, your colours will be determined usin
 
 Once the mod is downloaded, press the CONNECT TO SERVER button and then RESUME EXPEDITION.
 
+### Main server is offline, if you would like to create your own server you still can however!
+
 Currently Synced:<br />
 - Player body.<br />
   - Player flashlight.<br />
