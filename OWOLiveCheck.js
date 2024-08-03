@@ -4,7 +4,7 @@ var http = new XMLHttpRequest();
 var args = process.argv.slice(2);
 const octokit = new Octokit.Octokit({ auth: args[0] });
 
-http.open("GET", "http://" + "gameserver.hopto.org", /*async*/true);
+http.open("GET", "http://" + "141.148.63.115", /*async*/true);
 http.onreadystatechange = function () {
     if (http.readyState == 4) {
         if(http.status == 200){           

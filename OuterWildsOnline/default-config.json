@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "settings": {
-    "ServerIPAddress": "141.148.63.115",
+    "ServerAddress": "owo.outerwildsmods.com",
     "Label": {
       "type": "text",
       "value": "0-255,0-255,0-255",
