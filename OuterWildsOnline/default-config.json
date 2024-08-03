@@ -1,7 +1,7 @@
 {
   "enabled": true,
   "settings": {
-    "ServerAddress": "gameserver.hopto.org",
+    "ServerIPAddress": "141.148.63.115",
     "Label": {
       "type": "text",
       "value": "0-255,0-255,0-255",
