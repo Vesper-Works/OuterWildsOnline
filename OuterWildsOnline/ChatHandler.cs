@@ -73,7 +73,7 @@ namespace OuterWildsOnline
         {
             shipAloneInSpace = new NotificationData(NotificationTarget.Ship, "Alone in space", 5f, true);
 
-            enterChatPrompt = new ScreenPrompt(InputLibrary.enter , "Start Chatting");
+            enterChatPrompt = new ScreenPrompt(InputLibrary.enter, "Start Chatting");
             exitChatPrompt = new ScreenPrompt(InputLibrary.escape, "Stop Chatting");
 
             Locator.GetPromptManager().AddScreenPrompt(enterChatPrompt, PromptPosition.UpperRight, true);
@@ -213,7 +213,10 @@ namespace OuterWildsOnline
         private IEnumerator FadeOutChatAfterDisuse()
         {
             StopCoroutine(FadeOutChatAfterDisuse());
-            yield return new WaitForSecondsRealtime(5f);
+            for (int i = 0; i < 5; i++)
+            {
+                yield return new WaitForSecondsRealtime(1f);
+            }
             FadeChatOut(1);
         }
         private void FadeChatOut(float duration)
